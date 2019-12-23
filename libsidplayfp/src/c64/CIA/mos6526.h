@@ -151,7 +151,7 @@ private:
     }
 
 public:
-    InterruptSource6526(EventScheduler &scheduler, MOS6526 &parent) :
+    explicit InterruptSource6526(EventScheduler &scheduler, MOS6526 &parent) :
         InterruptSource(scheduler, parent),
         last_clear(0),
         scheduled(false),
@@ -264,7 +264,7 @@ protected:
      *
      * @param context the event context
      */
-    MOS6526(EventScheduler &scheduler);
+    explicit MOS6526(EventScheduler &scheduler);
 
     /**
      * Signal interrupt.

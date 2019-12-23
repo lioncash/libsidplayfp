@@ -80,7 +80,7 @@ protected:
      * @param scheduler event scheduler
      * @param parent the MOS6526 which this Interrupt belongs to
      */
-    InterruptSource(EventScheduler &scheduler, MOS6526 &parent) :
+    explicit InterruptSource(EventScheduler &scheduler, MOS6526 &parent) :
         Event("CIA Interrupt"),
         parent(parent),
         eventScheduler(scheduler),

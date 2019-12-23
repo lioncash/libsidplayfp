@@ -12,7 +12,7 @@ template<class T>
 class SmartPtrBase_sidtt
 {
 public:
-    SmartPtrBase_sidtt(T* buffer, ulint_smartpt bufferLen, bool bufOwner = false) :
+    explicit SmartPtrBase_sidtt(T* buffer, ulint_smartpt bufferLen, bool bufOwner = false) :
         bufBegin(nullptr),
         bufEnd(nullptr),
         pBufCurrent(nullptr),
@@ -190,7 +190,7 @@ template<class T>
 class SmartPtr_sidtt final : public SmartPtrBase_sidtt<T>
 {
 public:
-    SmartPtr_sidtt(T* buffer, ulint_smartpt bufferLen, bool bufOwner = false) :
+    explicit SmartPtr_sidtt(T* buffer, ulint_smartpt bufferLen, bool bufOwner = false) :
         SmartPtrBase_sidtt<T>(buffer, bufferLen, bufOwner)
     {}
 

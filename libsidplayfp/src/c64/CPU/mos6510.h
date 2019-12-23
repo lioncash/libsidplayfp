@@ -307,7 +307,7 @@ private:
     inline void buildInstructionTable();
 
 protected:
-    MOS6510(EventScheduler &scheduler);
+    explicit MOS6510(EventScheduler &scheduler);
     ~MOS6510() {}
 
     /**

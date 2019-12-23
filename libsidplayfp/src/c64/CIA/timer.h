@@ -133,7 +133,7 @@ protected:
      * @param context event context
      * @param parent the MOS6526 which this Timer belongs to
      */
-    Timer(const char* name, EventScheduler &scheduler, MOS6526 &parent) :
+    explicit Timer(const char* name, EventScheduler &scheduler, MOS6526 &parent) :
         Event(name),
         m_cycleSkippingEvent("Skip CIA clock decrement cycles", *this, &Timer::cycleSkippingEvent),
         eventScheduler(scheduler),

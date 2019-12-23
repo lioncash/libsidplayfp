@@ -189,7 +189,7 @@ private:
     }
 
 public:
-    ZeroRAMBank(PLA &pla, SystemRAMBank &ramBank) :
+    explicit ZeroRAMBank(PLA &pla, SystemRAMBank &ramBank) :
         pla(pla),
         ramBank(ramBank)
     {}

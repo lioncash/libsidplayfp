@@ -48,7 +48,7 @@ public:
     static const char* getCredits();
 
 public:
-    ReSID(sidbuilder *builder);
+    explicit ReSID(sidbuilder *builder);
     ~ReSID();
 
     bool getStatus() const { return m_status; }

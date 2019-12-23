@@ -32,7 +32,7 @@
 class SID_EXTERN ReSIDBuilder : public sidbuilder
 {
 public:
-    ReSIDBuilder(const char * const name) :
+    explicit ReSIDBuilder(const char * const name) :
         sidbuilder(name) {}
     ~ReSIDBuilder();
 

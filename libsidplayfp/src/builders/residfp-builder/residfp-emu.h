@@ -44,7 +44,7 @@ public:
     static const char* getCredits();
 
 public:
-    ReSIDfp(sidbuilder *builder);
+    explicit ReSIDfp(sidbuilder *builder);
     ~ReSIDfp();
 
     bool getStatus() const { return m_status; }

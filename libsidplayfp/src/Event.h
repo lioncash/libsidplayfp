@@ -55,7 +55,7 @@ public:
      *
      * @param name Descriptive string of the event.
      */
-    Event(const char * const name) :
+    explicit Event(const char * const name) :
         m_name(name) {}
 
     /**

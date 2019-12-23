@@ -42,7 +42,7 @@ private:
     std::unique_ptr<SincResampler> const s2;
 
 private:
-    TwoPassSincResampler(double clockFrequency, double samplingFrequency, double highestAccurateFrequency, double intermediateFrequency) :
+    explicit TwoPassSincResampler(double clockFrequency, double samplingFrequency, double highestAccurateFrequency, double intermediateFrequency) :
         s1(new SincResampler(clockFrequency, intermediateFrequency, highestAccurateFrequency)),
         s2(new SincResampler(intermediateFrequency, samplingFrequency, highestAccurateFrequency))
     {}

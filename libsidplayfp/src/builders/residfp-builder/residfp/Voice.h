@@ -57,7 +57,6 @@ public:
      * @param ringModulator Ring-modulator for waveform
      * @return waveformgenerator output
      */
-    RESID_INLINE
     int output(const WaveformGenerator* ringModulator) const
     {
         return static_cast<int>(waveformGenerator->output(ringModulator) * envelopeGenerator->output());

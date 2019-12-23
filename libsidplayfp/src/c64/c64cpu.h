@@ -65,7 +65,7 @@ protected:
     }
 
 public:
-    c64cpu (c64env &env) :
+    explicit c64cpu(c64env &env) :
         MOS6510(env.scheduler()),
         m_env(env) {}
 };

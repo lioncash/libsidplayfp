@@ -59,7 +59,7 @@ protected:
     }
 
 public:
-    c64cia1(c64env &env) :
+    explicit c64cia1(c64env &env) :
         MOS6526(env.scheduler()),
         m_env(env) {}
 

@@ -71,7 +71,7 @@ protected:
     };
 
 public:
-    sidbuilder(const char * const name) :
+    explicit sidbuilder(const char * const name) :
         m_name(name),
         m_errorBuffer("N/A"),
         m_status(true) {}

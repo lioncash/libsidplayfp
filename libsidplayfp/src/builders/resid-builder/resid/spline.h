@@ -256,7 +256,7 @@ class PointPlotter
   F* f;
 
  public:
-  PointPlotter(F* arr) : f(arr)
+  explicit PointPlotter(F* arr) : f(arr)
   {
   }
 

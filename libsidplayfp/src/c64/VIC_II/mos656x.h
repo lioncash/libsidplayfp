@@ -295,7 +295,7 @@ private:
     }
 
 protected:
-    MOS656X(EventScheduler &scheduler);
+    explicit MOS656X(EventScheduler &scheduler);
     ~MOS656X() {}
 
     // Environment Interface

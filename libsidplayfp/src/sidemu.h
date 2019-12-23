@@ -76,7 +76,7 @@ protected:
     std::string m_error;
 
 public:
-    sidemu(sidbuilder *builder) :
+    explicit sidemu(sidbuilder *builder) :
         m_builder(builder),
         eventScheduler(nullptr),
         m_buffer(nullptr),

@@ -47,7 +47,7 @@ private:
     const unsigned int x, y;
 
 public:
-    matrix(unsigned int x, unsigned int y) :
+    explicit matrix(unsigned int x, unsigned int y) :
         data(new T[x * y]),
         count(new counter()),
         x(x),

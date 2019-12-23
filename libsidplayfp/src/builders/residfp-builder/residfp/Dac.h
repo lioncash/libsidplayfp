@@ -87,7 +87,7 @@ public:
      *
      * @param bits the number of input bits
      */
-    Dac(unsigned int bits);
+    explicit Dac(unsigned int bits);
     ~Dac();
 
     /**

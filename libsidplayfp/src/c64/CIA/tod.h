@@ -77,7 +77,7 @@ private:
     void event();
 
 public:
-    Tod(EventScheduler &scheduler, MOS6526 &parent, uint8_t regs[0x10]) :
+    explicit Tod(EventScheduler &scheduler, MOS6526 &parent, uint8_t regs[0x10]) :
         Event("CIA Time of Day"),
         eventScheduler(scheduler),
         parent(parent),
