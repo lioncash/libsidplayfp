@@ -22,26 +22,24 @@
 
 #include "Dac.h"
 
+#include <numeric>
+
 namespace reSIDfp
 {
 
-Dac::Dac(unsigned int bits) :
-    dac(new double[bits]),
-    dacLength(bits)
-{}
-
-Dac::~Dac()
+Dac::Dac(std::size_t bits) : dac(bits)
 {
-    delete [] dac;
 }
+
+Dac::~Dac() = default;
 
 double Dac::getOutput(unsigned int input) const
 {
-    double dacValue = 0.;
+    double dacValue = 0.0;
 
-    for (unsigned int i = 0; i < dacLength; i++)
+    for (std::size_t i = 0; i < dac.size(); i++)
     {
-        if ((input & (1 << i)) != 0)
+        if ((input & (std::size_t{1} << i)) != 0)
         {
             dacValue += dac[i];
         }
@@ -61,7 +59,7 @@ void Dac::kinkedDac(ChipModel chipModel)
     const bool term = chipModel == MOS8580;
 
     // Calculate voltage contribution by each individual bit in the R-2R ladder.
-    for (unsigned int set_bit = 0; set_bit < dacLength; set_bit++)
+    for (std::size_t set_bit = 0; set_bit < dac.size(); set_bit++)
     {
         double Vn = 1.;                   // Normalized bit voltage.
         double R = 1.;                    // Normalized R
@@ -69,7 +67,7 @@ void Dac::kinkedDac(ChipModel chipModel)
         double Rn = term ?                // Rn = 2R for correct termination,
                     _2R : R_INFINITY;     // INFINITY for missing termination.
 
-        unsigned int bit;
+        std::size_t bit;
 
         // Calculate DAC "tail" resistance by repeated parallel substitution.
         for (bit = 0; bit < set_bit; bit++)
@@ -93,7 +91,7 @@ void Dac::kinkedDac(ChipModel chipModel)
         // Calculate DAC output voltage by repeated source transformation from
         // the "tail".
 
-        for (++bit; bit < dacLength; bit++)
+        for (++bit; bit < dac.size(); bit++)
         {
             Rn += R;
             const double I = Vn / Rn;
@@ -105,18 +103,11 @@ void Dac::kinkedDac(ChipModel chipModel)
     }
 
     // Normalize to integerish behavior
-    double Vsum = 0.;
-
-    for (unsigned int i = 0; i < dacLength; i++)
+    const auto divisor = std::size_t{1} << dac.size();
+    const double Vsum = std::accumulate(dac.begin(), dac.end(), 0.0) / divisor;
+    for (auto& element : dac)
     {
-        Vsum += dac[i];
-    }
-
-    Vsum /= 1 << dacLength;
-
-    for (unsigned int i = 0; i < dacLength; i++)
-    {
-        dac[i] /= Vsum;
+        element /= Vsum;
     }
 }
 

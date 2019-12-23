@@ -23,6 +23,9 @@
 #ifndef DAC_H
 #define DAC_H
 
+#include <cstddef>
+#include <vector>
+
 #include "siddefs-fp.h"
 
 namespace reSIDfp
@@ -74,20 +77,13 @@ namespace reSIDfp
  */
 class Dac
 {
-private:
-    /// analog values
-    double * const dac;
-
-    /// the dac array length
-    const unsigned int dacLength;
-
 public:
     /**
      * Initialize DAC model.
      *
      * @param bits the number of input bits
      */
-    explicit Dac(unsigned int bits);
+    explicit Dac(std::size_t bits);
     ~Dac();
 
     /**
@@ -104,6 +100,10 @@ public:
      * @return the analog output value
      */
     double getOutput(unsigned int input) const;
+
+private:
+    /// Analog values
+    std::vector<double> dac;
 };
 
 } // namespace reSIDfp
