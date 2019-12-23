@@ -22,10 +22,9 @@
 #ifndef SIDBANK_H
 #define SIDBANK_H
 
-#include "Bank.h"
+#include "Banks/Bank.h"
+#include "Banks/NullSid.h"
 #include "c64/c64sid.h"
-
-#include "NullSid.h"
 
 namespace libsidplayfp
 {

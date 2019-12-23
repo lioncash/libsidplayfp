@@ -23,24 +23,18 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
-#include <iomanip>
 #include <fstream>
-#include <sstream>
+#include <iomanip>
+#include <iostream>
 #include <new>
-
-using std::cout;
-using std::cerr;
-using std::endl;
-
-#include <stdlib.h>
+#include <sstream>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
 
-#include "utils.h"
 #include "keyboard.h"
+#include "utils.h"
 #include "audio/AudioDrv.h"
 #include "audio/au/auFile.h"
 #include "audio/wav/WavFile.h"
@@ -49,6 +43,10 @@ using std::endl;
 #include <sidplayfp/sidbuilder.h>
 #include <sidplayfp/SidInfo.h>
 #include <sidplayfp/SidTuneInfo.h>
+
+using std::cerr;
+using std::cout;
+using std::endl;
 
 // Previous song select timeout (4 secs)
 #define SID2_PREV_SONG_TIMEOUT 4000

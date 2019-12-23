@@ -29,8 +29,6 @@
 #include "EventScheduler.h"
 #include "sidplayfp/siddefs.h"
 
-#include "sidcxx11.h"
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "mos6526.h"
+#include "c64/CIA/mos6526.h"
 
 #include <cstring>
 

@@ -22,11 +22,10 @@
 
 #include "mixer.h"
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 
 #include "sidemu.h"
-
 
 namespace libsidplayfp
 {

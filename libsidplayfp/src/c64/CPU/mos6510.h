@@ -23,12 +23,12 @@
 #ifndef MOS6510_H
 #define MOS6510_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstdio>
 
-#include "flags.h"
 #include "EventCallback.h"
 #include "EventScheduler.h"
+#include "c64/CPU/flags.h"
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"

@@ -26,8 +26,8 @@
 
 #include <memory>
 
-#include "Resampler.h"
-#include "SincResampler.h"
+#include "resample/Resampler.h"
+#include "resample/SincResampler.h"
 
 namespace reSIDfp
 {

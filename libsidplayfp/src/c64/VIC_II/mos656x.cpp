@@ -29,7 +29,7 @@
 // MOS 6572 info taken from http://solidstate.com.ar/wp/?p=200
 // MOS 6573 info taken from http://csdb.dk/forums/?roomid=11&topicid=123713
 
-#include "mos656x.h"
+#include "c64/VIC_II/mos656x.h"
 
 #include <cstring>
 

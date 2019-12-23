@@ -23,10 +23,7 @@
 #ifndef SINCRESAMPLER_H
 #define SINCRESAMPLER_H
 
-#include "Resampler.h"
-
-#include <string>
-#include <map>
+#include "resample/Resampler.h"
 
 #include "../array.h"
 

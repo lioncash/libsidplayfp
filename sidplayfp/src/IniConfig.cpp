@@ -27,11 +27,6 @@
 
 #include <string>
 
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <cerrno>
-
 #ifndef _WIN32
 #  include <sys/types.h>
 #  include <sys/stat.h>  /* mkdir */

@@ -21,11 +21,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "tod.h"
+#include "c64/CIA/tod.h"
 
 #include <cstring>
 
-#include "mos6526.h"
+#include "c64/CIA/mos6526.h"
 
 namespace libsidplayfp
 {

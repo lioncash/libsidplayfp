@@ -22,13 +22,10 @@
 
 #include "resid-emu.h"
 
-#include <cstdio>
-#include <cstring>
 #include <sstream>
 #include <string>
 
 #include "resid/siddefs.h"
-#include "resid/spline.h"
 
 namespace libsidplayfp
 {

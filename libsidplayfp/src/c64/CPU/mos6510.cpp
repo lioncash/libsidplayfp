@@ -20,16 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "mos6510.h"
+#include "c64/CPU/mos6510.h"
 
 #include "Event.h"
 #include "sidendian.h"
-
-#include "opcodes.h"
+#include "c64/CPU/opcodes.h"
 
 #ifdef DEBUG
 #  include <cstdio>
-#  include "mos6510debug.h"
+#  include "c64/CPU/mos6510debug.h"
 #endif
 
 

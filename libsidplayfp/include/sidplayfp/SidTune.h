@@ -23,17 +23,17 @@
 #ifndef SIDTUNE_H
 #define SIDTUNE_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <memory>
 
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/siddefs.h>
 
 class SidTuneInfo;
 
 namespace libsidplayfp
 {
-class SidTuneBase;
 class sidmemory;
+class SidTuneBase;
 }
 
 /**

@@ -21,16 +21,16 @@
 
 #include "player.h"
 
-#include <stdlib.h>
-#include <signal.h>
-
+#include <csignal>
+#include <cstdlib>
 #include <iostream>
+
+#ifndef _WIN32
+#include "keyboard.h"
+#endif
 
 using std::cerr;
 using std::endl;
-
-#include "keyboard.h"
-
 
 // Function prototypes
 static void sighandler (int signum);

@@ -18,18 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "md5Factory.h"
+#include "utils/md5Factory.h"
 
-#include "iMd5.h"
+#include "utils/iMd5.h"
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
 
 #ifdef GCRYPT_WITH_MD5
-#  include "md5Gcrypt.h"
+#  include "utils/md5Gcrypt.h"
 #else
-#  include "md5Internal.h"
+#  include "utils/md5Internal.h"
 #endif
 
 namespace libsidplayfp

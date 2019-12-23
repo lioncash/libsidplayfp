@@ -23,11 +23,11 @@
 #ifndef SIDINFOIMPL_H
 #define SIDINFOIMPL_H
 
-#include <stdint.h>
-#include <vector>
+#include <cstdint>
 #include <string>
+#include <vector>
 
-#include "sidplayfp/SidInfo.h"
+#include <sidplayfp/SidInfo.h>
 
 #include "mixer.h"
 

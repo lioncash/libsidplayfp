@@ -23,12 +23,10 @@
 #ifndef FILTER6581_H
 #define FILTER6581_H
 
-#include "siddefs-fp.h"
-
 #include <memory>
 
 #include "Filter.h"
-#include "FilterModelConfig.h"
+#include "siddefs-fp.h"
 
 namespace reSIDfp
 {

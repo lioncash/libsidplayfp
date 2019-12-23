@@ -18,11 +18,8 @@
 
 #include "iniHandler.h"
 
-#include <cstdlib>
-
-#include <fstream>
-#include <iostream>
 #include <algorithm>
+#include <fstream>
 
 #ifdef _WIN32
 #  include <windows.h>

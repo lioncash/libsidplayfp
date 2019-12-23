@@ -23,20 +23,20 @@
 #ifndef SIDPLAYFP_H
 #define SIDPLAYFP_H
 
-#include <stdint.h>
-#include <stdio.h>
+#include <cstdint>
+#include <cstdio>
 
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/siddefs.h>
 
-class  SidConfig;
-class  SidTune;
-class  SidInfo;
-class  EventContext;
+class EventContext;
+class SidConfig;
+class SidInfo;
+class SidTune;
 
 // Private Sidplayer
 namespace libsidplayfp
 {
-    class Player;
+class Player;
 }
 
 /**

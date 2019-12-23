@@ -27,11 +27,11 @@
 // --------------------------------------------------------
 #include "psiddrv.h"
 
-#include "sidplayfp/SidTuneInfo.h"
+#include <sidplayfp/SidTuneInfo.h>
 
+#include "reloc65.h"
 #include "sidendian.h"
 #include "sidmemory.h"
-#include "reloc65.h"
 #include "c64/CPU/mos6510.h"
 
 namespace libsidplayfp

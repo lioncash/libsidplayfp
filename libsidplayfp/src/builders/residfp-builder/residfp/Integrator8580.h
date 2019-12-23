@@ -23,10 +23,7 @@
 #ifndef INTEGRATOR8580_H
 #define INTEGRATOR8580_H
 
-#include <stdint.h>
 #include <cassert>
-
-#include "siddefs-fp.h"
 
 namespace reSIDfp
 {

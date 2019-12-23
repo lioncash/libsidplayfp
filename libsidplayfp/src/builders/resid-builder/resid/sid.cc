@@ -23,7 +23,7 @@
 #endif
 
 #include "sid.h"
-#include <math.h>
+#include <cmath>
 
 #ifndef round
 #define round(x) (x>=0.0?floor(x+0.5):ceil(x-0.5))

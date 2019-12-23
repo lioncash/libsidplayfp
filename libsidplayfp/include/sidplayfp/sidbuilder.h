@@ -26,12 +26,12 @@
 #include <set>
 #include <string>
 
-#include "sidplayfp/SidConfig.h"
+#include <sidplayfp/SidConfig.h>
 
 namespace libsidplayfp
 {
-class sidemu;
 class EventScheduler;
+class sidemu;
 }
 
 /**

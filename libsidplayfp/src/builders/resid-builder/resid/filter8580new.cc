@@ -23,9 +23,11 @@
 #endif
 
 #include "filter8580new.h"
+
 #include "dac.h"
 #include "spline.h"
-#include <math.h>
+
+#include <cmath>
 
 namespace reSID
 {

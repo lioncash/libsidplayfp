@@ -23,7 +23,8 @@
 #ifndef MMU_H
 #define MMU_H
 
-#include <stdint.h>
+#include <cstdint>
+#include <cstring>
 
 #include "sidendian.h"
 #include "sidmemory.h"
@@ -32,8 +33,6 @@
 #include "Banks/SystemRAMBank.h"
 #include "Banks/SystemROMBanks.h"
 #include "Banks/ZeroRAMBank.h"
-
-#include <string.h>
 
 namespace libsidplayfp
 {

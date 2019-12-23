@@ -23,12 +23,12 @@
 #ifndef RESIDFP_EMU_H
 #define RESIDFP_EMU_H
 
-#include <stdint.h>
+#include <cstdint>
+
+#include <sidplayfp/SidConfig.h>
 
 #include "residfp/SID.h"
-#include "sidplayfp/SidConfig.h"
 #include "sidemu.h"
-#include "Event.h"
 
 class sidbuilder;
 

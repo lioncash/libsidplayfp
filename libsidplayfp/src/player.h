@@ -24,16 +24,16 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstdio>
 
 #include "sidplayfp/siddefs.h"
 #include "sidplayfp/SidConfig.h"
 #include "sidplayfp/SidTuneInfo.h"
 
+#include "mixer.h"
 #include "SidInfoImpl.h"
 #include "sidrandom.h"
-#include "mixer.h"
 #include "c64/c64.h"
 
 #ifdef HAVE_CONFIG_H
@@ -42,10 +42,9 @@
 
 #include <vector>
 
-class SidTune;
-class SidInfo;
 class sidbuilder;
-
+class SidInfo;
+class SidTune;
 
 namespace libsidplayfp
 {

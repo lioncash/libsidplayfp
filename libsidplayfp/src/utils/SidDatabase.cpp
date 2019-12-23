@@ -20,15 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <sidplayfp/SidDatabase.h>
+
 #include <cctype>
 #include <cstdlib>
-
-#include <sidplayfp/SidDatabase.h>
 
 #include "sidplayfp/SidTune.h"
 #include "sidplayfp/SidTuneInfo.h"
 
-#include "iniParser.h"
+#include "utils/iniParser.h"
 
 const char ERR_DATABASE_CORRUPT[]        = "SID DATABASE ERROR: Database seems to be corrupt.";
 const char ERR_NO_DATABASE_LOADED[]      = "SID DATABASE ERROR: Songlength database not loaded.";

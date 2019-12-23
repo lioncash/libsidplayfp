@@ -20,10 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "c64.h"
+#include "c64/c64.h"
 
 #include <algorithm>
-
 #include "c64/VIC_II/mos656x.h"
 
 namespace libsidplayfp

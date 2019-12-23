@@ -20,6 +20,8 @@
 
 #include "Integrator.h"
 
+#include <cassert>
+
 namespace reSIDfp
 {
 

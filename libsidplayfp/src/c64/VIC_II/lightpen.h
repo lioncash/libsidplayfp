@@ -24,6 +24,8 @@
 #ifndef LIGHTPEN_H
 #define LIGHTPEN_H
 
+#include <cstdint>
+
 namespace libsidplayfp
 {
 

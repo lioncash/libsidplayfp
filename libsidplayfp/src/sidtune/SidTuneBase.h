@@ -23,16 +23,16 @@
 #ifndef SIDTUNEBASE_H
 #define SIDTUNEBASE_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <memory>
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "sidplayfp/SidTuneInfo.h"
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/siddefs.h>
+#include <sidplayfp/SidTuneInfo.h>
 
-#include "SmartPtr.h"
-#include "SidTuneInfoImpl.h"
+#include "sidtune/SidTuneInfoImpl.h"
+#include "sidtune/SmartPtr.h"
 
 namespace libsidplayfp
 {

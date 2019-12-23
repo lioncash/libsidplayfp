@@ -26,7 +26,6 @@
 #include <memory>
 
 #include "Dac.h"
-#include "Spline.h"
 
 namespace reSIDfp
 {

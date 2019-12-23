@@ -22,12 +22,11 @@
 
 #include "residfp-emu.h"
 
+#include <algorithm>
 #include <sstream>
 #include <string>
-#include <algorithm>
 
 #include "residfp/siddefs-fp.h"
-#include <sidplayfp/siddefs.h>
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"

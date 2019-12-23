@@ -27,13 +27,13 @@
 #include <cstring>
 
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <vector>
-#include <iostream>
 
 #include <sidplayfp/sidplayfp.h>
-#include <sidplayfp/SidTune.h>
 #include <sidplayfp/SidInfo.h>
+#include <sidplayfp/SidTune.h>
 #include <sidplayfp/builders/residfp.h>
 
 /**

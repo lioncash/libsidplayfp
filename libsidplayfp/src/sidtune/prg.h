@@ -21,7 +21,7 @@
 #ifndef PRG_H
 #define PRG_H
 
-#include "SidTuneBase.h"
+#include "sidtune/SidTuneBase.h"
 
 namespace libsidplayfp
 {

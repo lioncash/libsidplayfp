@@ -25,13 +25,12 @@
 
 #include <string>
 
-#include "sidplayfp/SidConfig.h"
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/SidConfig.h>
+#include <sidplayfp/siddefs.h>
+
 #include "Event.h"
 #include "EventScheduler.h"
-
 #include "c64/c64sid.h"
-
 
 class sidbuilder;
 

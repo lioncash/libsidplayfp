@@ -24,9 +24,8 @@
 #ifndef MIXER_H
 #define MIXER_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstdlib>
-
 #include <vector>
 
 namespace libsidplayfp

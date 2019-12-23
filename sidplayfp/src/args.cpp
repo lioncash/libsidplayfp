@@ -21,11 +21,9 @@
 
 #include "player.h"
 
-#include <iostream>
-
-#include <cstring>
-#include <climits>
 #include <cstdlib>
+#include <cstring>
+#include <iostream>
 
 #include "ini/types.h"
 

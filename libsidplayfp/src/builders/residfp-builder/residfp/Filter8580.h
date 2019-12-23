@@ -23,13 +23,12 @@
 #ifndef FILTER8580_H
 #define FILTER8580_H
 
-#include "siddefs-fp.h"
-
 #include <memory>
 
 #include "Filter.h"
-#include "FilterModelConfig8580.h"
+//#include "FilterModelConfig8580.h"
 #include "Integrator8580.h"
+#include "siddefs-fp.h"
 
 namespace reSIDfp
 {
@@ -315,21 +314,7 @@ protected:
     void updatedMixing() override;
 
 public:
-    Filter8580() :
-        mixer(FilterModelConfig8580::getInstance()->getMixer()),
-        summer(FilterModelConfig8580::getInstance()->getSummer()),
-        gain_res(FilterModelConfig8580::getInstance()->getGainRes()),
-        gain_vol(FilterModelConfig8580::getInstance()->getGainVol()),
-        voiceScaleS14(FilterModelConfig8580::getInstance()->getVoiceScaleS14()),
-        voiceDC(FilterModelConfig8580::getInstance()->getVoiceDC()),
-        cp(0.5),
-        hpIntegrator(FilterModelConfig8580::getInstance()->buildIntegrator()),
-        bpIntegrator(FilterModelConfig8580::getInstance()->buildIntegrator())
-    {
-        setFilterCurve(cp);
-        input(0);
-    }
-
+    Filter8580();
     ~Filter8580();
 
     int clock(int voice1, int voice2, int voice3) override;
@@ -346,41 +331,5 @@ public:
 };
 
 } // namespace reSIDfp
-
-#if RESID_INLINING || defined(FILTER8580_CPP)
-
-namespace reSIDfp
-{
-
-RESID_INLINE
-int Filter8580::clock(int voice1, int voice2, int voice3)
-{
-    voice1 = (voice1 * voiceScaleS14 >> 18) + voiceDC;
-    voice2 = (voice2 * voiceScaleS14 >> 18) + voiceDC;
-    // Voice 3 is silenced by voice3off if it is not routed through the filter.
-    voice3 = filt3 || !voice3off ? (voice3 * voiceScaleS14 >> 18) + voiceDC : 0;
-
-    int Vi = 0;
-    int Vo = 0;
-
-    (filt1 ? Vi : Vo) += voice1;
-    (filt2 ? Vi : Vo) += voice2;
-    (filt3 ? Vi : Vo) += voice3;
-    (filtE ? Vi : Vo) += ve;
-
-    Vhp = currentSummer[currentResonance[Vbp] + Vlp + Vi];
-    Vbp = hpIntegrator->solve(Vhp);
-    Vlp = bpIntegrator->solve(Vbp);
-
-    if (lp) Vo += Vlp;
-    if (bp) Vo += Vbp;
-    if (hp) Vo += Vhp;
-
-    return currentGain[currentMixer[Vo]] - (1 << 15);
-}
-
-} // namespace reSIDfp
-
-#endif
 
 #endif

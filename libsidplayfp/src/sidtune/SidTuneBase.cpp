@@ -20,27 +20,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "SidTuneBase.h"
+#include "sidtune/SidTuneBase.h"
 
+#include <algorithm>
 #include <cstring>
 #include <climits>
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
-#include <iterator>
 #include <fstream>
+#include <iterator>
+#include <iomanip>
+#include <iostream>
 
-#include "SmartPtr.h"
-#include "SidTuneTools.h"
-#include "SidTuneInfoImpl.h"
 #include "sidendian.h"
 #include "sidmemory.h"
 #include "stringutils.h"
-
-#include "MUS.h"
-#include "p00.h"
-#include "prg.h"
-#include "PSID.h"
+#include "sidtune/MUS.h"
+#include "sidtune/p00.h"
+#include "sidtune/prg.h"
+#include "sidtune/PSID.h"
+#include "sidtune/SidTuneInfoImpl.h"
+#include "sidtune/SidTuneTools.h"
+#include "sidtune/SmartPtr.h"
 
 namespace libsidplayfp
 {

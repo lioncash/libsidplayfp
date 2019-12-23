@@ -23,8 +23,8 @@
 #ifndef WAVEFORMGENERATOR_H
 #define WAVEFORMGENERATOR_H
 
-#include "siddefs-fp.h"
 #include "array.h"
+#include "siddefs-fp.h"
 
 namespace reSIDfp
 {

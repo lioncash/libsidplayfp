@@ -20,24 +20,24 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "MUS.h"
+#include "sidtune/MUS.h"
 
 #include <memory>
 
-#include "sidplayfp/SidTuneInfo.h"
+#include <sidplayfp/SidTuneInfo.h>
 
-#include "SmartPtr.h"
 #include "sidendian.h"
 #include "sidmemory.h"
+#include "sidtune/SmartPtr.h"
 
 static const uint8_t sidplayer1[] =
 {
-#  include "sidplayer1.bin"
+#include "sidtune/sidplayer1.bin"
 };
 
 static const uint8_t sidplayer2[] =
 {
-#  include "sidplayer2.bin"
+#include "sidtune/sidplayer2.bin"
 };
 
 namespace libsidplayfp

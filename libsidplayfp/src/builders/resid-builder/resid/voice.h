@@ -21,8 +21,8 @@
 #define RESID_VOICE_H
 
 #include "resid-config.h"
-#include "wave.h"
 #include "envelope.h"
+#include "wave.h"
 
 namespace reSID
 {

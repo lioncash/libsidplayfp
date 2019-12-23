@@ -24,7 +24,7 @@
 
 #include <cstring>
 
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/siddefs.h>
 
 /// 16 bit header
 const int HEADER_SIZE = (8 + 9 * 2);

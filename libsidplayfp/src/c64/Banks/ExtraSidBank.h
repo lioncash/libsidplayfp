@@ -21,10 +21,10 @@
 #ifndef EXTRASIDBANK_H
 #define EXTRASIDBANK_H
 
-#include "Bank.h"
-#include <vector>
 #include <algorithm>
+#include <vector>
 
+#include "Banks/Bank.h"
 #include "c64/c64sid.h"
 
 namespace libsidplayfp

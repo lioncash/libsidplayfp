@@ -25,8 +25,6 @@
 
 #include <memory>
 
-#include "Spline.h"
-
 namespace reSIDfp
 {
 

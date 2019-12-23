@@ -23,8 +23,8 @@
 #ifndef RESID_H
 #define RESID_H
 
-#include "sidplayfp/sidbuilder.h"
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/sidbuilder.h>
+#include <sidplayfp/siddefs.h>
 
 /**
  * ReSID Builder Class

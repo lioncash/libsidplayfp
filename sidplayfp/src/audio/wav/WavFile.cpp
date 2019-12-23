@@ -23,12 +23,11 @@
 
 #include "WavFile.h"
 
-#include <vector>
-#include <iomanip>
-#include <fstream>
-#include <new>
-
 #include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <new>
+#include <vector>
 
 // Get the lo byte (8 bit) in a dword (32 bit)
 inline uint8_t endian_32lo8 (uint_least32_t dword)

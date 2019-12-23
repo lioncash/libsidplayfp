@@ -24,9 +24,8 @@
 #ifndef SERIALPORT_H
 #define SERIALPORT_H
 
-#include "interrupt.h"
-
 #include "Event.h"
+#include "c64/CIA/interrupt.h"
 
 namespace libsidplayfp
 {

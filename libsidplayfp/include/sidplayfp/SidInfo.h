@@ -23,9 +23,9 @@
 #ifndef SIDINFO_H
 #define SIDINFO_H
 
-#include <stdint.h>
+#include <cstdint>
 
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/siddefs.h>
 
 /**
  * This interface is used to get sid engine informations.

@@ -24,9 +24,8 @@
 
 #include <map>
 
-#include "siddefs-fp.h"
 #include "array.h"
-
+#include "siddefs-fp.h"
 
 namespace reSIDfp
 {

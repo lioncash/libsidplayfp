@@ -25,9 +25,9 @@
 
 #include <memory>
 
-#include "siddefs-fp.h"
-#include "WaveformGenerator.h"
 #include "EnvelopeGenerator.h"
+#include "WaveformGenerator.h"
+#include "siddefs-fp.h"
 
 namespace reSIDfp
 {

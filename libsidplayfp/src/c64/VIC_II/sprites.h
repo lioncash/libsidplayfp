@@ -24,8 +24,7 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
-#include <stdint.h>
-
+#include <cstdint>
 #include <cstring>
 
 #define SPRITES 8

@@ -26,6 +26,7 @@
 
 #include "Integrator8580.h"
 #include "OpAmp.h"
+#include "Spline.h"
 
 namespace reSIDfp
 {

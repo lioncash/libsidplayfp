@@ -23,10 +23,11 @@
 #endif
 
 #include "dac.h"
-#include <math.h>
+
+#include <cmath>
 
 #ifdef __IBMC__
-#include <float.h>
+#include <cfloat>
 #define INFINITY _INF
 #endif
 

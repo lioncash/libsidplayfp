@@ -23,8 +23,6 @@
 #ifndef EXTERNALFILTER_H
 #define EXTERNALFILTER_H
 
-#include "siddefs-fp.h"
-
 namespace reSIDfp
 {
 

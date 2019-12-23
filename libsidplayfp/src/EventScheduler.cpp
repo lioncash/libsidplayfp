@@ -22,7 +22,6 @@
 
 #include "EventScheduler.h"
 
-
 namespace libsidplayfp
 {
 

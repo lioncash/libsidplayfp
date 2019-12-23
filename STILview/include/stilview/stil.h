@@ -23,10 +23,9 @@
 #ifndef STIL_H
 #define STIL_H
 
-#include <string>
-#include <algorithm>
-#include <map>
 #include <iosfwd>
+#include <map>
+#include <string>
 
 #include "stildefs.h"
 

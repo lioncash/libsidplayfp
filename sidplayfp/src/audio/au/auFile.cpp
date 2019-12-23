@@ -23,10 +23,10 @@
 
 #include "auFile.h"
 
-#include <vector>
-#include <iomanip>
 #include <fstream>
+#include <iomanip>
 #include <new>
+#include <vector>
 
 /// Set the lo byte (8 bit) in a word (16 bit)
 inline void endian_16lo8 (uint_least16_t &word, uint8_t byte)

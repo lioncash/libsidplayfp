@@ -23,11 +23,11 @@
 #include "SincResampler.h"
 
 #include <cassert>
-#include <cstring>
 #include <cmath>
-#include <iostream>
-#include <sstream>
+#include <cstring>
 #include <limits>
+#include <map>
+#include <sstream>
 
 #include "siddefs-fp.h"
 

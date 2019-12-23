@@ -21,13 +21,13 @@
 #ifndef SIDMD5_H
 #define SIDMD5_H
 
-#include <string>
-#include <sstream>
 #include <iomanip>
 #include <memory>
+#include <sstream>
+#include <string>
 
-#include "utils/md5Factory.h"
 #include "utils/iMd5.h"
+#include "utils/md5Factory.h"
 
 namespace libsidplayfp
 {

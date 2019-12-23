@@ -18,17 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <memory>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <string>
 
-#include "sidplayfp/sidplayfp.h"
-#include "sidplayfp/SidTune.h"
-#include "sidplayfp/sidbuilder.h"
-#include "sidplayfp/builders/residfp.h"
+#include <sidplayfp/sidplayfp.h>
+#include <sidplayfp/SidTune.h>
+#include <sidplayfp/sidbuilder.h>
+#include <sidplayfp/builders/residfp.h>
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"

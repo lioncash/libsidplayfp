@@ -32,9 +32,9 @@
 
  */
 
-#include "MD5.h"
+#include "utils/MD5/MD5.h"
 
-#include <string.h>
+#include <cstring>
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"

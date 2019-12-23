@@ -24,7 +24,6 @@
 
 #ifdef HAVE_MMSYSTEM
 
-#include <stdio.h>
 #include <mmreg.h>
 
 Audio_MMSystem::Audio_MMSystem() :

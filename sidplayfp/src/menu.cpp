@@ -21,25 +21,24 @@
 
 #include "player.h"
 
+#include <cctype>
 #include <cstring>
-#include <ctype.h>
-
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <string>
-
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::dec;
-using std::hex;
-using std::flush;
-using std::setw;
-using std::setfill;
-using std::string;
 
 #include <sidplayfp/SidInfo.h>
 #include <sidplayfp/SidTuneInfo.h>
+
+using std::cout;
+using std::cerr;
+using std::dec;
+using std::endl;
+using std::flush;
+using std::hex;
+using std::setfill;
+using std::setw;
+using std::string;
 
 const char SID6581[] = "MOS6581";
 const char SID8580[] = "CSG8580";

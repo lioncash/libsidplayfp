@@ -20,14 +20,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "prg.h"
+#include "sidtune/prg.h"
 
 #include <memory>
 
-#include "sidplayfp/SidTuneInfo.h"
+#include <sidplayfp/SidTuneInfo.h>
 
-#include "SidTuneTools.h"
 #include "stringutils.h"
+#include "sidtune/SidTuneTools.h"
 
 namespace libsidplayfp
 {

@@ -27,9 +27,9 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "mos6510.h"
 #include "sidendian.h"
-#include "opcodes.h"
+#include "c64/CPU/mos6510.h"
+#include "c64/CPU/opcodes.h"
 
 namespace libsidplayfp
 {

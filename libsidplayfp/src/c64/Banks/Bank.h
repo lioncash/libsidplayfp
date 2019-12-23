@@ -22,9 +22,7 @@
 #ifndef BANK_H
 #define BANK_H
 
-#include <stdint.h>
-
-#include "sidplayfp/siddefs.h"
+#include <cstdint>
 
 namespace libsidplayfp
 {

@@ -22,7 +22,7 @@
 #ifndef DISCONNECTEDBUSBANK_H
 #define DISCONNECTEDBUSBANK_H
 
-#include "Bank.h"
+#include "Banks/Bank.h"
 
 namespace libsidplayfp
 {

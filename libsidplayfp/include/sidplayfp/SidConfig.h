@@ -23,10 +23,8 @@
 #ifndef SIDCONFIG_H
 #define SIDCONFIG_H
 
-#include <stdint.h>
-
-#include "sidplayfp/siddefs.h"
-
+#include <cstdint>
+#include <sidplayfp/siddefs.h>
 
 class sidbuilder;
 

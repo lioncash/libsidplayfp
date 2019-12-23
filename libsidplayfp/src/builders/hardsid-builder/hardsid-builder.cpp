@@ -22,14 +22,12 @@
 
 #include "hardsid.h"
 
-#include "sidcxx11.h"
-
-#include <cstring>
-#include <string>
-#include <memory>
-#include <sstream>
 #include <algorithm>
+#include <cstring>
+#include <memory>
 #include <new>
+#include <sstream>
+#include <string>
 
 #ifdef _WIN32
 #  include <iomanip>

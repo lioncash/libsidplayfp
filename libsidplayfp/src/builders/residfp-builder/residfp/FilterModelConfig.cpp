@@ -22,11 +22,12 @@
 
 #include "FilterModelConfig.h"
 
-#include <cmath>
 #include <cassert>
+#include <cmath>
 
 #include "Integrator.h"
 #include "OpAmp.h"
+#include "Spline.h"
 
 namespace reSIDfp
 {

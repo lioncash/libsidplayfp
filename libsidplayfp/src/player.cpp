@@ -23,12 +23,12 @@
 
 #include "player.h"
 
-#include "sidplayfp/SidTune.h"
-#include "sidplayfp/sidbuilder.h"
+#include <sidplayfp/sidbuilder.h>
+#include <sidplayfp/SidTune.h>
 
-#include "sidemu.h"
 #include "psiddrv.h"
 #include "romCheck.h"
+#include "sidemu.h"
 
 namespace libsidplayfp
 {

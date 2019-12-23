@@ -33,10 +33,9 @@
 #  include <string.h>
 #endif
 
-#include <cctype>
 #include <algorithm>
+#include <cctype>
 #include <string>
-
 
 namespace stringutils
 {

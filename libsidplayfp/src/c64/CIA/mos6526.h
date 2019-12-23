@@ -26,13 +26,13 @@
 
 #include <memory>
 
-#include <stdint.h>
+#include <cstdint>
 
-#include "interrupt.h"
-#include "timer.h"
-#include "tod.h"
-#include "SerialPort.h"
 #include "EventScheduler.h"
+#include "c64/CIA/interrupt.h"
+#include "c64/CIA/SerialPort.h"
+#include "c64/CIA/timer.h"
+#include "c64/CIA/tod.h"
 
 class EventContext;
 

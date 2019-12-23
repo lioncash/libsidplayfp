@@ -19,8 +19,8 @@
 #ifndef INIPARSER_H
 #define INIPARSER_H
 
-#include <string>
 #include <map>
+#include <string>
 #include <utility>
 
 namespace libsidplayfp

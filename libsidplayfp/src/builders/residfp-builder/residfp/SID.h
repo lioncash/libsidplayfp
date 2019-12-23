@@ -30,13 +30,13 @@
 namespace reSIDfp
 {
 
+class ExternalFilter;
 class Filter;
 class Filter6581;
 class Filter8580;
-class ExternalFilter;
 class Potentiometer;
-class Voice;
 class Resampler;
+class Voice;
 
 /**
  * SID error exception.

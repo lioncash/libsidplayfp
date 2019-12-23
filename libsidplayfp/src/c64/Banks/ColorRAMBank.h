@@ -22,10 +22,10 @@
 #ifndef COLORRAMBANK_H
 #define COLORRAMBANK_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstring>
 
-#include "Bank.h"
+#include "Banks/Bank.h"
 
 namespace libsidplayfp
 {

@@ -23,7 +23,7 @@
 
 #include "Banks/Bank.h"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace libsidplayfp
 {

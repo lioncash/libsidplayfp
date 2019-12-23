@@ -23,22 +23,21 @@
 #ifndef C64_H
 #define C64_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstdio>
-
 #include <map>
 
-#include "Banks/IOBank.h"
 #include "Banks/ColorRAMBank.h"
 #include "Banks/DisconnectedBusBank.h"
-#include "Banks/SidBank.h"
+#include "Banks/IOBank.h"
 #include "Banks/ExtraSidBank.h"
+#include "Banks/SidBank.h"
 
 #include "EventScheduler.h"
 
-#include "c64/c64env.h"
-#include "c64/c64cpu.h"
 #include "c64/c64cia.h"
+#include "c64/c64cpu.h"
+#include "c64/c64env.h"
 #include "c64/c64vic.h"
 #include "c64/mmu.h"
 

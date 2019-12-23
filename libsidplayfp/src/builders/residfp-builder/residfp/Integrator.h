@@ -23,11 +23,6 @@
 #ifndef INTEGRATOR_H
 #define INTEGRATOR_H
 
-#include <stdint.h>
-#include <cassert>
-
-#include "siddefs-fp.h"
-
 namespace reSIDfp
 {
 

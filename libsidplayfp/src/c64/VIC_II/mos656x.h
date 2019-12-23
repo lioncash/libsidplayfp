@@ -24,13 +24,13 @@
 #ifndef MOS656X_H
 #define MOS656X_H
 
-#include <stdint.h>
+#include <cstdint>
 
-#include "lightpen.h"
-#include "sprites.h"
 #include "Event.h"
 #include "EventCallback.h"
 #include "EventScheduler.h"
+#include "c64/VIC_II/lightpen.h"
+#include "c64/VIC_II/sprites.h"
 
 namespace libsidplayfp
 {

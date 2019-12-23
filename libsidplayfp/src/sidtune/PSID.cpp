@@ -20,13 +20,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "PSID.h"
+#include "sidtune/PSID.h"
 
 #include <cstring>
-#include <string>
 #include <memory>
+#include <string>
 
-#include "sidplayfp/SidTuneInfo.h"
+#include <sidplayfp/SidTuneInfo.h>
 
 #include "sidendian.h"
 #include "sidmd5.h"

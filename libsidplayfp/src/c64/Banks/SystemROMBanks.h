@@ -22,10 +22,10 @@
 #ifndef SYSTEMROMBANKS_H
 #define SYSTEMROMBANKS_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstring>
 
-#include "Bank.h"
+#include "Banks/Bank.h"
 #include "c64/CPU/opcodes.h"
 
 namespace libsidplayfp

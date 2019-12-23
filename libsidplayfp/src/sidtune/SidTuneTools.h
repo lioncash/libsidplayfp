@@ -21,7 +21,7 @@
 #ifndef SIDTUNETOOLS_H
 #define SIDTUNETOOLS_H
 
-#include <cstring>
+#include <cstddef>
 
 namespace libsidplayfp
 {

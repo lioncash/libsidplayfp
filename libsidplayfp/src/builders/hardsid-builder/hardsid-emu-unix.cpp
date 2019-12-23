@@ -22,13 +22,13 @@
 
 #include "hardsid-emu.h"
 
-#include <stdint.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
+#include <cstdint>
 #include <cstdio>
+#include <fcntl.h>
 #include <sstream>
 #include <string>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"

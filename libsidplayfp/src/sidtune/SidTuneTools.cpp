@@ -18,9 +18,10 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "SidTuneTools.h"
+#include "sidtune/SidTuneTools.h"
 
-#include "SidTuneCfg.h"
+#include <cstring>
+#include "sidtune/SidTuneCfg.h"
 
 namespace libsidplayfp
 {
@@ -29,7 +30,7 @@ namespace libsidplayfp
 size_t SidTuneTools::fileNameWithoutPath(const char* s)
 {
     size_t last_slash_pos = -1;
-    const size_t length = strlen(s);
+    const size_t length = std::strlen(s);
     for (size_t pos = 0; pos < length; pos++)
     {
 #if defined(SID_FS_IS_COLON_AND_BACKSLASH_AND_SLASH)
@@ -58,7 +59,7 @@ size_t SidTuneTools::fileNameWithoutPath(const char* s)
 size_t SidTuneTools::slashedFileNameWithoutPath(const char* s)
 {
     size_t last_slash_pos = -1;
-    const size_t length = strlen(s);
+    const size_t length = std::strlen(s);
     for (size_t pos = 0; pos < length; pos++)
     {
         if ( s[pos] == '/' )
@@ -73,7 +74,7 @@ size_t SidTuneTools::slashedFileNameWithoutPath(const char* s)
 // The backwards-version.
 const char* SidTuneTools::fileExtOfPath(const char* s)
 {
-    size_t last_dot_pos = strlen(s);  // assume no dot and append
+    size_t last_dot_pos = std::strlen(s);  // assume no dot and append
     for (size_t pos = last_dot_pos; pos > 0; pos--)
     {
         if (s[pos-1] == '.')

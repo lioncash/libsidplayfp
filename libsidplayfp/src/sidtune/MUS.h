@@ -21,9 +21,9 @@
 #ifndef MUS_H
 #define MUS_H
 
-#include <stdint.h>
+#include <cstdint>
 
-#include "SidTuneBase.h"
+#include "sidtune/SidTuneBase.h"
 
 namespace libsidplayfp
 {

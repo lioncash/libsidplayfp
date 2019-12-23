@@ -22,7 +22,7 @@
 #ifndef ZEROORDER_RESAMPLER_H
 #define ZEROORDER_RESAMPLER_H
 
-#include "Resampler.h"
+#include "resample/Resampler.h"
 
 namespace reSIDfp
 {
