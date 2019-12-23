@@ -18,23 +18,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "UnitTest++/UnitTest++.h"
-#include "UnitTest++/TestReporter.h"
-
+#include <catch.hpp>
 #include "../src/builders/residfp-builder/residfp/WaveformCalculator.h"
 
 #define private public
-#define protected public
-#define class struct
 
 #include "../src/builders/residfp-builder/residfp/WaveformGenerator.h"
 
-using namespace UnitTest;
-
-SUITE(WaveformGenerator)
-{
-
-TEST(TestClockShiftRegister)
+TEST_CASE("Test Clock Shift Register", "[waveform-generator]")
 {
     reSIDfp::WaveformGenerator generator;
     generator.reset();
@@ -42,10 +33,10 @@ TEST(TestClockShiftRegister)
     generator.shift_register = 0x35555e;
     generator.clock_shift_register(0);
 
-    CHECK_EQUAL(2528, generator.noise_output);
+    REQUIRE(generator.noise_output == 2528);
 }
 
-TEST(TestNoiseOutput)
+TEST_CASE("Test Noise Output", "[waveform-generator]")
 {
     reSIDfp::WaveformGenerator generator;
     generator.reset();
@@ -53,10 +44,10 @@ TEST(TestNoiseOutput)
     generator.shift_register = 0x35555f;
     generator.set_noise_output();
 
-    CHECK_EQUAL(3616, generator.noise_output);
+    REQUIRE(generator.noise_output == 3616);
 }
 
-TEST(TestWriteShiftRegister)
+TEST_CASE("Test Write Shift Register", "[waveform-generator]")
 {
     reSIDfp::WaveformGenerator generator;
     generator.reset();
@@ -64,10 +55,10 @@ TEST(TestWriteShiftRegister)
     generator.waveform_output = 0x5a7;
     generator.write_shift_register();
 
-    CHECK_EQUAL(0xfe0, generator.noise_output);
+    REQUIRE(generator.noise_output == 0xfe0);
 }
 
-TEST(TestSetTestBit)
+TEST_CASE("Test Set Test Bit", "[waveform-generator]")
 {
     matrix_t* tables = reSIDfp::WaveformCalculator::getInstance()->buildTable(reSIDfp::MOS6581);
 
@@ -79,10 +70,10 @@ TEST(TestSetTestBit)
     generator.writeCONTROL_REG(0x08); // set test bit
     generator.writeCONTROL_REG(0x00); // unset test bit
 
-    CHECK_EQUAL(2544, generator.noise_output);
+    REQUIRE(generator.noise_output == 2544);
 }
 
-TEST(TestNoiseWriteBack1)
+TEST_CASE("Test Noise Write Back1", "[waveform-generator]")
 {
     matrix_t* tables = reSIDfp::WaveformCalculator::getInstance()->buildTable(reSIDfp::MOS6581);
 
@@ -106,35 +97,33 @@ TEST(TestNoiseWriteBack1)
     generator.writeCONTROL_REG(0x80);
     generator.clock();
     generator.output(&modulator);
-    CHECK_EQUAL(0xfc, (int)generator.readOSC());
+    REQUIRE(int(generator.readOSC()) == 0xfc);
     generator.writeCONTROL_REG(0x88);
     generator.clock();
     generator.output(&modulator);
     generator.writeCONTROL_REG(0x80);
     generator.clock();
     generator.output(&modulator);
-    CHECK_EQUAL(0x6c, (int)generator.readOSC());
+    REQUIRE(int(generator.readOSC()) == 0x6c);
     generator.writeCONTROL_REG(0x88);
     generator.clock();
     generator.output(&modulator);
     generator.writeCONTROL_REG(0x80);
     generator.clock();
     generator.output(&modulator);
-    CHECK_EQUAL(0xd8, (int)generator.readOSC());
+    REQUIRE(int(generator.readOSC()) == 0xd8);
     generator.writeCONTROL_REG(0x88);
     generator.clock();
     generator.output(&modulator);
     generator.writeCONTROL_REG(0x80);
     generator.clock();
     generator.output(&modulator);
-    CHECK_EQUAL(0xb1, (int)generator.readOSC());
+    REQUIRE(int(generator.readOSC()) == 0xb1);
     generator.writeCONTROL_REG(0x88);
     generator.clock();
     generator.output(&modulator);
     generator.writeCONTROL_REG(0x80);
     generator.clock();
     generator.output(&modulator);
-    CHECK_EQUAL(0xd8, (int)generator.readOSC());
-}
-
+    REQUIRE(int(generator.readOSC()) == 0xd8);
 }

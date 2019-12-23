@@ -21,8 +21,6 @@
 
 #include "keyboard.h"
 
-#include "sidcxx11.h"
-
 #ifndef _WIN32
 // Unix console headers
 #  include <ctype.h>

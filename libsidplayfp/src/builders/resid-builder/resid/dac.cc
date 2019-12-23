@@ -17,8 +17,6 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //  ---------------------------------------------------------------------------
 
-#define RESID_DAC_CC
-
 #ifdef _M_ARM
 #undef _ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE
 #define _ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE 1

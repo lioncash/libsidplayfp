@@ -27,7 +27,7 @@
 #include <algorithm>
 
 #include "residfp/siddefs-fp.h"
-#include "sidplayfp/siddefs.h"
+#include <sidplayfp/siddefs.h>
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"

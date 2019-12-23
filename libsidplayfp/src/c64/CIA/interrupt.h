@@ -28,8 +28,6 @@
 
 #include <stdint.h>
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

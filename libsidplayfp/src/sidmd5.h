@@ -29,8 +29,6 @@
 #include "utils/md5Factory.h"
 #include "utils/iMd5.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

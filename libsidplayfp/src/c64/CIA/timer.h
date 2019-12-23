@@ -29,8 +29,6 @@
 #include "EventCallback.h"
 #include "EventScheduler.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

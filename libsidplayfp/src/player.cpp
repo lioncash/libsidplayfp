@@ -30,8 +30,6 @@
 #include "psiddrv.h"
 #include "romCheck.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

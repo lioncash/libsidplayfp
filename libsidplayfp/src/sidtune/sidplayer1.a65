@@ -1,3 +1,10 @@
+/*
+ * Build with:
+ *
+ * xa -R -G -o sidplayer1.o65 <path to sidplayer1.a65>
+ * od -v -An -w8 -tx1 sidplayer1.o65 | sed -re 's/[[:alnum:]]+/0x&,/g' > sidplayer1.bin
+ */
+
 	.word $e000
 	* = $e000
 

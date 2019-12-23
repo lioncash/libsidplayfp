@@ -34,8 +34,6 @@
 #include "SerialPort.h"
 #include "EventScheduler.h"
 
-#include "sidcxx11.h"
-
 class EventContext;
 
 namespace libsidplayfp

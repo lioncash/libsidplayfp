@@ -25,8 +25,6 @@
 #include "Bank.h"
 #include "c64/c64sid.h"
 
-#include "sidcxx11.h"
-
 #include "NullSid.h"
 
 namespace libsidplayfp

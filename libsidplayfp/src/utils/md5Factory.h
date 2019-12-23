@@ -23,8 +23,6 @@
 
 #include <memory>
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 class iMd5;

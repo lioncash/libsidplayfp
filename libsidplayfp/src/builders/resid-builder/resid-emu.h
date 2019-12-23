@@ -30,8 +30,6 @@
 #include "Event.h"
 #include "resid/sid.h"
 
-#include "sidcxx11.h"
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif

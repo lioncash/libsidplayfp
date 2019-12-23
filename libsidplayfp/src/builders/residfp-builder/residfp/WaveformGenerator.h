@@ -26,8 +26,6 @@
 #include "siddefs-fp.h"
 #include "array.h"
 
-#include "sidcxx11.h"
-
 namespace reSIDfp
 {
 
@@ -141,18 +139,14 @@ private:
 
     float dac[4096];
 
-private:
+public:
+    // These five functions are not intended to be used in anything other than unit tests and internally.
     void clock_shift_register(unsigned int bit0);
-
-    unsigned int get_noise_writeback();
-
     void write_shift_register();
-
     void reset_shift_register();
-
+    unsigned int get_noise_writeback();
     void set_noise_output();
 
-public:
     void setWaveformModels(matrix_t* models);
 
     /**
@@ -282,117 +276,5 @@ public:
 };
 
 } // namespace reSIDfp
-
-#if RESID_INLINING || defined(WAVEFORMGENERATOR_CPP)
-
-namespace reSIDfp
-{
-
-RESID_INLINE
-void WaveformGenerator::clock()
-{
-    if (unlikely(test))
-    {
-        if (unlikely(shift_register_reset != 0) && unlikely(--shift_register_reset == 0))
-        {
-            reset_shift_register();
-
-            // New noise waveform output.
-            set_noise_output();
-        }
-
-        // The test bit sets pulse high.
-        pulse_output = 0xfff;
-    }
-    else
-    {
-        // Calculate new accumulator value;
-        const unsigned int accumulator_old = accumulator;
-        accumulator = (accumulator + freq) & 0xffffff;
-
-        // Check which bit have changed
-        const unsigned int accumulator_bits_set = ~accumulator_old & accumulator;
-
-        // Check whether the MSB is set high. This is used for synchronization.
-        msb_rising = (accumulator_bits_set & 0x800000) != 0;
-
-        // Shift noise register once for each time accumulator bit 19 is set high.
-        // The shift is delayed 2 cycles.
-        if (unlikely((accumulator_bits_set & 0x080000) != 0))
-        {
-            // Pipeline: Detect rising bit, shift phase 1, shift phase 2.
-            shift_pipeline = 2;
-        }
-        else if (unlikely(shift_pipeline != 0) && --shift_pipeline == 0)
-        {
-            // bit0 = (bit22 | test) ^ bit17
-            clock_shift_register(((shift_register << 22) ^ (shift_register << 17)) & (1 << 22));
-        }
-    }
-}
-
-RESID_INLINE
-float WaveformGenerator::output(const WaveformGenerator* ringModulator)
-{
-    // Set output value.
-    if (likely(waveform != 0))
-    {
-        const unsigned int ix = (accumulator ^ (~ringModulator->accumulator & ring_msb_mask)) >> 12;
-
-        // The bit masks no_pulse and no_noise are used to achieve branch-free
-        // calculation of the output value.
-        waveform_output = wave[ix] & (no_pulse | pulse_output) & no_noise_or_noise_output;
-
-        // Triangle/Sawtooth output is delayed half cycle on 8580.
-        // This will appear as a one cycle delay on OSC3 as it is latched first phase of the clock.
-        if ((waveform & 3) && !is6581)
-        {
-            osc3 = tri_saw_pipeline & (no_pulse | pulse_output) & no_noise_or_noise_output;
-            tri_saw_pipeline = wave[ix];
-        }
-        else
-        {
-            osc3 = waveform_output;
-        }
-
-        // In the 6581 the top bit of the accumulator may be driven low by combined waveforms
-        // when the sawtooth is selected
-        // FIXME doesn't seem to always happen
-        if ((waveform & 2) && unlikely(waveform & 0xd) && is6581)
-            accumulator &= (waveform_output << 12) | 0x7fffff;
-
-        write_shift_register();
-    }
-    else
-    {
-        // Age floating DAC input.
-        if (likely(floating_output_ttl != 0) && unlikely(--floating_output_ttl == 0))
-        {
-            waveform_output = 0;
-        }
-    }
-
-    // The pulse level is defined as (accumulator >> 12) >= pw ? 0xfff : 0x000.
-    // The expression -((accumulator >> 12) >= pw) & 0xfff yields the same
-    // results without any branching (and thus without any pipeline stalls).
-    // NB! This expression relies on that the result of a boolean expression
-    // is either 0 or 1, and furthermore requires two's complement integer.
-    // A few more cycles may be saved by storing the pulse width left shifted
-    // 12 bits, and dropping the and with 0xfff (this is valid since pulse is
-    // used as a bit mask on 12 bit values), yielding the expression
-    // -(accumulator >= pw24). However this only results in negligible savings.
-
-    // The result of the pulse width compare is delayed one cycle.
-    // Push next pulse level into pulse level pipeline.
-    pulse_output = ((accumulator >> 12) >= pw) ? 0xfff : 0x000;
-
-    // DAC imperfections are emulated by using waveform_output as an index
-    // into a DAC lookup table. readOSC() uses waveform_output directly.
-    return dac[waveform_output];
-}
-
-} // namespace reSIDfp
-
-#endif
 
 #endif

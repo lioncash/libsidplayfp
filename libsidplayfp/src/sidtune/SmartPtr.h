@@ -3,8 +3,6 @@
 #ifndef SMARTPTR_H
 #define SMARTPTR_H
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

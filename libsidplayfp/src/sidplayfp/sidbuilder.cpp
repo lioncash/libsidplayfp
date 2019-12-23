@@ -20,13 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "sidbuilder.h"
+#include <sidplayfp/sidbuilder.h>
 
 #include <algorithm>
 
 #include "sidemu.h"
-
-#include "sidcxx11.h"
 
 libsidplayfp::sidemu *sidbuilder::lock(libsidplayfp::EventScheduler *env, SidConfig::sid_model_t model, bool digiboost)
 {

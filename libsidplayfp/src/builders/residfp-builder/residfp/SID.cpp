@@ -20,17 +20,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#define SID_CPP
-
 #include "SID.h"
 
+#include <algorithm>
 #include <limits>
 
 #include "array.h"
+#include "ExternalFilter.h"
+#include "Filter.h"
 #include "Filter6581.h"
 #include "Filter8580.h"
 #include "Potentiometer.h"
+#include "Voice.h"
 #include "WaveformCalculator.h"
+#include "resample/Resampler.h"
 #include "resample/TwoPassSincResampler.h"
 #include "resample/ZeroOrderResampler.h"
 
@@ -96,6 +99,29 @@ void SID::enableFilter(bool enable)
 {
     filter6581->enable(enable);
     filter8580->enable(enable);
+}
+
+void SID::ageBusValue(unsigned int n)
+{
+    if (likely(busValueTtl != 0))
+    {
+        busValueTtl -= n;
+
+        if (unlikely(busValueTtl <= 0))
+        {
+            busValue = 0;
+            busValueTtl = 0;
+        }
+    }
+}
+
+int SID::output() const
+{
+    const int v1 = voice[0]->output(voice[2]->wave());
+    const int v2 = voice[1]->output(voice[0]->wave());
+    const int v3 = voice[2]->output(voice[1]->wave());
+
+    return externalFilter->clock(filter->clock(v1, v2, v3));
 }
 
 void SID::voiceSync(bool sync)
@@ -361,6 +387,48 @@ void SID::setSamplingParameters(double clockFrequency, SamplingMethod method, do
     default:
         throw SIDError("Unknown sampling method");
     }
+}
+
+int SID::clock(unsigned int cycles, short* buf)
+{
+    ageBusValue(cycles);
+    int s = 0;
+
+    while (cycles != 0)
+    {
+        unsigned int delta_t = std::min(nextVoiceSync, cycles);
+
+        if (likely(delta_t > 0))
+        {
+            for (unsigned int i = 0; i < delta_t; i++)
+            {
+                // clock waveform generators
+                voice[0]->wave()->clock();
+                voice[1]->wave()->clock();
+                voice[2]->wave()->clock();
+
+                // clock envelope generators
+                voice[0]->envelope()->clock();
+                voice[1]->envelope()->clock();
+                voice[2]->envelope()->clock();
+
+                if (unlikely(resampler->input(output())))
+                {
+                    buf[s++] = resampler->getOutput();
+                }
+            }
+
+            cycles -= delta_t;
+            nextVoiceSync -= delta_t;
+        }
+
+        if (unlikely(nextVoiceSync == 0))
+        {
+            voiceSync(true);
+        }
+    }
+
+    return s;
 }
 
 void SID::clockSilent(unsigned int cycles)

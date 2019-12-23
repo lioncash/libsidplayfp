@@ -20,8 +20,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#define EXTERNALFILTER_CPP
-
 #include "ExternalFilter.h"
 
 namespace reSIDfp
@@ -45,6 +43,15 @@ ExternalFilter::ExternalFilter() :
     w0hp_1_s17(0)
 {
     reset();
+}
+
+int ExternalFilter::clock(int Vi)
+{
+    const int dVlp = (w0lp_1_s7 * ((Vi << 11) - Vlp) >> 7);
+    const int dVhp = (w0hp_1_s17 * (Vlp - Vhp) >> 17);
+    Vlp += dVlp;
+    Vhp += dVhp;
+    return (Vlp - Vhp) >> 11;
 }
 
 void ExternalFilter::setClockFrequency(double frequency)

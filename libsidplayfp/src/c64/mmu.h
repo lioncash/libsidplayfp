@@ -33,8 +33,6 @@
 #include "Banks/SystemROMBanks.h"
 #include "Banks/ZeroRAMBank.h"
 
-#include "sidcxx11.h"
-
 #include <string.h>
 
 namespace libsidplayfp

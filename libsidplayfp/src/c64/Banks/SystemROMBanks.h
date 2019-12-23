@@ -28,8 +28,6 @@
 #include "Bank.h"
 #include "c64/CPU/opcodes.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

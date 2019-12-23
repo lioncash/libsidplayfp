@@ -24,8 +24,6 @@
 #ifndef MIXER_H
 #define MIXER_H
 
-#include "sidcxx11.h"
-
 #include <stdint.h>
 #include <cstdlib>
 

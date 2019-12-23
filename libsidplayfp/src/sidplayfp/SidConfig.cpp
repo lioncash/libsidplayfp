@@ -20,11 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "SidConfig.h"
+#include <sidplayfp/SidConfig.h>
 
 #include "mixer.h"
-
-#include "sidcxx11.h"
 
 SidConfig::SidConfig() :
     defaultC64Model(PAL),

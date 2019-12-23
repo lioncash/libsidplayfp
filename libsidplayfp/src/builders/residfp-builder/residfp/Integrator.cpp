@@ -18,8 +18,52 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#define INTEGRATOR_CPP
-
 #include "Integrator.h"
 
-// This is needed when compiling with --disable-inline
+namespace reSIDfp
+{
+
+int Integrator::solve(int vi)
+{
+    // Check that transistor is actually in triode mode
+    // VDS < VGS - Vth
+    assert(vi < kVddt);
+
+    // "Snake" voltages for triode mode calculation.
+    const unsigned int Vgst = kVddt - vx;
+    const unsigned int Vgdt = kVddt - vi;
+
+    const unsigned int Vgst_2 = Vgst * Vgst;
+    const unsigned int Vgdt_2 = Vgdt * Vgdt;
+
+    // "Snake" current, scaled by (1/m)*2^13*m*2^16*m*2^16*2^-15 = m*2^30
+    const int n_I_snake = n_snake * (static_cast<int>(Vgst_2 - Vgdt_2) >> 15);
+
+    // VCR gate voltage.       // Scaled by m*2^16
+    // Vg = Vddt - sqrt(((Vddt - Vw)^2 + Vgdt^2)/2)
+    const int kVg = static_cast<int>(vcr_kVg[(Vddt_Vw_2 + (Vgdt_2 >> 1)) >> 16]);
+
+    // VCR voltages for EKV model table lookup.
+    int Vgs = kVg - vx;
+    if (Vgs < 0) Vgs = 0;
+    assert(Vgs < (1 << 16));
+    int Vgd = kVg - vi;
+    if (Vgd < 0) Vgd = 0;
+    assert(Vgd < (1 << 16));
+
+    // VCR current, scaled by m*2^15*2^15 = m*2^30
+    const int n_I_vcr = static_cast<int>(vcr_n_Ids_term[Vgs] - vcr_n_Ids_term[Vgd]) << 15;
+
+    // Change in capacitor charge.
+    vc += n_I_snake + n_I_vcr;
+
+    // vx = g(vc)
+    const int tmp = (vc >> 15) + (1 << 15);
+    assert(tmp < (1 << 16));
+    vx = opamp_rev[tmp];
+
+    // Return vo.
+    return vx - (vc >> 14);
+}
+
+} // namespace reSIDfp

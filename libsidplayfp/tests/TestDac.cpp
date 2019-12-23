@@ -18,56 +18,56 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "UnitTest++/UnitTest++.h"
-#include "UnitTest++/TestReporter.h"
+#include <catch.hpp>
+
+#include <array>
+#include <cstddef>
 
 #include "../src/builders/residfp-builder/residfp/Dac.h"
 
-using namespace UnitTest;
-using namespace reSIDfp;
-
-#define DAC_BITS 8
-
-SUITE(Dac)
+namespace
 {
+constexpr unsigned int DAC_BITS = 8;
+using DACArray = std::array<float, 1U << DAC_BITS>;
 
-void buildDac(float dac[], ChipModel chipModel)
+DACArray buildDac(reSIDfp::ChipModel chipModel)
 {
-    Dac dacBuilder(DAC_BITS);
+    DACArray dac;
+    reSIDfp::Dac dacBuilder(DAC_BITS);
     dacBuilder.kinkedDac(chipModel);
 
-    for (unsigned int i = 0; i < (1 << DAC_BITS); i++)
+    for (unsigned int i = 0; i < dac.size(); i++)
     {
         dac[i] = dacBuilder.getOutput(i);
     }
+
+    return dac;
 }
 
-bool isDacLinear(ChipModel chipModel)
+bool isDacLinear(reSIDfp::ChipModel chipModel)
 {
-    float dac[1 << DAC_BITS];
-    buildDac(dac, chipModel);
+    const auto dac = buildDac(chipModel);
 
-    for (int i = 1; i < (1 << DAC_BITS); i++)
+    for (std::size_t i = 1; i < dac.size(); i++)
     {
-        if (dac[i] <= dac[i-1])
+        if (dac[i] <= dac[i - 1])
             return false;
     }
 
     return true;
 }
+} // Anonymous namespace
 
-TEST(TestDac6581)
+TEST_CASE("Test DAC 6581", "[dac]")
 {
     // Test the non-linearity of the 6581 DACs
 
-    CHECK(!isDacLinear(MOS6581));
+    CHECK(!isDacLinear(reSIDfp::MOS6581));
 }
 
-TEST(TestDac8580)
+TEST_CASE("Test DAC 8580", "[dac]")
 {
     // Test the linearity of the 8580 DACs
 
-    CHECK(isDacLinear(MOS8580));
-}
-
+    CHECK(isDacLinear(reSIDfp::MOS8580));
 }

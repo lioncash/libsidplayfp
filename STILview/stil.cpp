@@ -27,7 +27,7 @@
 // Copyright (C) 1998, 2002 by LaLa
 //
 
-#include "stil.h"
+#include <stilview/stil.h>
 
 #include <cstdlib>
 #include <cstring>

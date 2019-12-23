@@ -47,8 +47,6 @@
 #include "utils.h"
 #include "ini/dataParser.h"
 
-#include "sidcxx11.h"
-
 inline void debug(const TCHAR *msg, const TCHAR *val)
 {
 #ifndef NDEBUG

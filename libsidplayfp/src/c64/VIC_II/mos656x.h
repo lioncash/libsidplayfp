@@ -26,14 +26,11 @@
 
 #include <stdint.h>
 
-
 #include "lightpen.h"
 #include "sprites.h"
 #include "Event.h"
 #include "EventCallback.h"
 #include "EventScheduler.h"
-
-#include "sidcxx11.h"
 
 namespace libsidplayfp
 {

@@ -20,8 +20,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "SidInfo.h"
-
+#include <sidplayfp/SidInfo.h>
 
 const char *SidInfo::name() const { return getName(); }
 

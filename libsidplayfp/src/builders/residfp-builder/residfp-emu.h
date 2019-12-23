@@ -30,9 +30,6 @@
 #include "sidemu.h"
 #include "Event.h"
 
-#include "sidcxx11.h"
-
-
 class sidbuilder;
 
 namespace libsidplayfp

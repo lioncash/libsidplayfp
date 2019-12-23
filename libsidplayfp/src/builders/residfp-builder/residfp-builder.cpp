@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "residfp.h"
+#include <sidplayfp/builders/residfp.h>
 
 #include <algorithm>
 #include <new>

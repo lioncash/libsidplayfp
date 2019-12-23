@@ -30,8 +30,6 @@
 #include "Filter.h"
 #include "FilterModelConfig.h"
 
-#include "sidcxx11.h"
-
 namespace reSIDfp
 {
 
@@ -353,19 +351,7 @@ protected:
     void updatedMixing() override;
 
 public:
-    Filter6581() :
-        f0_dac(FilterModelConfig::getInstance()->getDAC(0.5)),
-        mixer(FilterModelConfig::getInstance()->getMixer()),
-        summer(FilterModelConfig::getInstance()->getSummer()),
-        gain(FilterModelConfig::getInstance()->getGain()),
-        voiceScaleS14(FilterModelConfig::getInstance()->getVoiceScaleS14()),
-        voiceDC(FilterModelConfig::getInstance()->getVoiceDC()),
-        hpIntegrator(FilterModelConfig::getInstance()->buildIntegrator()),
-        bpIntegrator(FilterModelConfig::getInstance()->buildIntegrator())
-    {
-        input(0);
-    }
-
+    Filter6581();
     ~Filter6581();
 
     int clock(int voice1, int voice2, int voice3) override;

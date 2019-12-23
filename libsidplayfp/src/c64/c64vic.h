@@ -31,8 +31,6 @@
 #include "sidendian.h"
 #include "VIC_II/mos656x.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

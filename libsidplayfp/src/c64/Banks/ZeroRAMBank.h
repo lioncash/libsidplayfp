@@ -30,8 +30,6 @@
 
 #include "Event.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

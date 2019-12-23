@@ -29,6 +29,19 @@
 namespace reSIDfp
 {
 
+Filter6581::Filter6581() :
+    f0_dac(FilterModelConfig::getInstance()->getDAC(0.5)),
+    mixer(FilterModelConfig::getInstance()->getMixer()),
+    summer(FilterModelConfig::getInstance()->getSummer()),
+    gain(FilterModelConfig::getInstance()->getGain()),
+    voiceScaleS14(FilterModelConfig::getInstance()->getVoiceScaleS14()),
+    voiceDC(FilterModelConfig::getInstance()->getVoiceDC()),
+    hpIntegrator(FilterModelConfig::getInstance()->buildIntegrator()),
+    bpIntegrator(FilterModelConfig::getInstance()->buildIntegrator())
+{
+    input(0);
+}
+
 Filter6581::~Filter6581()
 {
     delete [] f0_dac;

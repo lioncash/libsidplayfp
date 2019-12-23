@@ -31,8 +31,6 @@
 #include "sidendian.h"
 #include "CIA/mos6526.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

@@ -17,8 +17,6 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //  ---------------------------------------------------------------------------
 
-#define RESID_SID_CC
-
 #ifdef _M_ARM
 #undef _ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE
 #define _ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE 1
@@ -125,6 +123,14 @@ void SID::input(short sample)
 {
   // The input can be used to simulate the MOS8580 "digi boost" hardware hack.
   filter.input(sample);
+}
+
+// ----------------------------------------------------------------------------
+// Read 16-bit sample from audio output.
+// ----------------------------------------------------------------------------
+short SID::output()
+{
+    return extfilt.output();
 }
 
 
@@ -662,6 +668,49 @@ void SID::adjust_sampling_frequency(double sample_freq)
     cycle_count(clock_frequency/sample_freq*(1 << FIXP_SHIFT) + 0.5);
 }
 
+// ----------------------------------------------------------------------------
+// SID clocking - 1 cycle.
+// ----------------------------------------------------------------------------
+void SID::clock()
+{
+    int i;
+
+    // Clock amplitude modulators.
+    for (i = 0; i < 3; i++) {
+        voice[i].envelope.clock();
+    }
+
+    // Clock oscillators.
+    for (i = 0; i < 3; i++) {
+        voice[i].wave.clock();
+    }
+
+    // Synchronize oscillators.
+    for (i = 0; i < 3; i++) {
+        voice[i].wave.synchronize();
+    }
+
+    // Calculate waveform output.
+    for (i = 0; i < 3; i++) {
+        voice[i].wave.set_waveform_output();
+    }
+
+    // Clock filter.
+    filter.clock(voice[0].output(), voice[1].output(), voice[2].output());
+
+    // Clock external filter.
+    extfilt.clock(filter.output());
+
+    // Pipelined writes on the MOS8580.
+    if (unlikely(write_pipeline)) {
+        write();
+    }
+
+    // Age bus value.
+    if (unlikely(!--bus_value_ttl)) {
+        bus_value = 0;
+    }
+}
 
 // ----------------------------------------------------------------------------
 // SID clocking - delta_t cycles.

@@ -27,8 +27,6 @@
 #include "IAudio.h"
 #include "AudioConfig.h"
 
-#include "sidcxx11.h"
-
 class AudioBase : public IAudio
 {
 protected:

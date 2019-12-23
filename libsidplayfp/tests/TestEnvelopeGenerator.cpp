@@ -18,20 +18,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "UnitTest++/UnitTest++.h"
-#include "UnitTest++/TestReporter.h"
+#include <catch.hpp>
 
 #define private public
-#define protected public
-#define class struct
 
 #include "../src/builders/residfp-builder/residfp/EnvelopeGenerator.h"
 
-using namespace UnitTest;
-
-SUITE(EnvelopeGenerator)
+namespace
 {
-
 struct TestFixture
 {
     // Test setup
@@ -43,8 +37,9 @@ struct TestFixture
 
     reSIDfp::EnvelopeGenerator generator;
 };
+} // Anonymous namespace
 
-TEST_FIXTURE(TestFixture, TestADSRDelayBug)
+TEST_CASE_METHOD(TestFixture, "Test ADSR delay bug", "[envelope-generator]")
 {
     // If the rate counter comparison value is set below the current value of the
     // rate counter, the counter will continue counting up until it wraps around
@@ -58,27 +53,27 @@ TEST_FIXTURE(TestFixture, TestADSRDelayBug)
     generator.writeCONTROL_REG(0x01);
 
     // wait 200 cycles
-    for (int i=0; i<200; i++)
+    for (int i = 0; i < 200; i++)
     {
         generator.clock();
     }
 
-    CHECK_EQUAL(0, (int)generator.readENV());
+    REQUIRE(int(generator.readENV()) == 0);
 
     // set lower Attack time
     // should theoretically clock after 63 cycles
     generator.writeATTACK_DECAY(0x20);
 
     // wait another 200 cycles
-    for (int i=0; i<200; i++)
+    for (int i = 0; i < 200; i++)
     {
         generator.clock();
     }
 
-    CHECK_EQUAL(0, (int)generator.readENV());
+    REQUIRE(int(generator.readENV()) == 0);
 }
 
-TEST_FIXTURE(TestFixture, TestFlipFFto00)
+TEST_CASE_METHOD(TestFixture, "Test flip FF to 00", "[envelope-generator]")
 {
     // The envelope counter can flip from 0xff to 0x00 by changing state to
     // release, then to attack. The envelope counter is then frozen at
@@ -94,7 +89,7 @@ TEST_FIXTURE(TestFixture, TestFlipFFto00)
     do
     {
         generator.clock();
-    } while ((int)generator.readENV() != 0xff);
+    } while (int(generator.readENV()) != 0xff);
 
 
     generator.writeCONTROL_REG(0x00);
@@ -102,15 +97,15 @@ TEST_FIXTURE(TestFixture, TestFlipFFto00)
 
     // wait at least 313 cycles
     // so the counter is clocked once
-    for (int i=0; i<315; i++)
+    for (int i = 0; i < 315; i++)
     {
         generator.clock();
     }
 
-    CHECK_EQUAL(0, (int)generator.readENV());
+    REQUIRE(int(generator.readENV()) == 0);
 }
 
-TEST_FIXTURE(TestFixture, TestFlip00toFF)
+TEST_CASE_METHOD(TestFixture, "Test flip 00 to FF", "[envelope-generator]")
 {
     // The envelope counter can flip from 0x00 to 0xff by changing state to
     // attack, then to release. The envelope counter will then continue
@@ -126,12 +121,10 @@ TEST_FIXTURE(TestFixture, TestFlip00toFF)
 
     // wait at least 313 cycles
     // so the counter is clocked once
-    for (int i=0; i<315; i++)
+    for (int i = 0; i < 315; i++)
     {
         generator.clock();
     }
 
-    CHECK_EQUAL(0xff, (int)generator.readENV());
-}
-
+    REQUIRE(int(generator.readENV()) == 0xff);
 }

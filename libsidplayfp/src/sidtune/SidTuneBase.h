@@ -34,8 +34,6 @@
 #include "SmartPtr.h"
 #include "SidTuneInfoImpl.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

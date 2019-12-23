@@ -29,8 +29,6 @@
 
 #include "ini/types.h"
 
-#include "sidcxx11.h"
-
 using std::cout;
 using std::cerr;
 using std::endl;

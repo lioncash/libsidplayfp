@@ -1,0 +1,10 @@
+add_library(libstilview
+    stil.cpp
+    stringutils.h
+    include/stilview/stil.h
+    include/stilview/stildefs.h
+)
+target_include_directories(libstilview
+PUBLIC
+    include/
+)

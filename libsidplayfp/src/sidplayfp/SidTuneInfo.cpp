@@ -20,7 +20,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "SidTuneInfo.h"
+#include <sidplayfp/SidTuneInfo.h>
 
 uint_least16_t SidTuneInfo::loadAddr() const { return getLoadAddr(); }
 

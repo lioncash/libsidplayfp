@@ -18,11 +18,5 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "UnitTest++/UnitTest++.h"
-#include "UnitTest++/TestReporterStdout.h"
-
-
-int main(int, char const *[])
-{
-    return UnitTest::RunAllTests();
-}
+#define CATCH_CONFIG_MAIN
+#include <catch.hpp>

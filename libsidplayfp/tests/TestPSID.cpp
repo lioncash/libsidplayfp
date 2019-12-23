@@ -18,15 +18,16 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "UnitTest++/UnitTest++.h"
-#include "UnitTest++/TestReporter.h"
+#include <catch.hpp>
+#include <sidplayfp/SidTune.h>
+#include <sidplayfp/SidTuneInfo.h>
 
-#include "../src/sidplayfp/SidTune.h"
-#include "../src/sidplayfp/SidTuneInfo.h"
-
-#include <stdint.h>
+#include <array>
+#include <cstdint>
 #include <cstring>
 
+namespace
+{
 #define BUFFERSIZE 128
 
 #define VERSION_LO      5
@@ -49,9 +50,7 @@
 #define SECONDSIDADDRESS   122
 #define THIRDSIDADDRESS    123
 
-using namespace UnitTest;
-
-uint8_t const bufferRSID[BUFFERSIZE] = {
+constexpr std::array<std::uint8_t, BUFFERSIZE> bufferRSID{
     0x52, 0x53, 0x49, 0x44, // magicID
     0x00, 0x02,             // version
     0x00, 0x7C,             // dataOffset
@@ -74,171 +73,169 @@ uint8_t const bufferRSID[BUFFERSIZE] = {
     0x00,                   // thirdSIDAddress
     0xe8, 0x07, 0x00, 0x00  // data
 };
-
-SUITE(RSID)
-{
+} // Anonymous namespace
 
 struct TestFixture
 {
     // Test setup
-    TestFixture() { memcpy(data, bufferRSID, BUFFERSIZE); }
+    TestFixture() = default;
 
-    uint8_t data[BUFFERSIZE];
+    std::array<std::uint8_t, BUFFERSIZE> data{bufferRSID};
 };
 
 /*
  * Check that unmodified data loads ok.
  */
-TEST_FIXTURE(TestFixture, TestLoadOk)
+TEST_CASE_METHOD(TestFixture, "Test Load OK", "[psid]")
 {
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(tune.getStatus());
 
-    CHECK_EQUAL("No errors", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "No errors") == 0);
 }
 
 /*
  * Version must be at least 2 for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestUnsupportedVersion)
+TEST_CASE_METHOD(TestFixture, "Test Unsupported Version", "[psid]")
 {
     data[VERSION_LO] = 0x01;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("Unsupported RSID version", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "Unsupported RSID version") == 0);
 }
 
 /*
  * Load address must always be 0 for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestWrongLoadAddress)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Load Address", "[psid]")
 {
     data[LOADADDRESS_LO] = 0xff;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: File contains invalid data", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: File contains invalid data") == 0);
 }
 
 /*
  * Actual Load Address must NOT be less than $07E8 for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestWrongActualLoadAddress)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Actual Load Address", "[psid]")
 {
     data[124] = 0xe7;
     data[125] = 0x07;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: Bad address data", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: Bad address data") == 0);
 }
 
 /*
  * PlayAddress must always be 0 for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestWrongPlayAddress)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Play Address", "[psid]")
 {
     data[PLAYADDRESS_LO] = 0xff;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: File contains invalid data", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: File contains invalid data") == 0);
 }
 
 /*
  * Speed must always be 0 for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestWrongSpeed)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Speed", "[psid]")
 {
     data[SPEED_LO_LO] = 0xff;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: File contains invalid data", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: File contains invalid data") == 0);
 }
 
 /*
  * DataOffset must always be 0x007C for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestWrongDataOffset)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Data Offset", "[psid]")
 {
     data[DATAOFFSET_LO] = 0x76;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: Bad address data", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: Bad address data") == 0);
 }
 
 /*
  * InitAddress must never point to a ROM area for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestWrongInitAddressRom)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Init Address Rom", "[psid]")
 {
     data[INITADDRESS_HI] = 0xb0;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: Bad address data", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: Bad address data") == 0);
 }
 
 /*
  * InitAddress must never be lower than $07E8 for RSID files.
  */
-TEST_FIXTURE(TestFixture, TestWrongInitAddressTooLow)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Init Address Too Low", "[psid]")
 {
     data[INITADDRESS_HI] = 0x07;
     data[INITADDRESS_LO] = 0xe7;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: Bad address data", tune.statusString());
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: Bad address data") == 0);
 }
 
 /*
  * The maximum number of songs is 256.
  */
-TEST_FIXTURE(TestFixture, TestTooManySongs)
+TEST_CASE_METHOD(TestFixture, "Test Too Many Songs", "[psid]")
 {
     data[SONGS_HI] = 0x01;
     data[SONGS_LO] = 0x01;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     //CHECK(!tune.getStatus());
 
     //CHECK_EQUAL("SIDTUNE ERROR: ", tune.statusString());
-    CHECK_EQUAL(256, tune.getInfo()->songs());
+    REQUIRE(tune.getInfo()->songs() == 256);
 }
 
 /*
  * The song number to be played by default has a default of 1.
  */
-TEST_FIXTURE(TestFixture, TestDefaultStartSong)
+TEST_CASE_METHOD(TestFixture, "Test Default Start Song", "[psid]")
 {
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(1, tune.getInfo()->startSong());
+    REQUIRE(tune.getInfo()->startSong() == 1);
 }
 
 /*
  * If 'startPage' is 0 or 0xFF, 'pageLength' must be set to 0.
  */
-TEST_FIXTURE(TestFixture, TestWrongPageLength)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Page Length", "[psid]")
 {
     data[STARTPAGE] = 0xff;
     data[PAGELENGTH] = 0x77;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0, tune.getInfo()->relocPages());
+    REQUIRE(tune.getInfo()->relocPages() == 0);
 }
 
 /////////////
@@ -248,41 +245,41 @@ TEST_FIXTURE(TestFixture, TestWrongPageLength)
 /*
  * $d420 is a valid second SID address.
  */
-TEST_FIXTURE(TestFixture, TestSecondSIDAddressOk)
+TEST_CASE_METHOD(TestFixture, "Test Second SID Address OK", "[psid]")
 {
     data[VERSION_LO] = 0x03;
     data[SECONDSIDADDRESS] = 0x42;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0xd420, tune.getInfo()->sidChipBase(1));
+    REQUIRE(tune.getInfo()->sidChipBase(1) == 0xd420);
 }
 
 /*
  * SecondSIDAddress: only even values are valid.
  */
-TEST_FIXTURE(TestFixture, TestWrongSecondSIDAddressOdd)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Second SID Address Odd", "[psid]")
 {
     data[VERSION_LO] = 0x03;
     data[SECONDSIDADDRESS] = 0x43;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0, tune.getInfo()->sidChipBase(1));
+    REQUIRE(tune.getInfo()->sidChipBase(1) == 0);
 }
 
 /*
  * SecondSIDAddress: Ranges $00-$41 ($D000-$D410) and
  * $80-$DF ($D800-$DDF0) are invalid.
  */
-TEST_FIXTURE(TestFixture, TestWrongSecondSIDAddressOutOfRange)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Second SID Address Out Of Range", "[psid]")
 {
     data[VERSION_LO] = 0x03;
     data[SECONDSIDADDRESS] = 0x80;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0, tune.getInfo()->sidChipBase(1));
+    REQUIRE(tune.getInfo()->sidChipBase(1) == 0);
 }
 
 /////////////
@@ -292,58 +289,56 @@ TEST_FIXTURE(TestFixture, TestWrongSecondSIDAddressOutOfRange)
 /*
  * $d500 is a valid third SID address.
  */
-TEST_FIXTURE(TestFixture, TestThirdSIDAddressOk)
+TEST_CASE_METHOD(TestFixture, "Test Third SID Address OK", "[psid]")
 {
     data[VERSION_LO] = 0x04;
     data[SECONDSIDADDRESS] = 0x42;
     data[THIRDSIDADDRESS] = 0x50;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0xd500, tune.getInfo()->sidChipBase(2));
+    REQUIRE(tune.getInfo()->sidChipBase(2) == 0xd500);
 }
 
 /*
  * ThirdSIDAddress: only even values are valid.
  */
-TEST_FIXTURE(TestFixture, TestWrongThirdSIDAddressOdd)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Third SID Address Odd", "[psid]")
 {
     data[VERSION_LO] = 0x04;
     data[SECONDSIDADDRESS] = 0x42;
     data[THIRDSIDADDRESS] = 0x43;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0, tune.getInfo()->sidChipBase(2));
+    REQUIRE(tune.getInfo()->sidChipBase(2) == 0);
 }
 
 /*
  * ThirdSIDAddress: Ranges $00-$41 ($D000-$D410) and
  * $80-$DF ($D800-$DDF0) are invalid.
  */
-TEST_FIXTURE(TestFixture, TestWrongThirdSIDAddressOutOfRange)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Third SID Address Out Of Range", "[psid]")
 {
     data[VERSION_LO] = 0x04;
     data[SECONDSIDADDRESS] = 0x42;
     data[THIRDSIDADDRESS] = 0x80;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0, tune.getInfo()->sidChipBase(2));
+    REQUIRE(tune.getInfo()->sidChipBase(2) == 0);
 }
 
 /*
  * The address of the third SID cannot be the same as the second SID.
  */
-TEST_FIXTURE(TestFixture, TestWrongThirdSIDAddressLikeSecond)
+TEST_CASE_METHOD(TestFixture, "Test Wrong Third SID Address Like Second", "[psid]")
 {
     data[VERSION_LO] = 0x04;
     data[SECONDSIDADDRESS] = 0x42;
     data[THIRDSIDADDRESS] = 0x42;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0, tune.getInfo()->sidChipBase(2));
-}
-
+    REQUIRE(tune.getInfo()->sidChipBase(2) == 0);
 }

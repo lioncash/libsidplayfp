@@ -26,8 +26,6 @@
 
 #include "Bank.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

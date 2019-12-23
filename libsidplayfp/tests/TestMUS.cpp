@@ -18,16 +18,18 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "UnitTest++/UnitTest++.h"
-#include "UnitTest++/TestReporter.h"
+#include <catch.hpp>
 
-#include "../src/sidplayfp/SidTune.h"
-#include "../src/sidplayfp/SidTuneInfo.h"
+#include <sidplayfp/SidTune.h>
+#include <sidplayfp/SidTuneInfo.h>
 #include "../src/sidtune/MUS.h"
 
-#include <stdint.h>
+#include <array>
+#include <cstdint>
 #include <cstring>
 
+namespace
+{
 #define BUFFERSIZE 26
 
 #define LOADADDRESS_HI  1
@@ -36,10 +38,7 @@
 #define VOICE1_LEN_HI   3
 #define VOICE1_LEN_LO   2
 
-using namespace UnitTest;
-
-uint8_t const bufferMUS[BUFFERSIZE] =
-{
+constexpr std::array<std::uint8_t, BUFFERSIZE> bufferMUS{
     0x52, 0x53,             // load address
     0x04, 0x00,             // length of the data for Voice 1
     0x04, 0x00,             // length of the data for Voice 2
@@ -50,33 +49,29 @@ uint8_t const bufferMUS[BUFFERSIZE] =
     0x0d, 0x0d, 0x0d, 0x0d, 0x0d, 0x00, // text description
 };
 
-SUITE(MUS)
-{
-
 struct TestFixture
 {
     // Test setup
-    TestFixture() { memcpy(data, bufferMUS, BUFFERSIZE); }
+    TestFixture() = default;
 
-    uint8_t data[BUFFERSIZE];
+    std::array<std::uint8_t, BUFFERSIZE> data{bufferMUS};
 };
+} // Anonymous namespace
 
-TEST_FIXTURE(TestFixture, TestPlayerAddress)
+TEST_CASE_METHOD(TestFixture, "TestPlayerAddress", "[mus]")
 {
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
 
-    CHECK_EQUAL(0xec60, tune.getInfo()->initAddr());
-    CHECK_EQUAL(0xec80, tune.getInfo()->playAddr());
+    REQUIRE(tune.getInfo()->initAddr() == 0xec60);
+    REQUIRE(tune.getInfo()->playAddr() == 0xec80);
 }
 
-TEST_FIXTURE(TestFixture, TestWrongVoiceLength)
+TEST_CASE_METHOD(TestFixture, "TestWrongVoiceLength", "[mus]")
 {
     data[VOICE1_LEN_LO] = 0x76;
 
-    SidTune tune(data, BUFFERSIZE);
+    SidTune tune(data.data(), BUFFERSIZE);
     CHECK(!tune.getStatus());
 
-    CHECK_EQUAL("SIDTUNE ERROR: Could not determine file format", tune.statusString());
-}
-
+    REQUIRE(std::strcmp(tune.statusString(), "SIDTUNE ERROR: Could not determine file format") == 0);
 }

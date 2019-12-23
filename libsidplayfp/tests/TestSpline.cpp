@@ -18,20 +18,20 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "UnitTest++/UnitTest++.h"
-#include "UnitTest++/TestReporter.h"
+#include <catch.hpp>
 
+#include <array>
 #include <limits>
 
 #include "../src/builders/residfp-builder/residfp/Spline.h"
 
-using namespace UnitTest;
 using namespace reSIDfp;
 
-const unsigned int OPAMP_SIZE = 33;
-
-const Spline::Point opamp_voltage[OPAMP_SIZE] =
+namespace
 {
+constexpr unsigned int OPAMP_SIZE = 33;
+
+const std::array<Spline::Point, OPAMP_SIZE> opamp_voltage{ {
   {  0.81, 10.31 },  // Approximate start of actual range
   {  2.40, 10.31 },
   {  2.60, 10.30 },
@@ -65,19 +65,17 @@ const Spline::Point opamp_voltage[OPAMP_SIZE] =
   {  8.50,  0.89 },
   { 10.00,  0.81 },
   { 10.31,  0.81 },  // Approximate end of actual range
-};
+}};
+} // Anonymous namespace
 
-SUITE(Spline)
+TEST_CASE("Test Monotonicity", "[spline]")
 {
-
-TEST(TestMonotonicity)
-{
-    Spline s(opamp_voltage, OPAMP_SIZE);
+    Spline s(opamp_voltage.data(), OPAMP_SIZE);
 
     double old = std::numeric_limits<double>::max();
-    for (double x = 0.0; x < 12.0; x+=0.01)
+    for (double x = 0.0; x < 12.0; x += 0.01)
     {
-        Spline::Point out = s.evaluate(x);
+        const Spline::Point out = s.evaluate(x);
 
         CHECK(out.x <= old);
 
@@ -85,37 +83,33 @@ TEST(TestMonotonicity)
     }
 }
 
-TEST(TestPoints)
+TEST_CASE("Test Points", "[spline]")
 {
-    Spline s(opamp_voltage, OPAMP_SIZE);
+    Spline s(opamp_voltage.data(), OPAMP_SIZE);
 
     for (int i = 0; i < OPAMP_SIZE; i++)
     {
-        Spline::Point out = s.evaluate(opamp_voltage[i].x);
+        const Spline::Point out = s.evaluate(opamp_voltage[i].x);
 
-        CHECK_EQUAL(opamp_voltage[i].y, out.x);
+        REQUIRE(opamp_voltage[i].y == out.x);
     }
 }
 
-TEST(TestInterpolateOutsideBounds)
+TEST_CASE("Test Interpolate Outside Bounds", "[spline]")
 {
-    const Spline::Point values[5] = {
-        { 10, 15 },
-        { 15, 20 },
-        { 20, 30 },
-        { 25, 40 },
-        { 30, 45 },
+    const std::array<Spline::Point, 5> values{
+        Spline::Point{ 10, 15 },
+        Spline::Point{ 15, 20 },
+        Spline::Point{ 20, 30 },
+        Spline::Point{ 25, 40 },
+        Spline::Point{ 30, 45 },
     };
 
-    Spline s(values, 5);
+    const Spline s(values.data(), 5);
 
-    Spline::Point out;
+    const Spline::Point out1 = s.evaluate(5);
+    REQUIRE(out1.x == Approx(6.66667).epsilon(0.00001));
 
-    out = s.evaluate(5);
-    CHECK_CLOSE(6.66667, out.x, 0.00001);
-
-    out = s.evaluate(40);
-    CHECK_CLOSE(75.0, out.x, 0.00001);
-}
-
+    const Spline::Point out2 = s.evaluate(40);
+    REQUIRE(out2.x == Approx(75.0).epsilon(0.00001));
 }

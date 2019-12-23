@@ -18,8 +18,6 @@
 
 #include "iniParser.h"
 
-#include "sidcxx11.h"
-
 #include <fstream>
 
 namespace libsidplayfp

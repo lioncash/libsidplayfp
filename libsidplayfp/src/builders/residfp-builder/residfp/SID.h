@@ -27,8 +27,6 @@
 
 #include "siddefs-fp.h"
 
-#include "sidcxx11.h"
-
 namespace reSIDfp
 {
 
@@ -269,90 +267,5 @@ public:
 };
 
 } // namespace reSIDfp
-
-#if RESID_INLINING || defined(SID_CPP)
-
-#include <algorithm>
-
-#include "Filter.h"
-#include "ExternalFilter.h"
-#include "Voice.h"
-#include "resample/Resampler.h"
-
-namespace reSIDfp
-{
-
-RESID_INLINE
-void SID::ageBusValue(unsigned int n)
-{
-    if (likely(busValueTtl != 0))
-    {
-        busValueTtl -= n;
-
-        if (unlikely(busValueTtl <= 0))
-        {
-            busValue = 0;
-            busValueTtl = 0;
-        }
-    }
-}
-
-RESID_INLINE
-int SID::output() const
-{
-    const int v1 = voice[0]->output(voice[2]->wave());
-    const int v2 = voice[1]->output(voice[0]->wave());
-    const int v3 = voice[2]->output(voice[1]->wave());
-
-    return externalFilter->clock(filter->clock(v1, v2, v3));
-}
-
-
-RESID_INLINE
-int SID::clock(unsigned int cycles, short* buf)
-{
-    ageBusValue(cycles);
-    int s = 0;
-
-    while (cycles != 0)
-    {
-        unsigned int delta_t = std::min(nextVoiceSync, cycles);
-
-        if (likely(delta_t > 0))
-        {
-            for (unsigned int i = 0; i < delta_t; i++)
-            {
-                // clock waveform generators
-                voice[0]->wave()->clock();
-                voice[1]->wave()->clock();
-                voice[2]->wave()->clock();
-
-                // clock envelope generators
-                voice[0]->envelope()->clock();
-                voice[1]->envelope()->clock();
-                voice[2]->envelope()->clock();
-
-                if (unlikely(resampler->input(output())))
-                {
-                    buf[s++] = resampler->getOutput();
-                }
-            }
-
-            cycles -= delta_t;
-            nextVoiceSync -= delta_t;
-        }
-
-        if (unlikely(nextVoiceSync == 0))
-        {
-            voiceSync(true);
-        }
-    }
-
-    return s;
-}
-
-} // namespace reSIDfp
-
-#endif
 
 #endif

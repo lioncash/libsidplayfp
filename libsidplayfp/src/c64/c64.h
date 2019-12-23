@@ -42,8 +42,6 @@
 #include "c64/c64vic.h"
 #include "c64/mmu.h"
 
-#include "sidcxx11.h"
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif

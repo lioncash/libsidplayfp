@@ -32,8 +32,6 @@
 
 #include <stilview/stil.h>
 
-#include "sidcxx11.h"
-
 STIL myStil;
 char *hvscLoc = nullptr;
 char *entryStr = nullptr;

@@ -24,8 +24,6 @@
 
 #include "c64/c64sid.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

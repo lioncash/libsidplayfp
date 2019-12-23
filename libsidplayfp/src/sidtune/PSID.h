@@ -27,8 +27,6 @@
 
 #include "sidplayfp/SidTune.h"
 
-#include "sidcxx11.h"
-
 namespace libsidplayfp
 {
 

@@ -18,8 +18,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#define INTEGRATOR8580_CPP
-
 #include "Integrator8580.h"
 
-// This is needed when compiling with --disable-inline
+namespace reSIDfp
+{
+
+int Integrator8580::solve(int vi) const
+{
+    // DAC voltages
+    const unsigned int Vgst = kVgt - vx;
+    const unsigned int Vgdt = (vi < kVgt) ? kVgt - vi : 0;  // triode/saturation mode
+
+    const unsigned int Vgst_2 = Vgst * Vgst;
+    const unsigned int Vgdt_2 = Vgdt * Vgdt;
+
+    // DAC current, scaled by (1/m)*2^13*m*2^16*m*2^16*2^-15 = m*2^30
+    const int n_I_dac = n_dac * (static_cast<int>(Vgst_2 - Vgdt_2) >> 15);
+
+    // Change in capacitor charge.
+    vc += n_I_dac;
+
+    // vx = g(vc)
+    const int tmp = (vc >> 15) + (1 << 15);
+    assert(tmp < (1 << 16));
+    vx = opamp_rev[tmp];
+
+    // Return vo.
+    return vx - (vc >> 14);
+}
+
+} // namespace reSIDfp
