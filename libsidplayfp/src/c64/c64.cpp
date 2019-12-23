@@ -28,13 +28,13 @@
 namespace libsidplayfp
 {
 
-typedef struct
+struct model_data_t
 {
     double colorBurst;         ///< Colorburst frequency in Herz
     double divider;            ///< Clock frequency divider
     double powerFreq;          ///< Power line frequency in Herz
     MOS656X::model_t vicModel; ///< Video chip model
-} model_data_t;
+};
 
 /*
  * Color burst frequencies:

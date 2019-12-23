@@ -78,17 +78,17 @@ public:
 class c64 final : private c64env
 {
 public:
-    typedef enum
+    enum model_t
     {
-        PAL_B = 0     ///< PAL C64
-        ,NTSC_M       ///< NTSC C64
-        ,OLD_NTSC_M   ///< Old NTSC C64
-        ,PAL_N        ///< C64 Drean
-        ,PAL_M        ///< C64 Brasil
-    } model_t;
+        PAL_B = 0,    ///< PAL C64
+        NTSC_M,       ///< NTSC C64
+        OLD_NTSC_M,   ///< Old NTSC C64
+        PAL_N,        ///< C64 Drean
+        PAL_M,        ///< C64 Brasil
+    };
 
 private:
-    typedef std::map<int, ExtraSidBank*> sidBankMap_t;
+    using sidBankMap_t = std::map<int, ExtraSidBank*>;
 
 private:
     /// System clock frequency

@@ -36,8 +36,8 @@
 
 #include "MD5_Defs.h"
 
-typedef uint8_t md5_byte_t;
-typedef uint32_t md5_word_t;
+using md5_byte_t = uint8_t;
+using md5_word_t = uint32_t;
 
 class MD5
 {
@@ -69,60 +69,49 @@ class MD5
     md5_word_t tmpBuf[16];
     const md5_word_t* X;
 
-    void
-    process(const md5_byte_t data[64]);
+    void process(const md5_byte_t data[64]);
 
-    md5_word_t
-    ROTATE_LEFT(const md5_word_t x, const int n);
+    md5_word_t ROTATE_LEFT(md5_word_t x, int n);
 
-    md5_word_t
-    F(const md5_word_t x, const md5_word_t y, const md5_word_t z);
+    md5_word_t F(md5_word_t x, md5_word_t y, md5_word_t z);
+    md5_word_t G(md5_word_t x, md5_word_t y, md5_word_t z);
+    md5_word_t H(md5_word_t x, md5_word_t y, md5_word_t z);
+    md5_word_t I(md5_word_t x, md5_word_t y, md5_word_t z);
 
-    md5_word_t
-    G(const md5_word_t x, const md5_word_t y, const md5_word_t z);
+    using md5func = md5_word_t (MD5::*)(md5_word_t x, md5_word_t y, md5_word_t z);
 
-    md5_word_t
-    H(const md5_word_t x, const md5_word_t y, const md5_word_t z);
-
-    md5_word_t
-    I(const md5_word_t x, const md5_word_t y, const md5_word_t z);
-
-    typedef md5_word_t (MD5::*md5func)(const md5_word_t x, const md5_word_t y, const md5_word_t z);
-
-    void
-    SET(md5func func, md5_word_t& a, md5_word_t& b, md5_word_t& c,
-        md5_word_t& d, const int k, const int s,
-        const md5_word_t Ti);
+    void SET(md5func func, md5_word_t& a, md5_word_t& b, md5_word_t& c,
+             md5_word_t& d, int k, int s, md5_word_t Ti);
 };
 
 inline md5_word_t
 MD5::ROTATE_LEFT(const md5_word_t x, const int n)
 {
-    return ( (x<<n) | (x>>(32-n)) );
+    return (x << n) | (x >> (32 - n));
 }
 
 inline md5_word_t
 MD5::F(const md5_word_t x, const md5_word_t y, const md5_word_t z)
 {
-    return ( (x&y) | (~x&z) );
+    return (x & y) | (~x & z);
 }
 
 inline md5_word_t
 MD5::G(const md5_word_t x, const md5_word_t y, const md5_word_t z)
 {
-    return ( (x&z) | (y&~z) );
+    return (x & z) | (y & ~z);
 }
 
 inline md5_word_t
 MD5::H(const md5_word_t x, const md5_word_t y, const md5_word_t z)
 {
-    return ( x^y^z );
+    return x ^ y ^ z ;
 }
 
 inline md5_word_t
 MD5::I(const md5_word_t x, const md5_word_t y, const md5_word_t z)
 {
-    return ( y ^ (x|~z) );
+    return y ^ (x | ~z);
 }
 
 inline void

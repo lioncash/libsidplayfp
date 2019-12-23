@@ -48,19 +48,35 @@
 #  endif
 #endif
 
-typedef enum { black, red, green, yellow, blue, magenta, cyan, white }
-    player_colour_t;
-typedef enum { tableStart, tableMiddle, tableSeparator, tableEnd }
-    player_table_t;
-typedef enum
+enum player_colour_t
+{
+    black,
+    red,
+    green,
+    yellow,
+    blue,
+    magenta,
+    cyan,
+    white
+};
+
+enum player_table_t
+{
+    tableStart,
+    tableMiddle,
+    tableSeparator,
+    tableEnd
+};
+
+enum player_state_t
 {
     playerError = 0, playerRunning, playerPaused, playerStopped,
     playerRestart, playerExit, playerFast = 128,
     playerFastRestart = playerRestart | playerFast,
     playerFastExit = playerExit | playerFast
-} player_state_t;
+};
 
-typedef enum
+enum SIDEMUS
 {
     /* Same as EMU_DEFAULT except no soundcard.
     Still allows wav generation */
@@ -69,9 +85,10 @@ typedef enum
     EMU_DEFAULT, EMU_RESIDFP, EMU_RESID,
     /* The following should disable the soundcard */
     EMU_HARDSID, EMU_EXSID, EMU_SIDSTATION, EMU_COMMODORE,
-    EMU_SIDSYN, EMU_END} SIDEMUS;
+    EMU_SIDSYN, EMU_END
+};
 
-typedef enum
+enum OUTPUTS
 {
     /* Define possible output sources */
     OUT_NULL = 0,
@@ -79,7 +96,7 @@ typedef enum
     OUT_SOUNDCARD,
     /* File creation support */
     OUT_WAV, OUT_AU, OUT_END
-} OUTPUTS;
+};
 
 // Error and status message numbers.
 enum

@@ -41,8 +41,7 @@
 
 namespace reSIDfp
 {
-
-typedef std::map<std::string, matrix_t> fir_cache_t;
+using fir_cache_t = std::map<std::string, matrix_t>;
 
 /// Cache for the expensive FIR table computation results.
 fir_cache_t FIR_CACHE;

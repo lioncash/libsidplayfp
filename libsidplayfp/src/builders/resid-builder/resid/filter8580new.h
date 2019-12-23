@@ -594,12 +594,12 @@ protected:
 
   chip_model sid_model;
 
-  typedef struct {
+  struct opamp_t {
     unsigned short vx;
     short dvx;
-  } opamp_t;
+  };
 
-  typedef struct {
+  struct model_filter_t {
     int kVddt;   // K*(Vdd - Vth)
     int voice_scale_s14;
     int voice_DC;
@@ -617,7 +617,7 @@ protected:
     unsigned short mixer[mixer_offset<8>::value];
     // Cutoff frequency DAC output voltage table. FC is an 11 bit register.
     unsigned short f0_dac[1 << 11];
-  } model_filter_t;
+  };
 
   // 6581 only
   // Cutoff frequency DAC voltage, resonance.

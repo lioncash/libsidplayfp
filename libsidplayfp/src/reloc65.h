@@ -38,14 +38,14 @@
 class reloc65
 {
 public:
-    typedef enum
+    enum segment_t
     {
         WHOLE,
         TEXT,
         DATA,
         BSS,
         ZEROPAGE
-    } segment_t;
+    };
 
 private:
     int m_tbase, m_dbase, m_bbase, m_zbase;

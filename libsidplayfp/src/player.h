@@ -52,12 +52,12 @@ namespace libsidplayfp
 class Player
 {
 private:
-    typedef enum
+    enum state_t
     {
         STOPPED,
         PLAYING,
         STOPPING
-    } state_t;
+    };
 
 private:
     /// Commodore 64 emulator

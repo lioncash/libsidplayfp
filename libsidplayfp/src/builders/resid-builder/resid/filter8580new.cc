@@ -152,7 +152,7 @@ static int resGain[16] =
   (int)((1<<7)*(((1.4*4.7)/(1.4+4.7))/2.8)),   // (Rf|R3)/RC   0.385246
 };
 
-typedef struct {
+struct model_filter_init_t {
   // Op-amp transfer function.
   double_point* opamp_voltage;
   int opamp_voltage_size;
@@ -174,7 +174,7 @@ typedef struct {
   double dac_scale;
   double dac_2R_div_R;
   bool dac_term;
-} model_filter_init_t;
+};
 
 static model_filter_init_t model_filter_init[2] = {
   {

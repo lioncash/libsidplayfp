@@ -60,14 +60,14 @@ struct X00Header
                                 // should be 0 for all other types
 };
 
-typedef enum
+enum X00Format
 {
     X00_DEL,
     X00_SEQ,
     X00_PRG,
     X00_USR,
     X00_REL
-} X00Format;
+};
 
 // Format strings
 const char TXT_FORMAT_DEL[] = "Unsupported tape image file (DEL)";

@@ -33,7 +33,7 @@ namespace reSIDfp
 /**
  * Combined waveform model parameters.
  */
-typedef struct
+struct CombinedWaveformConfig
 {
     float bias;
     float pulsestrength;
@@ -41,7 +41,7 @@ typedef struct
     float distance1;
     float distance2;
     float stmix;
-} CombinedWaveformConfig;
+};
 
 /**
  * Combined waveform calculator for WaveformGenerator.
@@ -91,7 +91,7 @@ typedef struct
 class WaveformCalculator
 {
 private:
-    typedef std::map<const CombinedWaveformConfig*, matrix_t> cw_cache_t;
+	using cw_cache_t = std::map<const CombinedWaveformConfig*, matrix_t>;
 
 private:
     cw_cache_t CACHE;

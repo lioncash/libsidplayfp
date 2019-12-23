@@ -1485,7 +1485,10 @@ void MOS6510::buildInstructionTable()
 
         unsigned int buildCycle = i << 3;
 
-        typedef enum { WRITE, READ } AccessMode;
+        enum AccessMode
+        {
+            WRITE, READ
+        };
         AccessMode access = WRITE;
         bool legalMode  = true;
         bool legalInstr = true;

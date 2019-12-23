@@ -38,26 +38,26 @@
 class SID_EXTERN SidTuneInfo
 {
 public:
-    typedef enum {
+    enum clock_t {
         CLOCK_UNKNOWN,
         CLOCK_PAL,
         CLOCK_NTSC,
         CLOCK_ANY
-    } clock_t;
+    };
 
-    typedef enum {
+    enum model_t {
         SIDMODEL_UNKNOWN,
         SIDMODEL_6581,
         SIDMODEL_8580,
         SIDMODEL_ANY
-    } model_t;
+    };
 
-    typedef enum {
+    enum compatibility_t {
         COMPATIBILITY_C64,   ///< File is C64 compatible
         COMPATIBILITY_PSID,  ///< File is PSID specific
         COMPATIBILITY_R64,   ///< File is Real C64 only
         COMPATIBILITY_BASIC  ///< File requires C64 Basic
-    } compatibility_t;
+    };
 
 public:
     /// Vertical-Blanking-Interrupt

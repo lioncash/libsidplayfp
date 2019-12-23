@@ -38,14 +38,14 @@ namespace reSIDfp
 class Spline
 {
 public:
-    typedef struct
+    struct Point
     {
         double x;
         double y;
-    } Point;
+    };
 
 private:
-    typedef struct
+    struct Param
     {
         double x1;
         double x2;
@@ -53,9 +53,9 @@ private:
         double b;
         double c;
         double d;
-    } Param;
+    };
 
-    typedef std::vector<Param> ParamVector;
+    using ParamVector = std::vector<Param>;
 
 private:
     /// Interpolation parameters

@@ -37,9 +37,8 @@ namespace libsidplayfp
 class romCheck
 {
 private:
-    typedef std::map<std::string, const char*> md5map;
+    using md5map = std::map<std::string, const char*>;
 
-private:
     /**
      * Maps checksums to respective ROM description.
      * Must be filled by derived class.

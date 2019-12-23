@@ -38,42 +38,42 @@ class SID_EXTERN SidConfig
 {
 public:
     /// Playback mode
-    typedef enum
+    enum playback_t
     {
         MONO = 1,
         STEREO
-    } playback_t;
+    };
 
     /// SID chip model
-    typedef enum
+    enum sid_model_t
     {
         MOS6581,
         MOS8580
-    } sid_model_t;
+    };
 
     /// CIA chip model
-    typedef enum
+    enum cia_model_t
     {
         MOS6526,
         MOS8521
-    } cia_model_t;
+    };
 
     /// C64 model
-    typedef enum
+    enum c64_model_t
     {
         PAL,
         NTSC,
         OLD_NTSC,
         DREAN,
         PAL_M
-    } c64_model_t;
+    };
 
     /// Sampling method
-    typedef enum
+    enum sampling_method_t
     {
         INTERPOLATE,
         RESAMPLE_INTERPOLATE
-    } sampling_method_t;
+    };
 
 public:
     /**

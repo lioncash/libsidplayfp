@@ -28,17 +28,15 @@
 namespace libsidplayfp
 {
 
-template< class This >
+template <class This>
 class EventCallback final : public Event
 {
 private:
-    typedef void (This::*Callback) ();
+    using Callback = void (This::*)();
 
-private:
     This &m_this;
     Callback const m_callback;
 
-private:
     void event() override { (m_this.*m_callback)(); }
 
 public:
