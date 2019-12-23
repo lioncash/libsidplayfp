@@ -33,41 +33,41 @@
 #  define AudioDriver Audio_MMSystem
 #endif
 
+#include <array>
+#include <cstdint>
 #include <windows.h>
 #include <mmsystem.h>
 
 #include "../AudioBase.h"
 
-
-class Audio_MMSystem: public AudioBase
+class Audio_MMSystem final : public AudioBase
 {
-private:  // ------------------------------------------------------- private
-    HWAVEOUT  waveHandle;
+public:
+    Audio_MMSystem();
+    ~Audio_MMSystem() override;
 
-    // Rev 1.3 (saw) - Buffer sizes adjusted to get a
-    // correct playtimes
-    #define  MAXBUFBLOCKS 3
-    short   *blocks[MAXBUFBLOCKS];
-    HGLOBAL  blockHandles[MAXBUFBLOCKS];
-    WAVEHDR *blockHeaders[MAXBUFBLOCKS];
-    HGLOBAL  blockHeaderHandles[MAXBUFBLOCKS];
-    int      blockNum;
-    int      bufSize;
-    bool     isOpen;
+    bool open(AudioConfig& cfg) override;
+    void close() override;
+    void reset() override;
+    bool write() override;
+    void pause() override {}
 
 private:
     static const char* getErrorMessage(MMRESULT err);
     static void checkResult(MMRESULT err);
 
-public:  // --------------------------------------------------------- public
-    Audio_MMSystem();
-    ~Audio_MMSystem();
+    HWAVEOUT  waveHandle{};
 
-    bool open  (AudioConfig &cfg) override;
-    void close () override;
-    void reset () override;
-    bool write () override;
-    void pause () override {}
+    // Rev 1.3 (saw) - Buffer sizes adjusted to get a
+    // correct playtimes
+    static constexpr std::uint32_t MAXBUFBLOCKS = 3;
+    std::array<short*, MAXBUFBLOCKS> blocks{};
+    std::array<HGLOBAL, MAXBUFBLOCKS> blockHandles{};
+    std::array<WAVEHDR*, MAXBUFBLOCKS> blockHeaders{};
+    std::array<HGLOBAL, MAXBUFBLOCKS>  blockHeaderHandles{};
+    std::uint32_t blockNum = 0;
+    std::uint32_t bufSize = 0;
+    bool          isOpen = false;
 };
 
 #endif // HAVE_MMSYSTEM_H

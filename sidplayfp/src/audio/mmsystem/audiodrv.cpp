@@ -26,18 +26,8 @@
 
 #include <mmreg.h>
 
-Audio_MMSystem::Audio_MMSystem() :
-    AudioBase("MMSYSTEM"),
-    waveHandle(0),
-    isOpen(false)
+Audio_MMSystem::Audio_MMSystem() : AudioBase("MMSYSTEM")
 {
-    for ( int i = 0; i < MAXBUFBLOCKS; i++ )
-    {
-        blockHeaderHandles[i] = 0;
-        blockHandles[i]       = 0;
-        blockHeaders[i]       = NULL;
-        blocks[i]             = NULL;
-    }
 }
 
 Audio_MMSystem::~Audio_MMSystem()
@@ -87,8 +77,6 @@ void Audio_MMSystem::checkResult(MMRESULT err)
 
 bool Audio_MMSystem::open(AudioConfig &cfg)
 {
-    WAVEFORMATEX  wfm;
-
     if (isOpen)
     {
         setError("Audio device already open.");
@@ -97,12 +85,12 @@ bool Audio_MMSystem::open(AudioConfig &cfg)
     isOpen = true;
 
     /* Initialise blocks */
-    memset (blockHandles, 0, sizeof (blockHandles));
-    memset (blockHeaders, 0, sizeof (blockHeaders));
-    memset (blockHeaderHandles, 0, sizeof (blockHeaderHandles));
+    blockHandles = {};
+    blockHeaders = {};
+    blockHeaderHandles = {};
 
     // Format
-    memset (&wfm, 0, sizeof(WAVEFORMATEX));
+    WAVEFORMATEX wfm{};
     wfm.wFormatTag      = WAVE_FORMAT_PCM;
     wfm.nChannels       = cfg.channels;
     wfm.nSamplesPerSec  = cfg.frequency;
@@ -122,39 +110,39 @@ bool Audio_MMSystem::open(AudioConfig &cfg)
         _settings = cfg;
 
         /* Allocate and lock memory for all mixing blocks: */
-        for (int i = 0; i < MAXBUFBLOCKS; i++ )
+        for (std::size_t i = 0; i < MAXBUFBLOCKS; i++ )
         {
             /* Allocate global memory for mixing block: */
-            if ( (blockHandles[i] = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE,
-                                                bufSize)) == NULL )
+            if ((blockHandles[i] = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE,
+                                                bufSize)) == nullptr)
             {
                 throw error("Can't allocate global memory.");
             }
 
             /* Lock mixing block memory: */
-            if ( (blocks[i] = (short *)GlobalLock(blockHandles[i])) == NULL )
+            if ((blocks[i] = static_cast<short*>(GlobalLock(blockHandles[i]))) == nullptr)
             {
                 throw error("Can't lock global memory.");
             }
 
             /* Allocate global memory for mixing block header: */
-            if ( (blockHeaderHandles[i] = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE,
-                                                    sizeof(WAVEHDR))) == NULL )
+            if ((blockHeaderHandles[i] = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE,
+                                                    sizeof(WAVEHDR))) == nullptr)
             {
                 throw error("Can't allocate global memory.");
             }
 
             /* Lock mixing block header memory: */
             WAVEHDR *header;
-            if ( (header = blockHeaders[i] =
-                (WAVEHDR*)GlobalLock(blockHeaderHandles[i])) == NULL )
+            if ((header = blockHeaders[i] =
+                static_cast<WAVEHDR*>(GlobalLock(blockHeaderHandles[i]))) == nullptr)
             {
                 throw error("Can't lock global memory.");
             }
 
             /* Reset wave header fields: */
-            memset (header, 0, sizeof (WAVEHDR));
-            header->lpData         = (char*)blocks[i];
+            memset(header, 0, sizeof (WAVEHDR));
+            header->lpData         = reinterpret_cast<char*>(blocks[i]);
             header->dwBufferLength = bufSize;
             header->dwFlags        = WHDR_DONE; /* mark the block is done */
         }
@@ -163,7 +151,7 @@ bool Audio_MMSystem::open(AudioConfig &cfg)
         _sampleBuffer = blocks[blockNum];
         return true;
     }
-    catch(error const &e)
+    catch (const error& e)
     {
         setError(e.message());
 
@@ -193,8 +181,9 @@ bool Audio_MMSystem::write()
     blockNum %= MAXBUFBLOCKS;
 
     /* Wait for the next block to become free */
-    while ( !(blockHeaders[blockNum]->dwFlags & WHDR_DONE) )
+    while ((blockHeaders[blockNum]->dwFlags & WHDR_DONE) == 0) {
         Sleep(20);
+    }
 
     checkResult(waveOutUnprepareHeader(waveHandle, blockHeaders[blockNum], sizeof(WAVEHDR)));
 
@@ -205,8 +194,9 @@ bool Audio_MMSystem::write()
 // Rev 1.2 (saw) - Changed, see AudioBase.h
 void Audio_MMSystem::reset()
 {
-    if (!isOpen)
+    if (!isOpen) {
         return;
+    }
 
     // Stop play and kill the current music.
     // Start new music data being added at the begining of
@@ -218,46 +208,50 @@ void Audio_MMSystem::reset()
 
 void Audio_MMSystem::close()
 {
-    if ( !isOpen )
+    if (!isOpen) {
         return;
+    }
 
     isOpen        = false;
-    _sampleBuffer = NULL;
+    _sampleBuffer = nullptr;
 
     /* Reset wave output device, stop playback, and mark all blocks done: */
-    if ( waveHandle )
+    if (waveHandle)
     {
         waveOutReset(waveHandle);
 
         /* Make sure all blocks are indeed done: */
         int doneTimeout = 500;
 
-        for (;;) {
+        while (true) {
             bool allDone = true;
-            for ( int i = 0; i < MAXBUFBLOCKS; i++ ) {
-                if ( blockHeaders[i] && (blockHeaders[i]->dwFlags & WHDR_DONE) == 0 )
+            for (std::size_t i = 0; i < MAXBUFBLOCKS; i++) {
+                if (blockHeaders[i] && (blockHeaders[i]->dwFlags & WHDR_DONE) == 0) {
                     allDone = false;
+                }
             }
 
-            if ( allDone || (doneTimeout == 0) )
+            if (allDone || (doneTimeout == 0)) {
                 break;
+            }
             doneTimeout--;
             Sleep(20);
         }
 
         /* Unprepare all mixing blocks, unlock and deallocate
            all mixing blocks and mixing block headers: */
-        for ( int i = 0; i < MAXBUFBLOCKS; i++ )
+        for (std::size_t i = 0; i < MAXBUFBLOCKS; i++)
         {
-            if ( blockHeaders[i] )
+            if (blockHeaders[i]) {
                 waveOutUnprepareHeader(waveHandle, blockHeaders[i], sizeof(WAVEHDR));
+            }
 
-            if ( blockHeaderHandles[i] )
+            if (blockHeaderHandles[i])
             {
                 GlobalUnlock(blockHeaderHandles[i]);
                 GlobalFree(blockHeaderHandles[i]);
             }
-            if ( blockHandles[i] )
+            if (blockHandles[i])
             {
                 GlobalUnlock(blockHandles[i]);
                 GlobalFree(blockHandles[i]);
