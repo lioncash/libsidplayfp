@@ -20,8 +20,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#define FILTER6581_CPP
-
 #include "Filter6581.h"
 
 #include "FilterModelConfig.h"
@@ -57,7 +55,7 @@ void Filter6581::updatedCenterFrequency()
 
 void Filter6581::updatedMixing()
 {
-    currentGain = gain[vol];
+    currentGain = gain[vol].get();
 
     unsigned int ni = 0;
     unsigned int no = 0;
@@ -70,13 +68,39 @@ void Filter6581::updatedMixing()
 
     (filtE ? ni : no)++;
 
-    currentSummer = summer[ni];
+    currentSummer = summer[ni].get();
 
     if (lp) no++;
     if (bp) no++;
     if (hp) no++;
 
-    currentMixer = mixer[no];
+    currentMixer = mixer[no].get();
+}
+
+int Filter6581::clock(int voice1, int voice2, int voice3)
+{
+    voice1 = (voice1 * voiceScaleS14 >> 18) + voiceDC;
+    voice2 = (voice2 * voiceScaleS14 >> 18) + voiceDC;
+    // Voice 3 is silenced by voice3off if it is not routed through the filter.
+    voice3 = filt3 || !voice3off ? (voice3 * voiceScaleS14 >> 18) + voiceDC : 0;
+
+    int Vi = 0;
+    int Vo = 0;
+
+    (filt1 ? Vi : Vo) += voice1;
+    (filt2 ? Vi : Vo) += voice2;
+    (filt3 ? Vi : Vo) += voice3;
+    (filtE ? Vi : Vo) += ve;
+
+    Vhp = currentSummer[currentResonance[Vbp] + Vlp + Vi];
+    Vbp = hpIntegrator->solve(Vhp);
+    Vlp = bpIntegrator->solve(Vbp);
+
+    if (lp) Vo += Vlp;
+    if (bp) Vo += Vbp;
+    if (hp) Vo += Vhp;
+
+    return currentGain[currentMixer[Vo]] - (1 << 15);
 }
 
 void Filter6581::setFilterCurve(double curvePosition)

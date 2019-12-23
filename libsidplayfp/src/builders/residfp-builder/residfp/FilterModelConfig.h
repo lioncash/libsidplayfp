@@ -23,6 +23,8 @@
 #ifndef FILTERMODELCONFIG_H
 #define FILTERMODELCONFIG_H
 
+#include <array>
+#include <cstdint>
 #include <memory>
 
 #include "Dac.h"
@@ -37,89 +39,37 @@ class Integrator;
  */
 class FilterModelConfig
 {
-private:
-    static const unsigned int DAC_BITS = 11;
-
-private:
-    static std::unique_ptr<FilterModelConfig> instance;
-    // This allows access to the private constructor
-    friend std::unique_ptr<FilterModelConfig>::deleter_type;
-
-    const double voice_voltage_range;
-    const double voice_DC_voltage;
-
-    /// Capacitor value.
-    const double C;
-
-    /// Transistor parameters.
-    //@{
-    const double Vdd;
-    const double Vth;           ///< Threshold voltage
-    const double Ut;            ///< Thermal voltage: Ut = k*T/q = 8.61734315e-5*T ~ 26mV
-    const double k;             ///< Gate coupling coefficient: K = Cox/(Cox+Cdep) ~ 0.7
-    const double uCox;          ///< u*Cox
-    const double WL_vcr;        ///< W/L for VCR
-    const double WL_snake;      ///< W/L for "snake"
-    const double kVddt;         ///< k * (Vdd - Vth)
-    //@}
-
-    /// DAC parameters.
-    //@{
-    const double dac_zero;
-    const double dac_scale;
-    //@}
-
-    // Derived stuff
-    const double vmin, vmax;
-    const double denorm, norm;
-
-    /// Fixed point scaling for 16 bit op-amp output.
-    const double N16;
-
-    /// Lookup tables for gain and summer op-amps in output stage / filter.
-    //@{
-    unsigned short* mixer[8];
-    unsigned short* summer[5];
-    unsigned short* gain[16];
-    //@}
-
-    /// DAC lookup table
-    Dac dac;
-
-    /// VCR - 6581 only.
-    //@{
-    unsigned short vcr_kVg[1 << 16];
-    unsigned short vcr_n_Ids_term[1 << 16];
-    //@}
-
-    /// Reverse op-amp transfer function.
-    unsigned short opamp_rev[1 << 16];
-
-private:
-    double getDacZero(double adjustment) const { return dac_zero - (adjustment - 0.5) * 2.; }
-
-    FilterModelConfig();
-    ~FilterModelConfig();
-
 public:
+    using GainTable = std::array<std::unique_ptr<std::uint16_t[]>, 16>;
+    using MixerTable = std::array<std::unique_ptr<std::uint16_t[]>, 8>;
+    using SummerTable = std::array<std::unique_ptr<std::uint16_t[]>, 5>;
+
     static FilterModelConfig* getInstance();
 
     /**
      * The digital range of one voice is 20 bits; create a scaling term
      * for multiplication which fits in 11 bits.
      */
-    int getVoiceScaleS14() const { return static_cast<int>((norm * ((1 << 14) - 1)) * voice_voltage_range); }
+    int getVoiceScaleS14() const
+    {
+        constexpr double voice_voltage_range = 1.5;
+        return static_cast<int>((norm * ((1 << 14) - 1)) * voice_voltage_range);
+    }
 
     /**
      * The "zero" output level of the voices.
      */
-    int getVoiceDC() const { return static_cast<int>(N16 * (voice_DC_voltage - vmin)); }
+    int getVoiceDC() const
+    {
+        constexpr double voice_DC_voltage = 5.0;
+        return static_cast<int>(N16 * (voice_DC_voltage - vmin));
+    }
 
-    unsigned short** getGain() { return gain; }
+    const GainTable& getGain() const { return gain; }
 
-    unsigned short** getSummer() { return summer; }
+    const SummerTable& getSummer() const { return summer; }
 
-    unsigned short** getMixer() { return mixer; }
+    const MixerTable& getMixer() const { return mixer; }
 
     /**
      * Construct an 11 bit cutoff frequency DAC output voltage table.
@@ -137,6 +87,67 @@ public:
      * @return the integrator
      */
     std::unique_ptr<Integrator> buildIntegrator();
+
+private:
+    FilterModelConfig();
+    ~FilterModelConfig();
+
+    double getDacZero(double adjustment) const { return dac_zero - (adjustment - 0.5) * 2.0; }
+
+    static constexpr unsigned int DAC_BITS = 11;
+
+    static std::unique_ptr<FilterModelConfig> instance;
+    // This allows access to the private constructor
+    friend std::unique_ptr<FilterModelConfig>::deleter_type;
+
+    /// Capacitor value.
+    static constexpr double C = 470e-12;
+
+    /// Transistor parameters.
+    //@{
+    static constexpr double Vdd = 12.18;
+    static constexpr double Vth = 1.31;              ///< Threshold voltage
+    static constexpr double Ut = 26.0e-3;            ///< Thermal voltage: Ut = k*T/q = 8.61734315e-5*T ~ 26mV
+    static constexpr double k = 1.0;                 ///< Gate coupling coefficient: K = Cox/(Cox+Cdep) ~ 0.7
+    static constexpr double uCox = 20e-6;            ///< u*Cox
+    static constexpr double WL_vcr = 9.0 / 1.0;      ///< W/L for VCR
+    static constexpr double WL_snake = 1.0 / 115.0;  ///< W/L for "snake"
+    static constexpr double kVddt = k * (Vdd - Vth); ///< k * (Vdd - Vth)
+    //@}
+
+    /// DAC parameters.
+    //@{
+    static constexpr double dac_zero = 6.65;
+    static constexpr double dac_scale = 2.63;
+    //@}
+
+    // Derived stuff
+    static constexpr double vmin = 0.81;                          // First X value within the OpAmp voltage table.
+    static constexpr double vmax = kVddt < 10.31 ? 10.31 : kVddt; // 10.31 -> First Y value within the OpAmp voltage table.
+    static constexpr double denorm = vmax - vmin;
+    static constexpr double norm = 1.0 / denorm;
+
+    /// Fixed point scaling for 16 bit op-amp output.
+    static constexpr double N16 = norm * ((1 << 16) - 1);
+
+    /// Lookup tables for gain and summer op-amps in output stage / filter.
+    //@{
+    MixerTable mixer;
+    SummerTable summer;
+    GainTable gain;
+    //@}
+
+    /// DAC lookup table
+    Dac dac;
+
+    /// VCR - 6581 only.
+    //@{
+    std::array<unsigned short, 1 << 16> vcr_kVg;
+    std::array<unsigned short, 1 << 16> vcr_n_Ids_term;
+    //@}
+
+    /// Reverse op-amp transfer function.
+    std::array<unsigned short, 1 << 16> opamp_rev;
 };
 
 } // namespace reSIDfp

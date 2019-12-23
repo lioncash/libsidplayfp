@@ -24,6 +24,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstddef>
 
 #include "Integrator.h"
 #include "OpAmp.h"
@@ -31,8 +32,9 @@
 
 namespace reSIDfp
 {
-
-const unsigned int OPAMP_SIZE = 33;
+namespace
+{
+constexpr unsigned int OPAMP_SIZE = 33;
 
 /**
  * This is the SID 6581 op-amp voltage transfer function, measured on
@@ -40,8 +42,7 @@ const unsigned int OPAMP_SIZE = 33;
  * All measured chips have op-amps with output voltages (and thus input
  * voltages) within the range of 0.81V - 10.31V.
  */
-const Spline::Point opamp_voltage[OPAMP_SIZE] =
-{
+constexpr std::array<Spline::Point, OPAMP_SIZE> opamp_voltage{{
   {  0.81, 10.31 },  // Approximate start of actual range
   {  2.40, 10.31 },
   {  2.60, 10.30 },
@@ -75,13 +76,14 @@ const Spline::Point opamp_voltage[OPAMP_SIZE] =
   {  8.50,  0.89 },
   { 10.00,  0.81 },
   { 10.31,  0.81 },  // Approximate end of actual range
-};
+}};
+} // Anonymous namespace
 
 std::unique_ptr<FilterModelConfig> FilterModelConfig::instance(nullptr);
 
 FilterModelConfig* FilterModelConfig::getInstance()
 {
-    if (!instance.get())
+    if (!instance)
     {
         instance.reset(new FilterModelConfig());
     }
@@ -89,34 +91,14 @@ FilterModelConfig* FilterModelConfig::getInstance()
     return instance.get();
 }
 
-FilterModelConfig::FilterModelConfig() :
-    voice_voltage_range(1.5),
-    voice_DC_voltage(5.0),
-    C(470e-12),
-    Vdd(12.18),
-    Vth(1.31),
-    Ut(26.0e-3),
-    k(1.0),
-    uCox(20e-6),
-    WL_vcr(9.0 / 1.0),
-    WL_snake(1.0 / 115.0),
-    kVddt(k * (Vdd - Vth)),
-    dac_zero(6.65),
-    dac_scale(2.63),
-    vmin(opamp_voltage[0].x),
-    vmax(kVddt < opamp_voltage[0].y ? opamp_voltage[0].y : kVddt),
-    denorm(vmax - vmin),
-    norm(1.0 / denorm),
-    N16(norm * ((1 << 16) - 1)),
-    dac(DAC_BITS)
+FilterModelConfig::FilterModelConfig() : dac(DAC_BITS)
 {
     dac.kinkedDac(MOS6581);
 
     // Convert op-amp voltage transfer to 16 bit values.
 
-    Spline::Point scaled_voltage[OPAMP_SIZE];
-
-    for (unsigned int i = 0; i < OPAMP_SIZE; i++)
+    std::array<Spline::Point, OPAMP_SIZE> scaled_voltage;
+    for (std::size_t i = 0; i < scaled_voltage.size(); i++)
     {
         scaled_voltage[i].x = N16 * (opamp_voltage[i].x - opamp_voltage[i].y + denorm) / 2.;
         scaled_voltage[i].y = N16 * (opamp_voltage[i].x - vmin);
@@ -124,20 +106,23 @@ FilterModelConfig::FilterModelConfig() :
 
     // Create lookup table mapping capacitor voltage to op-amp input voltage:
 
-    Spline s(scaled_voltage, OPAMP_SIZE);
+    const Spline s(scaled_voltage.data(), OPAMP_SIZE);
 
-    for (int x = 0; x < (1 << 16); x++)
+    for (std::size_t x = 0; x < opamp_rev.size(); x++)
     {
-        const Spline::Point out = s.evaluate(x);
+        const Spline::Point out = s.evaluate(double(x));
         double tmp = out.x;
-        if (tmp < 0.) tmp = 0.;
+        if (tmp < 0.0)
+        {
+            tmp = 0.0;
+        }
         assert(tmp < 65535.5);
         opamp_rev[x] = static_cast<unsigned short>(tmp + 0.5);
     }
 
     // Create lookup tables for gains / summers.
 
-    OpAmp opampModel(opamp_voltage, OPAMP_SIZE, kVddt);
+    OpAmp opampModel(opamp_voltage.data(), OPAMP_SIZE, kVddt);
 
     // The filter summer operates at n ~ 1, and has 5 fundamentally different
     // input configurations (2 - 6 input "resistors").
@@ -146,15 +131,15 @@ FilterModelConfig::FilterModelConfig() :
     // entirely accurate, since the input for each transistor is different,
     // and transistors are not linear components. However modeling all
     // transistors separately would be extremely costly.
-    for (int i = 0; i < 5; i++)
+    for (std::size_t i = 0; i < summer.size(); i++)
     {
-        const int idiv = 2 + i;        // 2 - 6 input "resistors".
-        const int size = idiv << 16;
-        const double n = idiv;
+        const std::size_t idiv = 2 + i;        // 2 - 6 input "resistors".
+        const std::size_t size = idiv << 16;
+        const auto n = static_cast<double>(idiv);
         opampModel.reset();
-        summer[i] = new unsigned short[size];
+        summer[i] = std::make_unique<std::uint16_t[]>(size);
 
-        for (int vi = 0; vi < size; vi++)
+        for (std::size_t vi = 0; vi < size; vi++)
         {
             const double vin = vmin + vi / N16 / idiv; /* vmin .. vmax */
             const double tmp = (opampModel.solve(n, vin) - vmin) * N16;
@@ -168,15 +153,15 @@ FilterModelConfig::FilterModelConfig() :
     //
     // All "on", transistors are modeled as one - see comments above for
     // the filter summer.
-    for (int i = 0; i < 8; i++)
+    for (std::size_t i = 0; i < mixer.size(); i++)
     {
-        const int idiv = (i == 0) ? 1 : i;
-        const int size = (i == 0) ? 1 : i << 16;
+        const std::size_t idiv = (i == 0) ? 1 : i;
+        const std::size_t size = (i == 0) ? 1 : i << 16;
         const double n = i * 8.0 / 6.0;
         opampModel.reset();
-        mixer[i] = new unsigned short[size];
+        mixer[i] = std::make_unique<std::uint16_t[]>(size);
 
-        for (int vi = 0; vi < size; vi++)
+        for (std::size_t vi = 0; vi < size; vi++)
         {
             const double vin = vmin + vi / N16 / idiv; /* vmin .. vmax */
             const double tmp = (opampModel.solve(n, vin) - vmin) * N16;
@@ -190,14 +175,14 @@ FilterModelConfig::FilterModelConfig() :
     // From die photographs of the bandpass and volume "resistor" ladders
     // it follows that gain ~ vol/8 and 1/Q ~ ~res/8 (assuming ideal
     // op-amps and ideal "resistors").
-    for (int n8 = 0; n8 < 16; n8++)
+    for (std::size_t n8 = 0; n8 < gain.size(); n8++)
     {
-        const int size = 1 << 16;
+        constexpr std::size_t size = 1 << 16;
         const double n = n8 / 8.0;
         opampModel.reset();
-        gain[n8] = new unsigned short[size];
+        gain[n8] = std::make_unique<std::uint16_t[]>(size);
 
-        for (int vi = 0; vi < size; vi++)
+        for (std::size_t vi = 0; vi < size; vi++)
         {
             const double vin = vmin + vi / N16; /* vmin .. vmax */
             const double tmp = (opampModel.solve(n, vin) - vmin) * N16;
@@ -206,10 +191,10 @@ FilterModelConfig::FilterModelConfig() :
         }
     }
 
-    const double nkVddt = N16 * kVddt;
-    const double nVmin = N16 * vmin;
+    constexpr double nkVddt = N16 * kVddt;
+    constexpr double nVmin = N16 * vmin;
 
-    for (unsigned int i = 0; i < (1 << 16); i++)
+    for (std::size_t i = 0; i < vcr_kVg.size(); i++)
     {
         // The table index is right-shifted 16 times in order to fit in
         // 16 bits; the argument to sqrt is thus multiplied by (1 << 16).
@@ -220,7 +205,7 @@ FilterModelConfig::FilterModelConfig() :
         //   k*Vg - Vx = (k*Vg - t) - (Vx - t)
         //
         // I.e. k*Vg - t must be returned.
-        const double Vg = nkVddt - sqrt((double)(i << 16));
+        const double Vg = nkVddt - std::sqrt(static_cast<double>(i << 16));
         const double tmp = k * Vg - nVmin;
         assert(tmp > -0.5 && tmp < 65535.5);
         vcr_kVg[i] = static_cast<unsigned short>(tmp + 0.5);
@@ -233,16 +218,16 @@ FilterModelConfig::FilterModelConfig() :
     //  if = ln^2(1 + e^((k*(Vg - Vt) - Vs)/(2*Ut))
     //  ir = ln^2(1 + e^((k*(Vg - Vt) - Vd)/(2*Ut))
 
-    const double kVt = k * Vth;
-    const double Is = 2. * uCox * Ut * Ut / k * WL_vcr;
+    constexpr double kVt = k * Vth;
+    constexpr double Is = 2.0 * uCox * Ut * Ut / k * WL_vcr;
 
     // Normalized current factor for 1 cycle at 1MHz.
-    const double N15 = norm * ((1 << 15) - 1);
-    const double n_Is = N15 * 1.0e-6 / C * Is;
+    constexpr double N15 = norm * ((1 << 15) - 1);
+    constexpr double n_Is = N15 * 1.0e-6 / C * Is;
 
     // kVg_Vx = k*Vg - Vx
     // I.e. if k != 1.0, Vg must be scaled accordingly.
-    for (int kVg_Vx = 0; kVg_Vx < (1 << 16); kVg_Vx++)
+    for (std::size_t kVg_Vx = 0; kVg_Vx < vcr_n_Ids_term.size(); kVg_Vx++)
     {
         const double log_term = std::log1p(exp((kVg_Vx / N16 - kVt) / (2. * Ut)));
         // Scaled by m*2^15
@@ -252,34 +237,19 @@ FilterModelConfig::FilterModelConfig() :
     }
 }
 
-FilterModelConfig::~FilterModelConfig()
-{
-    for (int i = 0; i < 5; i++)
-    {
-        delete [] summer[i];
-    }
-
-    for (int i = 0; i < 8; i++)
-    {
-        delete [] mixer[i];
-    }
-
-    for (int i = 0; i < 16; i++)
-    {
-        delete [] gain[i];
-    }
-}
+FilterModelConfig::~FilterModelConfig() = default;
 
 unsigned short* FilterModelConfig::getDAC(double adjustment) const
 {
     const double dac_zero = getDacZero(adjustment);
 
-    unsigned short* f0_dac = new unsigned short[1 << DAC_BITS];
+    constexpr std::size_t dac_size = 1U << DAC_BITS;
+    auto* f0_dac = new unsigned short[dac_size];
 
-    for (unsigned int i = 0; i < (1 << DAC_BITS); i++)
+    for (std::size_t i = 0; i < dac_size; i++)
     {
-        const double fcd = dac.getOutput(i);
-        const double tmp = N16 * (dac_zero + fcd * dac_scale / (1 << DAC_BITS) - vmin);
+        const double fcd = dac.getOutput(static_cast<unsigned int>(i));
+        const double tmp = N16 * (dac_zero + fcd * dac_scale / dac_size - vmin);
         assert(tmp > -0.5 && tmp < 65535.5);
         f0_dac[i] = static_cast<unsigned short>(tmp + 0.5);
     }
@@ -293,15 +263,16 @@ std::unique_ptr<Integrator> FilterModelConfig::buildIntegrator()
     // k*Vddt - x = (k*Vddt - t) - (x - t)
     double tmp = N16 * (kVddt - vmin);
     assert(tmp > -0.5 && tmp < 65535.5);
-    const unsigned short nkVddt = static_cast<unsigned short>(tmp + 0.5);
+    const auto nkVddt = static_cast<unsigned short>(tmp + 0.5);
 
     // Normalized snake current factor, 1 cycle at 1MHz.
     // Fit in 5 bits.
     tmp = denorm * (1 << 13) * (uCox / (2. * k) * WL_snake * 1.0e-6 / C);
     assert(tmp > -0.5 && tmp < 65535.5);
-    const unsigned short n_snake = static_cast<unsigned short>(tmp + 0.5);
+    const auto n_snake = static_cast<unsigned short>(tmp + 0.5);
 
-    return std::make_unique<Integrator>(vcr_kVg, vcr_n_Ids_term, opamp_rev, nkVddt, n_snake);
+    return std::make_unique<Integrator>(vcr_kVg.data(), vcr_n_Ids_term.data(),
+                                        opamp_rev.data(), nkVddt, n_snake);
 }
 
 } // namespace reSIDfp

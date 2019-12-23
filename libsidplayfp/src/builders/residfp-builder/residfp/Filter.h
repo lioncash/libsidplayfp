@@ -33,16 +33,16 @@ class Filter
 {
 protected:
     /// Current volume amplifier setting.
-    unsigned short* currentGain;
+    const unsigned short* currentGain;
 
     /// Current filter/voice mixer setting.
-    unsigned short* currentMixer;
+    const unsigned short* currentMixer;
 
     /// Filter input summer setting.
-    unsigned short* currentSummer;
+    const unsigned short* currentSummer;
 
     /// Filter resonance value.
-    unsigned short* currentResonance;
+    const unsigned short* currentResonance;
 
     /// Filter highpass state.
     int Vhp;
