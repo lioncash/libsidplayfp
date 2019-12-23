@@ -32,19 +32,6 @@
 namespace reSIDfp
 {
 
-#ifndef HAVE_CXX11
-/**
- * Compute log(1+x) without losing precision for small values of x
- *
- * @note when compiling with -ffastm-math the compiler will
- * optimize the expression away leaving a plain log(1. + x)
- */
-inline double log1p(double x)
-{
-    return log(1. + x) - (((1. + x) - 1.) - x) / (1. + x);
-}
-#endif
-
 const unsigned int OPAMP_SIZE = 33;
 
 /**
@@ -257,7 +244,7 @@ FilterModelConfig::FilterModelConfig() :
     // I.e. if k != 1.0, Vg must be scaled accordingly.
     for (int kVg_Vx = 0; kVg_Vx < (1 << 16); kVg_Vx++)
     {
-        const double log_term = log1p(exp((kVg_Vx / N16 - kVt) / (2. * Ut)));
+        const double log_term = std::log1p(exp((kVg_Vx / N16 - kVt) / (2. * Ut)));
         // Scaled by m*2^15
         const double tmp = n_Is * log_term * log_term;
         assert(tmp > -0.5 && tmp < 65535.5);
