@@ -35,7 +35,7 @@
 
 SID_STRING utils::getExecPath()
 {
-    HMODULE hModule = GetModuleHandle(NULL);
+    HMODULE hModule = GetModuleHandle(nullptr);
     TCHAR path[MAX_PATH];
     GetModuleFileName(hModule, path, MAX_PATH);
     PathRemoveFileSpec(path);
@@ -48,11 +48,13 @@ SID_STRING utils::getPath()
 
     TCHAR szPath[MAX_PATH];
 
-    if (SHGetFolderPath(NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE, NULL, 0, szPath)!=S_OK)
+    if (SHGetFolderPath(nullptr, CSIDL_APPDATA|CSIDL_FLAG_CREATE, nullptr, 0, szPath) != S_OK)
     {
         TCHAR *path = _tgetenv(TEXT("USERPROFILE"));
         if (!path)
+        {
             throw error();
+        }
         returnPath.append(path).append(TEXT("\\Application Data"));
     }
     else
@@ -78,11 +80,15 @@ SID_STRING utils::getPath(const char* id, const char* def)
     {
         path = getenv("HOME");
         if (!path)
+        {
             throw error();
+        }
         returnPath.append(path).append(def);
     }
     else
+    {
         returnPath.append(path);
+    }
 
     return returnPath;
 }

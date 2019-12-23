@@ -38,8 +38,8 @@ namespace reSID
 SID::SID()
 {
   // Initialize pointers.
-  sample = 0;
-  fir = 0;
+  sample = nullptr;
+  fir = nullptr;
   fir_N = 0;
   fir_RES = 0;
   fir_beta = 0;
@@ -561,8 +561,8 @@ bool SID::set_sampling_parameters(double clock_freq, sampling_method method,
   {
     delete[] sample;
     delete[] fir;
-    sample = 0;
-    fir = 0;
+    sample = nullptr;
+    fir = nullptr;
     return true;
   }
 

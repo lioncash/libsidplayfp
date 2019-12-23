@@ -444,11 +444,11 @@ SID_STRING getConfigPath()
 #else
     if (GetFileAttributes(configPath.c_str()) == INVALID_FILE_ATTRIBUTES)
     {
-        if (CreateDirectory(configPath.c_str(), NULL) == 0)
+        if (CreateDirectory(configPath.c_str(), nullptr) == 0)
         {
             LPTSTR pBuffer;
             FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,
-                NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&pBuffer, 0, NULL);
+                nullptr, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&pBuffer, 0, nullptr);
             iniError err(pBuffer);
             LocalFree(pBuffer);
             throw err;

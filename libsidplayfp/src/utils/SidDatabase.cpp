@@ -38,7 +38,7 @@ const char ERR_UNABLE_TO_LOAD_DATABASE[] = "SID DATABASE ERROR: Unable to load t
 class parseError {};
 
 SidDatabase::SidDatabase() :
-    m_parser(0),
+    m_parser(nullptr),
     errorString(ERR_NO_DATABASE_LOADED)
 {}
 

@@ -70,7 +70,7 @@ namespace stringutils
         if (s1 == s2)
             return true;
 
-        if (s1 == 0 || s2 == 0)
+        if (s1 == nullptr || s2 == nullptr)
             return false;
 
         while ((*s1 != '\0') || (*s2 != '\0'))
@@ -100,7 +100,7 @@ namespace stringutils
         if (s1 == s2 || n == 0)
             return true;
 
-        if (s1 == 0 || s2 == 0)
+        if (s1 == nullptr || s2 == nullptr)
             return false;
 
         while (n-- && ((*s1 != '\0') || (*s2 != '\0')))

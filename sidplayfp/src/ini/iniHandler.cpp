@@ -71,7 +71,7 @@ bool iniHandler::open(const TCHAR *fName)
     {
         // Try creating new file
 #ifdef _WIN32
-        const HANDLE h = CreateFile(fName, GENERIC_READ|GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+        const HANDLE h = CreateFile(fName, GENERIC_READ|GENERIC_WRITE, 0, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
         if (h != INVALID_HANDLE_VALUE)
         {
             CloseHandle(h);
@@ -151,8 +151,8 @@ bool iniHandler::setSection(const TCHAR *section)
 
 const TCHAR *iniHandler::getValue(const TCHAR *key) const
 {
-    keys_t::const_iterator keyIt = std::find_if((*curSection).second.begin(), (*curSection).second.end(), compare<stringPair_t>(key));
-    return (keyIt != (*curSection).second.end()) ? keyIt->second.c_str() : 0;
+    auto keyIt = std::find_if((*curSection).second.begin(), (*curSection).second.end(), compare<stringPair_t>(key));
+    return (keyIt != (*curSection).second.end()) ? keyIt->second.c_str() : nullptr;
 }
 
 void iniHandler::addSection(const TCHAR *section)

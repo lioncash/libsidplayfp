@@ -73,7 +73,7 @@ public:  // ----------------------------------------------------------------
      * @param fileNameExt
      * @param separatorIsSlash
      */
-    explicit SidTune(const char* fileName, const char **fileNameExt = 0,
+    explicit SidTune(const char* fileName, const char **fileNameExt = nullptr,
                      bool separatorIsSlash = false);
 
     /**
@@ -163,7 +163,7 @@ public:  // ----------------------------------------------------------------
      *
      * @return a pointer to the buffer containing the md5 string, 0 if no tune is loaded.
      */
-    const char *createMD5(char *md5 = 0);
+    const char *createMD5(char *md5 = nullptr);
 
     /**
      * Calculates the MD5 hash of the tune, new method, introduced in HVSC#68.
@@ -172,7 +172,7 @@ public:  // ----------------------------------------------------------------
      *
      * @return a pointer to the buffer containing the md5 string, 0 if no tune is loaded.
      */
-    const char *createMD5New(char *md5 = 0);
+    const char *createMD5New(char *md5 = nullptr);
 
     const uint_least8_t* c64Data() const;
 

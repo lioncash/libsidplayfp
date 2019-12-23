@@ -156,7 +156,7 @@ public:
      * @param basic pointer to Basic ROM, generally needed only for BASIC tunes.
      * @param character pointer to character generator ROM.
      */
-    void setRoms(const uint8_t* kernal, const uint8_t* basic=0, const uint8_t* character=0);
+    void setRoms(const uint8_t* kernal, const uint8_t* basic = nullptr, const uint8_t* character = nullptr);
 
     /**
      * Get the CIA 1 Timer A programmed value.

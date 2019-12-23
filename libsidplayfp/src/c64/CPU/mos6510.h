@@ -95,11 +95,8 @@ public:
 private:
     struct ProcessorCycle
     {
-        void (MOS6510::*func)();
-        bool nosteal;
-        ProcessorCycle() :
-            func(0),
-            nosteal(false) {}
+        void (MOS6510::*func)() = nullptr;
+        bool nosteal = false;
     };
 
 private:
@@ -159,7 +156,7 @@ private:
 #endif
 
     /// Table of CPU opcode implementations
-    struct ProcessorCycle instrTable[0x101 << 3];
+    ProcessorCycle instrTable[0x101 << 3];
 
 private:
     /// Represents an instruction subcycle that writes

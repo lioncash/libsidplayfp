@@ -105,20 +105,22 @@ bool parseTime(const char *str, uint_least32_t &time)
     return true;
 }
 
-bool parseAddress(const char *str, uint_least16_t &address)
+bool parseAddress(const char* str, uint_least16_t& address)
 {
     if (*str == '\0')
+    {
         return false;
+    }
 
-    long x = strtol(str, 0, 0);
+    const long x = std::strtol(str, nullptr, 0);
 
-    address = x;
+    address = static_cast<uint_least16_t>(x);
     return true;
 }
 
 void displayDebugArgs()
 {
-    std::ostream &out = cout;
+    std::ostream& out = cout;
 
     out << "Debug Options:" << endl
         << " --cpu-debug   display cpu register and assembly dumps" << endl

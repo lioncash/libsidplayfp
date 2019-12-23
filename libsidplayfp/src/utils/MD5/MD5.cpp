@@ -190,7 +190,7 @@ MD5::process(const md5_byte_t data[64])
      * On little-endian machines, we can process properly aligned data
      * without copying it.
      */
-    if (!((data - (const md5_byte_t *)0) & 3))
+    if (((data - static_cast<const md5_byte_t*>(nullptr)) & 3) == 0)
     {
         /* data are properly aligned */
         X = (const md5_word_t *)data;
@@ -198,7 +198,7 @@ MD5::process(const md5_byte_t data[64])
     else
     {
         /* not aligned */
-        memcpy(tmpBuf, data, 64);
+        std::memcpy(tmpBuf, data, 64);
         X = tmpBuf;
     }
 #endif  /* MD5_IS_BIG_ENDIAN */

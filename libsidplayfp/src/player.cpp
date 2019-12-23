@@ -68,7 +68,7 @@ Player::Player() :
     m_tune(nullptr),
     m_errorString(ERR_NA),
     m_isPlaying(STOPPED),
-    m_rand((unsigned int)::time(0))
+    m_rand(static_cast<unsigned int>(::time(nullptr)))
 {
     m_c64.setRoms(nullptr, nullptr, nullptr);
     config(m_cfg);
@@ -322,7 +322,7 @@ bool Player::config(const SidConfig &cfg, bool force)
         catch (configError const &e)
         {
             m_errorString = e.message();
-            m_cfg.sidEmulation = 0;
+            m_cfg.sidEmulation = nullptr;
             if (&m_cfg != &cfg)
             {
                 config(m_cfg);
