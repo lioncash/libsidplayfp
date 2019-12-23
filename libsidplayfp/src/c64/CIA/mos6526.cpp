@@ -24,6 +24,7 @@
 #include "c64/CIA/mos6526.h"
 
 #include <cstring>
+#include <memory>
 
 #include "sidendian.h"
 
@@ -183,7 +184,7 @@ MOS6526::MOS6526(EventScheduler &scheduler) :
     ddrb(regs[DDRB]),
     timerA(scheduler, *this),
     timerB(scheduler, *this),
-    interruptSource(new InterruptSource6526(scheduler, *this)),
+    interruptSource(std::make_unique<InterruptSource6526>(scheduler, *this)),
     tod(scheduler, *this, regs),
     serialPort(scheduler, *this),
     bTickEvent("CIA B counts A", *this, &MOS6526::bTick)
@@ -375,10 +376,11 @@ void MOS6526::spInterrupt()
 
 void MOS6526::setModel(bool newModel)
 {
-    if (newModel)
-        interruptSource.reset(new InterruptSource8521(eventScheduler, *this));
-    else
-        interruptSource.reset(new InterruptSource6526(eventScheduler, *this));
+    if (newModel) {
+        interruptSource = std::make_unique<InterruptSource8521>(eventScheduler, *this);
+    } else {
+        interruptSource = std::make_unique<InterruptSource6526>(eventScheduler, *this);
+    }
 }
 
 }

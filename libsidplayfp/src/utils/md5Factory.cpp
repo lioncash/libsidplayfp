@@ -37,13 +37,11 @@ namespace libsidplayfp
 
 std::unique_ptr<iMd5> md5Factory::get()
 {
-    return std::unique_ptr<iMd5>(
 #ifdef GCRYPT_WITH_MD5
-        new md5Gcrypt()
+    return std::make_unique<md5Gcrypt>()
 #else
-        new md5Internal()
+    return std::make_unique<md5Internal>();
 #endif
-    );
 }
 
 }

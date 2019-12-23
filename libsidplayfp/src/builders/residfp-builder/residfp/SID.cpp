@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <memory>
 
 #include "array.h"
 #include "ExternalFilter.h"
@@ -63,16 +64,16 @@ int constexpr BUS_TTL_8580 = 0xa2000;
 //@}
 
 SID::SID() :
-    filter6581(new Filter6581()),
-    filter8580(new Filter8580()),
-    externalFilter(new ExternalFilter()),
+    filter6581(std::make_unique<Filter6581>()),
+    filter8580(std::make_unique<Filter8580>()),
+    externalFilter(std::make_unique<ExternalFilter>()),
     resampler(nullptr),
-    potX(new Potentiometer()),
-    potY(new Potentiometer())
+    potX(std::make_unique<Potentiometer>()),
+    potY(std::make_unique<Potentiometer>())
 {
-    voice[0].reset(new Voice());
-    voice[1].reset(new Voice());
-    voice[2].reset(new Voice());
+    voice[0] = std::make_unique<Voice>();
+    voice[1] = std::make_unique<Voice>();
+    voice[2] = std::make_unique<Voice>();
 
     muted[0] = muted[1] = muted[2] = false;
 
@@ -377,7 +378,7 @@ void SID::setSamplingParameters(double clockFrequency, SamplingMethod method, do
     switch (method)
     {
     case DECIMATE:
-        resampler.reset(new ZeroOrderResampler(clockFrequency, samplingFrequency));
+        resampler = std::make_unique<ZeroOrderResampler>(clockFrequency, samplingFrequency);
         break;
 
     case RESAMPLE:

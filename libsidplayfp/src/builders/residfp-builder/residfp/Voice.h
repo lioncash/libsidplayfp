@@ -66,8 +66,8 @@ public:
      * Constructor.
      */
     Voice() :
-        waveformGenerator(new WaveformGenerator()),
-        envelopeGenerator(new EnvelopeGenerator()) {}
+        waveformGenerator(std::make_unique<WaveformGenerator>()),
+        envelopeGenerator(std::make_unique<EnvelopeGenerator>()) {}
 
     WaveformGenerator* wave() const { return waveformGenerator.get(); }
 

@@ -43,8 +43,8 @@ private:
 
 private:
     explicit TwoPassSincResampler(double clockFrequency, double samplingFrequency, double highestAccurateFrequency, double intermediateFrequency) :
-        s1(new SincResampler(clockFrequency, intermediateFrequency, highestAccurateFrequency)),
-        s2(new SincResampler(intermediateFrequency, samplingFrequency, highestAccurateFrequency))
+        s1(std::make_unique<SincResampler>(clockFrequency, intermediateFrequency, highestAccurateFrequency)),
+        s2(std::make_unique<SincResampler>(intermediateFrequency, samplingFrequency, highestAccurateFrequency))
     {}
 
 public:

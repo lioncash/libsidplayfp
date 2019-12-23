@@ -216,7 +216,7 @@ void SidTuneBase::loadFile(const char* fileName, buffer_t& bufferRef)
 }
 
 SidTuneBase::SidTuneBase() :
-    info(new SidTuneInfoImpl()),
+    info(std::make_unique<SidTuneInfoImpl>()),
     fileOffset(0)
 {
     // Initialize the object with some safe defaults.

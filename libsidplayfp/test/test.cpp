@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
     }
 
     m_engine.config(config);
-    std::auto_ptr<SidTune> tune(new SidTune(name.c_str()));
+    auto tune = std::make_unique<SidTune>(name.c_str());
 
     if (!tune->getStatus())
     {

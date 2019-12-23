@@ -88,7 +88,7 @@ public:
         kVddt(kVddt),
         vmin(opamp[0].x),
         vmax(opamp[opamplength - 1].x),
-        opamp(new Spline(opamp, opamplength)) {}
+        opamp(std::make_unique<Spline>(opamp, opamplength)) {}
 
     void reset() const
     {

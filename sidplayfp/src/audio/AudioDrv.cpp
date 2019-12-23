@@ -53,49 +53,49 @@ bool audioDrv::open(AudioConfig &cfg)
 #ifdef HAVE_OUT123
     if(!res)
     {
-        audio.reset(new Audio_OUT123());
+        audio = std::make_unique<Audio_OUT123>();
         res = audio->open(cfg);
     }
 #endif
 #ifdef HAVE_PULSE
     if(!res)
     {
-        audio.reset(new Audio_Pulse());
+        audio = std::make_unique<Audio_Pulse>();
         res = audio->open(cfg);
     }
 #endif
 #ifdef HAVE_ALSA
     if(!res)
     {
-        audio.reset(new Audio_ALSA());
+        audio = std::make_unique<Audio_ALSA>();
         res = audio->open(cfg);
     }
 #endif
 #ifdef HAVE_OSS
     if(!res)
     {
-        audio.reset(new Audio_OSS());
+        audio = std::make_unique<Audio_OSS>();
         res = audio->open(cfg);
     }
 #endif
 #ifdef HAVE_DIRECTX
     if(!res)
     {
-        audio.reset(new Audio_DirectX());
+        audio = std::make_unique<Audio_DirectX>();
         res = audio->open(cfg);
     }
 #endif
 #ifdef HAVE_MMSYSTEM
     if(!res)
     {
-        audio.reset(new Audio_MMSystem());
+        audio = std::make_unique<Audio_MMSystem>();
         res = audio->open(cfg);
     }
 #endif
 #ifdef HAVE_NULL
     if(!res)
     {
-        audio.reset(new Audio_Null());
+        audio = std::make_unique<Audio_Null>();
         res = audio->open(cfg);
     }
 #endif

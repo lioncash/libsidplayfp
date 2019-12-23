@@ -23,9 +23,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <cstring>
-
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -54,16 +53,17 @@
  * Load ROM dump from file.
  * Allocate the buffer if file exists, otherwise return 0.
  */
-char* loadRom(const char* path, size_t romSize)
+static std::unique_ptr<char[]> loadRom(const char* path, size_t romSize)
 {
-    char* buffer = 0;
+    std::unique_ptr<char[]> buffer;
     std::ifstream is(path, std::ios::binary);
+	
     if (is.good())
     {
-        buffer = new char[romSize];
-        is.read(buffer, romSize);
+        buffer = std::make_unique<char[]>(romSize);
+        is.read(buffer.get(), romSize);
     }
-    is.close();
+
     return buffer;
 }
 
@@ -77,19 +77,17 @@ int main(int argc, char* argv[])
     sidplayfp m_engine;
 
     { // Load ROM files
-    char *kernal = loadRom(KERNAL_PATH, 8192);
-    char *basic = loadRom(BASIC_PATH, 8192);
-    char *chargen = loadRom(CHARGEN_PATH, 4096);
+    const auto kernal = loadRom(KERNAL_PATH, 8192);
+    const auto basic = loadRom(BASIC_PATH, 8192);
+    const auto chargen = loadRom(CHARGEN_PATH, 4096);
 
-    m_engine.setRoms((const uint8_t*)kernal, (const uint8_t*)basic, (const uint8_t*)chargen);
-
-    delete [] kernal;
-    delete [] basic;
-    delete [] chargen;
+    m_engine.setRoms(reinterpret_cast<const uint8_t*>(kernal.get()),
+                     reinterpret_cast<const uint8_t*>(basic.get()),
+                     reinterpret_cast<const uint8_t*>(chargen.get()));
     }
 
     // Set up a SID builder
-    std::auto_ptr<ReSIDfpBuilder> rs(new ReSIDfpBuilder("Demo"));
+    auto rs = std::make_unique<ReSIDfpBuilder>("Demo");
 
     // Get the number of SIDs supported by the engine
     unsigned int maxsids = (m_engine.info ()).maxsids();
@@ -105,7 +103,7 @@ int main(int argc, char* argv[])
     }
 
     // Load tune from file
-    std::auto_ptr<SidTune> tune(new SidTune(argv[1]));
+    auto tune = std::make_unique<SidTune>(argv[1]);
 
     // CHeck if the tune is valid
     if (!tune->getStatus())
