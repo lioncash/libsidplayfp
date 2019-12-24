@@ -26,7 +26,7 @@ const char *SidInfo::name() const { return getName(); }
 
 const char *SidInfo::version() const { return getVersion(); }
 
-unsigned int SidInfo::numberOfCredits() const { return getNumberOfCredits(); }
+std::size_t SidInfo::numberOfCredits() const { return getNumberOfCredits(); }
 const char *SidInfo::credits(unsigned int i) const { return getCredits(i); }
 
 unsigned int SidInfo::maxsids() const { return getMaxsids(); }

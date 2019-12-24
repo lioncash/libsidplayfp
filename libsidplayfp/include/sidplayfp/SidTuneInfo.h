@@ -23,6 +23,7 @@
 #ifndef SIDTUNEINFO_H
 #define SIDTUNEINFO_H
 
+#include <cstddef>
 #include <cstdint>
 
 #include <sidplayfp/siddefs.h>
@@ -106,7 +107,7 @@ public:
     /**
      * The number of SID chips required by the tune.
      */
-    int sidChips() const;
+    std::size_t sidChips() const;
 
     /**
      * Intended speed.
@@ -142,8 +143,8 @@ public:
      * - 2 = Released
      */
     //@{
-    unsigned int numberOfInfoStrings() const;     ///< The number of available text info lines
-    const char* infoString(unsigned int i) const; ///< Text info from the format headers etc.
+    std::size_t numberOfInfoStrings() const;     ///< The number of available text info lines
+    const char* infoString(std::size_t i) const; ///< Text info from the format headers etc.
     //@}
 
     /**
@@ -151,8 +152,8 @@ public:
      * MUS comments.
      */
     //@{
-    unsigned int numberOfCommentStrings() const;     ///< Number of comments
-    const char* commentString(unsigned int i) const; ///< Used to stash the MUS comment somewhere
+    std::size_t numberOfCommentStrings() const;     ///< Number of comments
+    const char* commentString(std::size_t i) const; ///< Used to stash the MUS comment somewhere
     //@}
 
     /**
@@ -214,7 +215,7 @@ private:
 
     virtual uint_least16_t getSidChipBase(unsigned int i) const =0;
 
-    virtual int getSidChips() const =0;
+    virtual std::size_t getSidChips() const =0;
 
     virtual int getSongSpeed() const =0;
 
@@ -226,11 +227,11 @@ private:
 
     virtual compatibility_t getCompatibility() const =0;
 
-    virtual unsigned int getNumberOfInfoStrings() const =0;
-    virtual const char* getInfoString(unsigned int i) const =0;
+    virtual std::size_t getNumberOfInfoStrings() const =0;
+    virtual const char* getInfoString(std::size_t i) const =0;
 
-    virtual unsigned int getNumberOfCommentStrings() const =0;
-    virtual const char* getCommentString(unsigned int i) const =0;
+    virtual std::size_t getNumberOfCommentStrings() const =0;
+    virtual const char* getCommentString(std::size_t i) const =0;
 
     virtual uint_least32_t getDataFileLen() const =0;
 

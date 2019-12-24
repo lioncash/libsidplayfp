@@ -36,7 +36,7 @@ unsigned int SidTuneInfo::currentSong() const { return getCurrentSong(); }
 
 uint_least16_t SidTuneInfo::sidChipBase(unsigned int i) const { return getSidChipBase(i); }
 
-int SidTuneInfo::sidChips() const { return getSidChips(); }
+std::size_t SidTuneInfo::sidChips() const { return getSidChips(); }
 
 int SidTuneInfo::songSpeed() const { return getSongSpeed(); }
 
@@ -48,12 +48,12 @@ SidTuneInfo::model_t SidTuneInfo::sidModel(unsigned int i) const { return getSid
 
 SidTuneInfo::compatibility_t SidTuneInfo::compatibility() const { return getCompatibility(); }
 
-unsigned int SidTuneInfo::numberOfInfoStrings() const { return getNumberOfInfoStrings(); }
-const char* SidTuneInfo::infoString(unsigned int i) const { return getInfoString(i); }
+std::size_t SidTuneInfo::numberOfInfoStrings() const { return getNumberOfInfoStrings(); }
+const char* SidTuneInfo::infoString(std::size_t i) const { return getInfoString(i); }
 
 
-unsigned int SidTuneInfo::numberOfCommentStrings() const{ return getNumberOfCommentStrings(); }
-const char* SidTuneInfo::commentString(unsigned int i) const{ return getCommentString(i); }
+std::size_t SidTuneInfo::numberOfCommentStrings() const{ return getNumberOfCommentStrings(); }
+const char* SidTuneInfo::commentString(std::size_t i) const{ return getCommentString(i); }
 
 uint_least32_t SidTuneInfo::dataFileLen() const { return getDataFileLen(); }
 

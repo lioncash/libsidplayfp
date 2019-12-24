@@ -23,6 +23,7 @@
 #ifndef SIDINFO_H
 #define SIDINFO_H
 
+#include <cstddef>
 #include <cstdint>
 
 #include <sidplayfp/siddefs.h>
@@ -41,7 +42,7 @@ public:
 
     /// Library credits
     //@{
-    unsigned int numberOfCredits() const;
+    std::size_t numberOfCredits() const;
     const char *credits(unsigned int i) const;
     //@}
 
@@ -78,7 +79,7 @@ private:
 
     virtual const char *getVersion() const =0;
 
-    virtual unsigned int getNumberOfCredits() const =0;
+    virtual std::size_t getNumberOfCredits() const =0;
     virtual const char *getCredits(unsigned int i) const =0;
 
     virtual unsigned int getMaxsids() const =0;
