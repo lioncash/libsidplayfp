@@ -67,15 +67,12 @@ SID::SID() :
     filter6581(std::make_unique<Filter6581>()),
     filter8580(std::make_unique<Filter8580>()),
     externalFilter(std::make_unique<ExternalFilter>()),
-    resampler(nullptr),
     potX(std::make_unique<Potentiometer>()),
     potY(std::make_unique<Potentiometer>())
 {
-    voice[0] = std::make_unique<Voice>();
-    voice[1] = std::make_unique<Voice>();
-    voice[2] = std::make_unique<Voice>();
-
-    muted[0] = muted[1] = muted[2] = false;
+    voices[0] = std::make_unique<Voice>();
+    voices[1] = std::make_unique<Voice>();
+    voices[2] = std::make_unique<Voice>();
 
     reset();
     setChipModel(MOS8580);
@@ -118,9 +115,9 @@ void SID::ageBusValue(unsigned int n)
 
 int SID::output() const
 {
-    const int v1 = voice[0]->output(voice[2]->wave());
-    const int v2 = voice[1]->output(voice[0]->wave());
-    const int v3 = voice[2]->output(voice[1]->wave());
+    const int v1 = voices[0]->output(voices[2]->wave());
+    const int v2 = voices[1]->output(voices[0]->wave());
+    const int v3 = voices[2]->output(voices[1]->wave());
 
     return externalFilter->clock(filter->clock(v1, v2, v3));
 }
@@ -130,25 +127,25 @@ void SID::voiceSync(bool sync)
     if (sync)
     {
         // Synchronize the 3 waveform generators.
-        for (int i = 0; i < 3; i++)
+        for (std::size_t i = 0; i < voices.size(); i++)
         {
-            voice[i]->wave()->synchronize(voice[(i + 1) % 3]->wave(), voice[(i + 2) % 3]->wave());
+            voices[i]->wave()->synchronize(voices[(i + 1) % 3]->wave(), voices[(i + 2) % 3]->wave());
         }
     }
 
     // Calculate the time to next voice sync
     nextVoiceSync = std::numeric_limits<int>::max();
 
-    for (int i = 0; i < 3; i++)
+    for (std::size_t i = 0; i < voices.size(); i++)
     {
-        const unsigned int freq = voice[i]->wave()->readFreq();
+        const unsigned int freq = voices[i]->wave()->readFreq();
 
-        if (voice[i]->wave()->readTest() || freq == 0 || !voice[(i + 1) % 3]->wave()->readSync())
+        if (voices[i]->wave()->readTest() || freq == 0 || !voices[(i + 1) % 3]->wave()->readSync())
         {
             continue;
         }
 
-        const unsigned int accumulator = voice[i]->wave()->readAccumulator();
+        const unsigned int accumulator = voices[i]->wave()->readAccumulator();
         const unsigned int thisVoiceSync = ((0x7fffff - accumulator) & 0xffffff) / freq + 1;
 
         if (thisVoiceSync < nextVoiceSync)
@@ -182,26 +179,26 @@ void SID::setChipModel(ChipModel model)
     matrix_t* tables = WaveformCalculator::getInstance()->buildTable(model);
 
     // update voice offsets
-    for (int i = 0; i < 3; i++)
+    for (auto& voice : voices)
     {
-        voice[i]->envelope()->setChipModel(model);
-        voice[i]->wave()->setChipModel(model);
-        voice[i]->wave()->setWaveformModels(tables);
+        voice->envelope()->setChipModel(model);
+        voice->wave()->setChipModel(model);
+        voice->wave()->setWaveformModels(tables);
     }
 }
 
 void SID::reset()
 {
-    for (int i = 0; i < 3; i++)
+    for (auto& voice : voices)
     {
-        voice[i]->reset();
+        voice->reset();
     }
 
     filter6581->reset();
     filter8580->reset();
     externalFilter->reset();
 
-    if (resampler.get())
+    if (resampler)
     {
         resampler->reset();
     }
@@ -232,12 +229,12 @@ unsigned char SID::read(int offset)
         break;
 
     case 0x1b: // Voice #3 waveform output
-        busValue = voice[2]->wave()->readOSC();
+        busValue = voices[2]->wave()->readOSC();
         busValueTtl = modelTTL;
         break;
 
     case 0x1c: // Voice #3 ADSR output
-        busValue = voice[2]->envelope()->readENV();
+        busValue = voices[2]->envelope()->readENV();
         busValueTtl = modelTTL;
         break;
 
@@ -260,87 +257,87 @@ void SID::write(int offset, unsigned char value)
     switch (offset)
     {
     case 0x00: // Voice #1 frequency (Low-byte)
-        voice[0]->wave()->writeFREQ_LO(value);
+        voices[0]->wave()->writeFREQ_LO(value);
         break;
 
     case 0x01: // Voice #1 frequency (High-byte)
-        voice[0]->wave()->writeFREQ_HI(value);
+        voices[0]->wave()->writeFREQ_HI(value);
         break;
 
     case 0x02: // Voice #1 pulse width (Low-byte)
-        voice[0]->wave()->writePW_LO(value);
+        voices[0]->wave()->writePW_LO(value);
         break;
 
     case 0x03: // Voice #1 pulse width (bits #8-#15)
-        voice[0]->wave()->writePW_HI(value);
+        voices[0]->wave()->writePW_HI(value);
         break;
 
     case 0x04: // Voice #1 control register
-        voice[0]->writeCONTROL_REG(muted[0] ? 0 : value);
+        voices[0]->writeCONTROL_REG(muted[0] ? 0 : value);
         break;
 
     case 0x05: // Voice #1 Attack and Decay length
-        voice[0]->envelope()->writeATTACK_DECAY(value);
+        voices[0]->envelope()->writeATTACK_DECAY(value);
         break;
 
     case 0x06: // Voice #1 Sustain volume and Release length
-        voice[0]->envelope()->writeSUSTAIN_RELEASE(value);
+        voices[0]->envelope()->writeSUSTAIN_RELEASE(value);
         break;
 
     case 0x07: // Voice #2 frequency (Low-byte)
-        voice[1]->wave()->writeFREQ_LO(value);
+        voices[1]->wave()->writeFREQ_LO(value);
         break;
 
     case 0x08: // Voice #2 frequency (High-byte)
-        voice[1]->wave()->writeFREQ_HI(value);
+        voices[1]->wave()->writeFREQ_HI(value);
         break;
 
     case 0x09: // Voice #2 pulse width (Low-byte)
-        voice[1]->wave()->writePW_LO(value);
+        voices[1]->wave()->writePW_LO(value);
         break;
 
     case 0x0a: // Voice #2 pulse width (bits #8-#15)
-        voice[1]->wave()->writePW_HI(value);
+        voices[1]->wave()->writePW_HI(value);
         break;
 
     case 0x0b: // Voice #2 control register
-        voice[1]->writeCONTROL_REG(muted[1] ? 0 : value);
+        voices[1]->writeCONTROL_REG(muted[1] ? 0 : value);
         break;
 
     case 0x0c: // Voice #2 Attack and Decay length
-        voice[1]->envelope()->writeATTACK_DECAY(value);
+        voices[1]->envelope()->writeATTACK_DECAY(value);
         break;
 
     case 0x0d: // Voice #2 Sustain volume and Release length
-        voice[1]->envelope()->writeSUSTAIN_RELEASE(value);
+        voices[1]->envelope()->writeSUSTAIN_RELEASE(value);
         break;
 
     case 0x0e: // Voice #3 frequency (Low-byte)
-        voice[2]->wave()->writeFREQ_LO(value);
+        voices[2]->wave()->writeFREQ_LO(value);
         break;
 
     case 0x0f: // Voice #3 frequency (High-byte)
-        voice[2]->wave()->writeFREQ_HI(value);
+        voices[2]->wave()->writeFREQ_HI(value);
         break;
 
     case 0x10: // Voice #3 pulse width (Low-byte)
-        voice[2]->wave()->writePW_LO(value);
+        voices[2]->wave()->writePW_LO(value);
         break;
 
     case 0x11: // Voice #3 pulse width (bits #8-#15)
-        voice[2]->wave()->writePW_HI(value);
+        voices[2]->wave()->writePW_HI(value);
         break;
 
     case 0x12: // Voice #3 control register
-        voice[2]->writeCONTROL_REG(muted[2] ? 0 : value);
+        voices[2]->writeCONTROL_REG(muted[2] ? 0 : value);
         break;
 
     case 0x13: // Voice #3 Attack and Decay length
-        voice[2]->envelope()->writeATTACK_DECAY(value);
+        voices[2]->envelope()->writeATTACK_DECAY(value);
         break;
 
     case 0x14: // Voice #3 Sustain volume and Release length
-        voice[2]->envelope()->writeSUSTAIN_RELEASE(value);
+        voices[2]->envelope()->writeSUSTAIN_RELEASE(value);
         break;
 
     case 0x15: // Filter cut off frequency (bits #0-#2)
@@ -404,14 +401,14 @@ int SID::clock(unsigned int cycles, short* buf)
             for (unsigned int i = 0; i < delta_t; i++)
             {
                 // clock waveform generators
-                voice[0]->wave()->clock();
-                voice[1]->wave()->clock();
-                voice[2]->wave()->clock();
+                voices[0]->wave()->clock();
+                voices[1]->wave()->clock();
+                voices[2]->wave()->clock();
 
                 // clock envelope generators
-                voice[0]->envelope()->clock();
-                voice[1]->envelope()->clock();
-                voice[2]->envelope()->clock();
+                voices[0]->envelope()->clock();
+                voices[1]->envelope()->clock();
+                voices[2]->envelope()->clock();
 
                 if (unlikely(resampler->input(output())))
                 {
@@ -445,16 +442,16 @@ void SID::clockSilent(unsigned int cycles)
             for (int i = 0; i < delta_t; i++)
             {
                 // clock waveform generators (can affect OSC3)
-                voice[0]->wave()->clock();
-                voice[1]->wave()->clock();
-                voice[2]->wave()->clock();
+                voices[0]->wave()->clock();
+                voices[1]->wave()->clock();
+                voices[2]->wave()->clock();
 
-                voice[0]->wave()->output(voice[2]->wave());
-                voice[1]->wave()->output(voice[0]->wave());
-                voice[2]->wave()->output(voice[1]->wave());
+                voices[0]->wave()->output(voices[2]->wave());
+                voices[1]->wave()->output(voices[0]->wave());
+                voices[2]->wave()->output(voices[1]->wave());
 
                 // clock ENV3 only
-                voice[2]->envelope()->clock();
+                voices[2]->envelope()->clock();
             }
 
             cycles -= delta_t;

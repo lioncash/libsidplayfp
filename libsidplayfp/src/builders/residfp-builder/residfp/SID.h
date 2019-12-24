@@ -23,6 +23,7 @@
 #ifndef SIDFP_H
 #define SIDFP_H
 
+#include <array>
 #include <memory>
 
 #include "siddefs-fp.h"
@@ -244,7 +245,7 @@ private:
     std::unique_ptr<Potentiometer> const potY;
 
     /// SID voices
-    std::unique_ptr<Voice> voice[3];
+    std::array<std::unique_ptr<Voice>, 3> voices;
 
     /// Time to live for the last written value
     int busValueTtl;
@@ -262,7 +263,7 @@ private:
     unsigned char busValue;
 
     /// Flags for muted channels
-    bool muted[3];
+    std::array<bool, 3> muted{};
 };
 
 } // namespace reSIDfp
