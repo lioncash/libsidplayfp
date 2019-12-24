@@ -669,7 +669,7 @@ STIL::getDirs(ifstream &inFile, dirList &dirs, bool isSTILFile)
             if (strncmp(line.data(), "#  STIL v", 9) == 0)
             {
                 // Get the version number
-                STILVersion = atof(line.c_str() + 9);
+                STILVersion = static_cast<float>(std::atof(line.c_str() + 9));
 
                 // Put it into the string, too.
                 ostringstream ss;
