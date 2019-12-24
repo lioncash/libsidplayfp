@@ -22,6 +22,7 @@
 #define EXTRASIDBANK_H
 
 #include <algorithm>
+#include <array>
 #include <vector>
 
 #include "Banks/Bank.h"
@@ -45,8 +46,7 @@ public:
 
     void resetSIDMapper(Bank* bank)
     {
-        for (int i = 0; i < MAPPER_SIZE; i++)
-            mapper[i] = bank;
+        mapper.fill(bank);
     }
 
     uint8_t peek(uint_least16_t addr) override
@@ -82,14 +82,14 @@ private:
      * Size of mapping table. Each 32 bytes another SID chip base address
      * can be assigned to.
      */
-    static const int MAPPER_SIZE = 8;
+    static constexpr int MAPPER_SIZE = 8;
 
     /**
      * SID mapping table.
      * Maps a SID chip base address to a SID
      * or to the underlying bank.
      */
-    Bank *mapper[MAPPER_SIZE];
+    std::array<Bank*, MAPPER_SIZE> mapper{};
 
     sids_t sids;
 };
