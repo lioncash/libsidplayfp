@@ -36,11 +36,7 @@ inline double getW0(double res, double cap)
     return 1. / (res * cap);
 }
 
-ExternalFilter::ExternalFilter() :
-    Vlp(0),
-    Vhp(0),
-    w0lp_1_s7(0),
-    w0hp_1_s17(0)
+ExternalFilter::ExternalFilter()
 {
     reset();
 }
