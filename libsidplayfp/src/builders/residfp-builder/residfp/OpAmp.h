@@ -74,7 +74,6 @@ public:
      * @param kVddt transistor dt parameter (in volts)
      */
     explicit OpAmp(const Spline::Point opamp[], int opamplength, double kVddt) :
-        x(0.),
         kVddt(kVddt),
         vmin(opamp[0].x),
         vmax(opamp[opamplength - 1].x),
@@ -96,7 +95,7 @@ public:
 
 private:
     /// Current root position (cached as guess to speed up next iteration)
-    mutable double x;
+    mutable double x = 0.0;
 
     const double kVddt;
     const double vmin;
