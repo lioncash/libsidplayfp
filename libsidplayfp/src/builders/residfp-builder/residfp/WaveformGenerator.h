@@ -23,6 +23,7 @@
 #ifndef WAVEFORMGENERATOR_H
 #define WAVEFORMGENERATOR_H
 
+#include <array>
 #include "array.h"
 #include "siddefs-fp.h"
 
@@ -118,34 +119,6 @@ public:
     void synchronize(WaveformGenerator* syncDest, const WaveformGenerator* syncSource) const;
 
     /**
-     * Constructor.
-     */
-    WaveformGenerator() :
-        model_wave(nullptr),
-        wave(nullptr),
-        pw(0),
-        shift_register(0),
-        shift_pipeline(0),
-        ring_msb_mask(0),
-        no_noise(0),
-        noise_output(0),
-        no_noise_or_noise_output(no_noise | noise_output),
-        no_pulse(0),
-        pulse_output(0),
-        waveform(0),
-        floating_output_ttl(0),
-        waveform_output(0),
-        accumulator(0x555555),          // Accumulator's even bits are high on powerup
-        freq(0),
-        tri_saw_pipeline(0x555),
-        osc3(0),
-        shift_register_reset(0),
-        test(false),
-        sync(false),
-        msb_rising(false),
-        is6581(true) {}
-
-    /**
      * Write FREQ LO register.
      *
      * @param freq_lo low 8 bits of frequency
@@ -219,60 +192,60 @@ public:
     bool readSync() const { return sync; }
 
 private:
-    matrix_t* model_wave;
+    matrix_t* model_wave = nullptr;
 
-    short* wave;
+    short* wave = nullptr;
 
     // PWout = (PWn/40.95)%
-    unsigned int pw;
+    unsigned int pw = 0;
 
-    unsigned int shift_register;
+    unsigned int shift_register = 0;
 
     /// Emulation of pipeline causing bit 19 to clock the shift register.
-    int shift_pipeline;
+    int shift_pipeline = 0;
 
-    unsigned int ring_msb_mask;
-    unsigned int no_noise;
-    unsigned int noise_output;
-    unsigned int no_noise_or_noise_output;
-    unsigned int no_pulse;
-    unsigned int pulse_output;
+    unsigned int ring_msb_mask = 0;
+    unsigned int no_noise = 0;
+    unsigned int noise_output = 0;
+    unsigned int no_noise_or_noise_output = 0;
+    unsigned int no_pulse = 0;
+    unsigned int pulse_output = 0;
 
     /// The control register right-shifted 4 bits; used for output function table lookup.
-    unsigned int waveform;
+    unsigned int waveform = 0;
 
-    int floating_output_ttl;
+    int floating_output_ttl = 0;
 
-    unsigned int waveform_output;
+    unsigned int waveform_output = 0;
 
     /// Current and previous accumulator value.
-    unsigned int accumulator;
+    unsigned int accumulator = 0x555555; // Accumulator's even bits are high on powerup
 
     // Fout  = (Fn*Fclk/16777216)Hz
-    unsigned int freq;
+    unsigned int freq = 0;
 
     // 8580 tri/saw pipeline
-    unsigned int tri_saw_pipeline;
-    unsigned int osc3;
+    unsigned int tri_saw_pipeline = 0x555;
+    unsigned int osc3 = 0;
 
     /// Remaining time to fully reset shift register.
-    int shift_register_reset;
+    int shift_register_reset = 0;
 
     /// Current chip model's shift register reset time.
-    int model_shift_register_reset;
+    int model_shift_register_reset = 0;
 
     /// The control register bits. Gate is handled by EnvelopeGenerator.
     //@{
-    bool test;
-    bool sync;
+    bool test = false;
+    bool sync = false;
     //@}
 
     /// Tell whether the accumulator MSB was set high on this cycle.
-    bool msb_rising;
+    bool msb_rising = false;
 
-    bool is6581;
+    bool is6581 = true;
 
-    float dac[4096];
+    std::array<float, 4096> dac;
 };
 
 } // namespace reSIDfp
