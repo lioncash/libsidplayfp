@@ -21,6 +21,7 @@
 
 #include "Spline.h"
 
+#include <algorithm>
 #include <cassert>
 #include <limits>
 
@@ -92,14 +93,12 @@ Spline::Point Spline::evaluate(double x) const
 {
     if (x < c->x1 || x > c->x2)
     {
-        for (size_t i = 0; i < params.size(); i++)
-        {
-            if (x <= params[i].x2)
-            {
-                c = &params[i];
-                break;
-            }
-        }
+        const auto iter = std::find_if(params.cbegin(), params.cend(), 
+                                       [x](const Param& param) { return x <= param.x2; });
+    	if (iter != params.cend())
+    	{
+            c = &*iter;
+    	}
     }
 
     // Interpolate
