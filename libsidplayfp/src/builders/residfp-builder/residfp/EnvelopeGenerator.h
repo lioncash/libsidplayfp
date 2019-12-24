@@ -43,6 +43,64 @@ namespace reSIDfp
  */
 class EnvelopeGenerator
 {
+public:
+    /**
+     * Set chip model.
+     * This determines the type of the analog DAC emulation:
+     * 8580 is perfectly linear while 6581 is nonlinear.
+     *
+     * @param chipModel
+     */
+    void setChipModel(ChipModel chipModel);
+
+    /**
+     * SID clocking.
+     */
+    void clock();
+
+    /**
+     * Get the Envelope Generator output.
+     * DAC imperfections are emulated by using envelope_counter as an index
+     * into a DAC lookup table. readENV() uses envelope_counter directly.
+     */
+    float output() const { return dac[envelope_counter]; }
+
+    /**
+     * SID reset.
+     */
+    void reset();
+
+    /**
+     * Write control register.
+     *
+     * @param control
+     *            control register
+     */
+    void writeCONTROL_REG(unsigned char control);
+
+    /**
+     * Write Attack/Decay register.
+     *
+     * @param attack_decay
+     *            attack/decay value
+     */
+    void writeATTACK_DECAY(unsigned char attack_decay);
+
+    /**
+     * Write Sustain/Release register.
+     *
+     * @param sustain_release
+     *            sustain/release value
+     */
+    void writeSUSTAIN_RELEASE(unsigned char sustain_release);
+
+    /**
+     * Return the envelope current value.
+     *
+     * @return envelope counter
+     */
+    unsigned char readENV() const { return env3; }
+
 private:
     /**
      * The envelope state machine's distinct states. In addition to this,
@@ -122,64 +180,6 @@ private:
     void set_exponential_counter();
 
     void state_change();
-
-public:
-    /**
-     * Set chip model.
-     * This determines the type of the analog DAC emulation:
-     * 8580 is perfectly linear while 6581 is nonlinear.
-     *
-     * @param chipModel
-     */
-    void setChipModel(ChipModel chipModel);
-
-    /**
-     * SID clocking.
-     */
-    void clock();
-
-    /**
-     * Get the Envelope Generator output.
-     * DAC imperfections are emulated by using envelope_counter as an index
-     * into a DAC lookup table. readENV() uses envelope_counter directly.
-     */
-    float output() const { return dac[envelope_counter]; }
-
-    /**
-     * SID reset.
-     */
-    void reset();
-
-    /**
-     * Write control register.
-     *
-     * @param control
-     *            control register
-     */
-    void writeCONTROL_REG(unsigned char control);
-
-    /**
-     * Write Attack/Decay register.
-     *
-     * @param attack_decay
-     *            attack/decay value
-     */
-    void writeATTACK_DECAY(unsigned char attack_decay);
-
-    /**
-     * Write Sustain/Release register.
-     *
-     * @param sustain_release
-     *            sustain/release value
-     */
-    void writeSUSTAIN_RELEASE(unsigned char sustain_release);
-
-    /**
-     * Return the envelope current value.
-     *
-     * @return envelope counter
-     */
-    unsigned char readENV() const { return env3; }
 };
 
 } // namespace reSIDfp
