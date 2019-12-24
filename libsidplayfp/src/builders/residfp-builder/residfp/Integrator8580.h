@@ -24,6 +24,8 @@
 #define INTEGRATOR8580_H
 
 #include <cassert>
+#include <cstdint>
+#include "FilterModelConfig8580.h"
 
 namespace reSIDfp
 {
@@ -49,10 +51,10 @@ namespace reSIDfp
 class Integrator8580
 {
 public:
-    Integrator8580(const unsigned short* opamp_rev, double Vth, double denorm, double C, double k, double uCox, double vmin, double N16) :
+    explicit Integrator8580(const FilterModelConfig8580::OpAmpTable& opamp_rev,
+                            double Vth, double denorm, double C, double k,
+                            double uCox, double vmin, double N16) :
         opamp_rev(opamp_rev),
-        vx(0),
-        vc(0),
         Vth(Vth),
         denorm(denorm),
         C(C),
@@ -70,7 +72,7 @@ public:
         // Fit in 5 bits.
         const double tmp = denorm * (1 << 13) * (uCox / (2. * k) * wl * 1.0e-6 / C);
         assert(tmp > -0.5 && tmp < 65535.5);
-        n_dac = static_cast<unsigned short>(tmp + 0.5);
+        n_dac = static_cast<std::uint16_t>(tmp + 0.5);
     }
 
     /**
@@ -87,19 +89,19 @@ public:
         // k*Vgt - x = (k*Vgt - t) - (x - t)
         const double tmp = N16 * (Vgt - vmin);
         assert(tmp > -0.5 && tmp < 65535.5);
-        kVgt = static_cast<unsigned short>(tmp + 0.5);
+        kVgt = static_cast<std::uint16_t>(tmp + 0.5);
     }
 
     int solve(int vi) const;
 
 private:
-    const unsigned short* opamp_rev;
+    const FilterModelConfig8580::OpAmpTable& opamp_rev;
 
-    mutable int vx;
-    mutable int vc;
+    mutable int vx = 0;
+    mutable int vc = 0;
 
-    unsigned short kVgt;
-    unsigned short n_dac;
+    std::uint16_t kVgt = 0;
+    std::uint16_t n_dac = 0;
 
     const double Vth;
     const double denorm;

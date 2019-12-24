@@ -244,7 +244,7 @@ FilterModelConfig8580::~FilterModelConfig8580() = default;
 
 std::unique_ptr<Integrator8580> FilterModelConfig8580::buildIntegrator()
 {
-    return std::make_unique<Integrator8580>(opamp_rev.data(), Vth, denorm, C, k, uCox, vmin, N16);
+    return std::make_unique<Integrator8580>(opamp_rev, Vth, denorm, C, k, uCox, vmin, N16);
 }
 
 } // namespace reSIDfp
