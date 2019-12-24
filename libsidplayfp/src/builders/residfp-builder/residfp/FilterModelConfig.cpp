@@ -34,7 +34,7 @@ namespace reSIDfp
 {
 namespace
 {
-constexpr unsigned int OPAMP_SIZE = 33;
+constexpr std::size_t OPAMP_SIZE = 33;
 
 /**
  * This is the SID 6581 op-amp voltage transfer function, measured on
@@ -106,7 +106,7 @@ FilterModelConfig::FilterModelConfig() : dac(DAC_BITS)
 
     // Create lookup table mapping capacitor voltage to op-amp input voltage:
 
-    const Spline s(scaled_voltage.data(), OPAMP_SIZE);
+    const Spline s(scaled_voltage.data(), scaled_voltage.size());
 
     for (std::size_t x = 0; x < opamp_rev.size(); x++)
     {
@@ -122,7 +122,7 @@ FilterModelConfig::FilterModelConfig() : dac(DAC_BITS)
 
     // Create lookup tables for gains / summers.
 
-    OpAmp opampModel(opamp_voltage.data(), OPAMP_SIZE, kVddt);
+    const OpAmp opampModel(opamp_voltage.data(), opamp_voltage.size(), kVddt);
 
     // The filter summer operates at n ~ 1, and has 5 fundamentally different
     // input configurations (2 - 6 input "resistors").
