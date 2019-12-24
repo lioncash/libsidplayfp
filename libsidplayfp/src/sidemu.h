@@ -52,12 +52,6 @@ public:
     };
 
     explicit sidemu(sidbuilder* builder) :
-        eventScheduler(nullptr),
-        m_buffer(nullptr),
-        m_bufferpos(0),
-        m_status(true),
-        isLocked(false),
-        m_error("N/A"),
         m_builder(builder) {}
     ~sidemu() override = default;
 
@@ -126,20 +120,20 @@ protected:
     static const char ERR_INVALID_SAMPLING[];
     static const char ERR_INVALID_CHIP[];
 
-    EventScheduler *eventScheduler;
+    EventScheduler *eventScheduler = nullptr;
 
     event_clock_t m_accessClk;
 
     /// The sample buffer
-    short *m_buffer;
+    short *m_buffer = nullptr;
 
     /// Current position in buffer
-    int m_bufferpos;
+    int m_bufferpos = 0;
 
-    bool m_status;
-    bool isLocked;
+    bool m_status = true;
+    bool isLocked = false;
 
-    std::string m_error;
+    std::string m_error{"N/A"};
 
 private:
     sidbuilder* const m_builder;
