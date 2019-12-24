@@ -24,17 +24,19 @@
 
 namespace reSIDfp
 {
-
+namespace
+{
 /**
  * Get the 3 dB attenuation point.
  *
  * @param res the resistance value in Ohms
  * @param cap the capacitance value in Farads
  */
-inline double getW0(double res, double cap)
+double getW0(double res, double cap)
 {
-    return 1. / (res * cap);
+    return 1.0 / (res * cap);
 }
+} // Anonymous namespace
 
 ExternalFilter::ExternalFilter()
 {
