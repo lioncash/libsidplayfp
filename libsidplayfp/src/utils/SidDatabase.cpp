@@ -41,10 +41,7 @@ SidDatabase::SidDatabase() :
     errorString(ERR_NO_DATABASE_LOADED)
 {}
 
-SidDatabase::~SidDatabase()
-{
-    // Needed to delete auto_ptr with complete type
-}
+SidDatabase::~SidDatabase() = default;
 
 // mm:ss[.SSS]
 //

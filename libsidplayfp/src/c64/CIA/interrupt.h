@@ -50,7 +50,7 @@ public:
         INTERRUPT_REQUEST      = 1 << 7  ///< control bit
     };
 
-    virtual ~InterruptSource() {}
+    virtual ~InterruptSource() = default;
 
     /**
      * Trigger an interrupt.

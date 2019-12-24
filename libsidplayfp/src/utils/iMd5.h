@@ -27,11 +27,11 @@ namespace libsidplayfp
 class iMd5
 {
 public:
-    virtual void append(const void* data, int nbytes) =0;
-    virtual void finish() =0;
-    virtual void reset() =0;
-    virtual const unsigned char* getDigest() =0;
-    virtual ~iMd5() {}
+    virtual ~iMd5() = default;
+    virtual void append(const void* data, int nbytes) = 0;
+    virtual void finish() = 0;
+    virtual void reset() = 0;
+    virtual const unsigned char* getDigest() = 0;
 };
 
 class md5Error {};

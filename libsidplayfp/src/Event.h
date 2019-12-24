@@ -54,7 +54,7 @@ public:
     virtual void event() = 0;
 
 protected:
-    ~Event() {}
+    ~Event() = default;
 
 private:
     /// The next event in sequence.

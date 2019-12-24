@@ -36,7 +36,7 @@ namespace libsidplayfp
 class ExtraSidBank final : public Bank
 {
 public:
-    virtual ~ExtraSidBank() {}
+    virtual ~ExtraSidBank() = default;
 
     void reset()
     {

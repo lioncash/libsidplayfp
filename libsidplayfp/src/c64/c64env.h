@@ -56,7 +56,7 @@ public:
     virtual void lightpen(bool state) = 0;
 
 protected:
-    ~c64env() {}
+    ~c64env() = default;
 
 private:
     EventScheduler& eventScheduler;

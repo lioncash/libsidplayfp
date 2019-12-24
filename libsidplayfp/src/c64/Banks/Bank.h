@@ -56,7 +56,7 @@ public:
     virtual uint8_t peek(uint_least16_t address) =0;
 
 protected:
-    ~Bank() {}
+    ~Bank() = default;
 };
 
 }
