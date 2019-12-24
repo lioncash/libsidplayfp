@@ -61,7 +61,7 @@ protected:
 
     void add(const char* md5, const char* desc)
     {
-        m_checksums.insert(std::make_pair(md5, desc));
+        m_checksums.emplace(md5, desc);
     }
 
 private:
