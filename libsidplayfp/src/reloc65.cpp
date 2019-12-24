@@ -97,23 +97,23 @@ int read_undef(const unsigned char *buf)
 
 reloc65::reloc65() = default;
 
-void reloc65::setReloc(segment_t type, int addr)
+void reloc65::setReloc(Segment type, int addr)
 {
     switch (type)
     {
-    case TEXT:
+    case Segment::Text:
         m_tflag = true;
         m_tbase = addr;
         break;
-    case DATA:
+    case Segment::Data:
         m_dflag = true;
         m_dbase = addr;
         break;
-    case BSS:
+    case Segment::BSS:
         m_bflag = true;
         m_bbase = addr;
         break;
-    case ZEROPAGE:
+    case Segment::ZeroPage:
         m_zflag = true;
         m_zbase = addr;
         break;
@@ -122,7 +122,7 @@ void reloc65::setReloc(segment_t type, int addr)
     }
 }
 
-void reloc65::setExtract(segment_t type)
+void reloc65::setExtract(Segment type)
 {
     m_extract = type;
 }
@@ -191,13 +191,13 @@ bool reloc65::reloc(unsigned char **buf, int *fsize)
 
     switch (m_extract)
     {
-    case WHOLE:
+    case Segment::Whole:
         return true;
-    case TEXT:
+    case Segment::Text:
         *buf = segt;
         *fsize = tlen;
         return true;
-    case DATA:
+    case Segment::Data:
         *buf = segd;
         *fsize = dlen;
         return true;

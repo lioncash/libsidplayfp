@@ -38,13 +38,13 @@
 class reloc65
 {
 public:
-    enum segment_t
+    enum class Segment
     {
-        WHOLE,
-        TEXT,
-        DATA,
+        Whole,
+        Text,
+        Data,
         BSS,
-        ZEROPAGE
+        ZeroPage
     };
 
     reloc65();
@@ -55,14 +55,14 @@ public:
      * @param type the segment to relocate
      * @param addr new address
      */
-    void setReloc(segment_t type, int addr);
+    void setReloc(Segment type, int addr);
 
     /**
      * Select segment to extract.
      *
      * @param type the segment to extract
      */
-    void setExtract(segment_t type);
+    void setExtract(Segment type);
 
     /**
      * Do the relocation.
@@ -106,7 +106,7 @@ private:
     bool m_bflag = false;
 	bool m_zflag = false;
 
-    segment_t m_extract = segment_t::WHOLE;
+    Segment m_extract = Segment::Whole;
 };
 
 #endif
