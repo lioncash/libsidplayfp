@@ -38,7 +38,6 @@ const char ERR_UNABLE_TO_LOAD_DATABASE[] = "SID DATABASE ERROR: Unable to load t
 class parseError {};
 
 SidDatabase::SidDatabase() :
-    m_parser(nullptr),
     errorString(ERR_NO_DATABASE_LOADED)
 {}
 
@@ -95,7 +94,7 @@ const char *parseTime(const char *str, int_least32_t &result)
 
 bool SidDatabase::open(const char *filename)
 {
-    m_parser.reset(new libsidplayfp::iniParser());
+    m_parser = std::make_unique<libsidplayfp::iniParser>();
 
     if (!m_parser->open(filename))
     {
@@ -109,7 +108,7 @@ bool SidDatabase::open(const char *filename)
 
 void SidDatabase::close()
 {
-    m_parser.reset(nullptr);
+    m_parser.reset();
 }
 
 int_least32_t SidDatabase::length(SidTune &tune)
@@ -149,7 +148,7 @@ int_least32_t SidDatabase::length(const char *md5, unsigned int song)
 
 int_least32_t SidDatabase::lengthMs(const char *md5, unsigned int song)
 {
-    if (m_parser.get() == nullptr)
+    if (m_parser == nullptr)
     {
         errorString = ERR_NO_DATABASE_LOADED;
         return -1;

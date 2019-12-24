@@ -42,7 +42,7 @@ class iniParser;
 class SID_EXTERN SidDatabase
 {
 private:
-    std::auto_ptr<libsidplayfp::iniParser> m_parser;
+    std::unique_ptr<libsidplayfp::iniParser> m_parser;
 
     const char *errorString;
 

@@ -49,7 +49,7 @@ private:
     static const char** fileNameExtensions;
 
 private:  // -------------------------------------------------------------
-    std::auto_ptr<libsidplayfp::SidTuneBase> tune;
+    std::unique_ptr<libsidplayfp::SidTuneBase> tune;
 
     const char* m_statusString;
 
