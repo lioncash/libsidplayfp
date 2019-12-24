@@ -84,7 +84,6 @@ target_include_directories(libresidfp PRIVATE
     src/builders/residfp-builder/residfp/
 )
 
-
 add_library(libsidplayfp
     include/sidplayfp/sidbuilder.h
     include/sidplayfp/sidplayfp.h
