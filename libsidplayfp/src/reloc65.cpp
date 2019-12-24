@@ -26,11 +26,13 @@
 
 #include <sidplayfp/siddefs.h>
 
+namespace
+{
 /// 16 bit header
-const int HEADER_SIZE = (8 + 9 * 2);
+constexpr int HEADER_SIZE = (8 + 9 * 2);
 
 /// Magic number
-const unsigned char o65hdr[] = {1, 0, 'o', '6', '5'};
+constexpr unsigned char o65hdr[] = {1, 0, 'o', '6', '5'};
 
 /**
  * Read a 16 bit word from a buffer at specific location.
@@ -38,7 +40,7 @@ const unsigned char o65hdr[] = {1, 0, 'o', '6', '5'};
  * @param buffer
  * @param idx
  */
-inline int getWord(unsigned char *buffer, int idx)
+int getWord(const unsigned char *buffer, int idx)
 {
     return buffer[idx] | (buffer[idx+1] << 8);
 }
@@ -50,7 +52,7 @@ inline int getWord(unsigned char *buffer, int idx)
  * @param idx
  * @param value
  */
-inline void setWord(unsigned char *buffer, int idx, int value)
+void setWord(unsigned char *buffer, int idx, int value)
 {
     buffer[idx] = value & 0xff;
     buffer[idx+1] = (value >> 8) & 0xff;
@@ -61,7 +63,7 @@ inline void setWord(unsigned char *buffer, int idx, int value)
  *
  * @param buf
  */
-inline int read_options(unsigned char *buf)
+int read_options(const unsigned char *buf)
 {
     int l = 0;
 
@@ -79,7 +81,7 @@ inline int read_options(unsigned char *buf)
  *
  * @param buf
  */
-inline int read_undef(unsigned char *buf)
+int read_undef(const unsigned char *buf)
 {
     int l = 2;
 
@@ -91,6 +93,7 @@ inline int read_undef(unsigned char *buf)
     }
     return l;
 }
+} // Anonymous namespace
 
 reloc65::reloc65() :
     m_tbase(0),
@@ -279,16 +282,16 @@ unsigned char* reloc65::reloc_seg(unsigned char *buf, int len, unsigned char *rt
 unsigned char *reloc65::reloc_globals(unsigned char *buf)
 {
     int n = getWord(buf, 0);
-    buf +=2;
+    buf += 2;
 
     while (n)
     {
         while (*(buf++)) {}
-        unsigned char seg = *buf;
+        const unsigned char seg = *buf;
         const int oldVal = getWord(buf, 1);
         const int newVal = oldVal + reldiff(seg);
         setWord(buf, 1, newVal);
-        buf +=3;
+        buf += 3;
         n--;
     }
 

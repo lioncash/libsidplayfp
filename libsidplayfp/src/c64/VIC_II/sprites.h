@@ -107,7 +107,7 @@ public:
      * @rasterY y raster position
      * @regs the VIC registers
      */
-    void checkDma(unsigned int rasterY, uint8_t regs[0x40])
+    void checkDma(unsigned int rasterY, const uint8_t regs[0x40])
     {
         const uint8_t y = rasterY & 0xff;
         uint8_t mask = 1;
