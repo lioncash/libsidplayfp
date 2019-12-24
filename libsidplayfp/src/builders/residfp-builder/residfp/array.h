@@ -26,13 +26,13 @@
  */
 class counter
 {
-private:
-    unsigned int c;
-
 public:
     counter() : c(1) {}
     void increase() { ++c; }
     unsigned int decrease() { return --c; }
+
+private:
+    unsigned int c;
 };
 
 /**
@@ -41,11 +41,6 @@ public:
 template<typename T>
 class matrix
 {
-private:
-    T* data;
-    counter* count;
-    const unsigned int x, y;
-
 public:
     explicit matrix(unsigned int x, unsigned int y) :
         data(new T[x * y]),
@@ -57,15 +52,22 @@ public:
         data(p.data),
         count(p.count),
         x(p.x),
-        y(p.y) { count->increase(); }
+        y(p.y) {
+        count->increase();
+    }
 
-    ~matrix() { if (count->decrease() == 0) { delete count; delete [] data; } }
+    ~matrix() { if (count->decrease() == 0) { delete count; delete[] data; } }
 
     unsigned int length() const { return x * y; }
 
     T* operator[](unsigned int a) { return &data[a * y]; }
 
     T const* operator[](unsigned int a) const { return &data[a * y]; }
+
+private:
+    T* data;
+    counter* count;
+    const unsigned int x, y;
 };
 
 using matrix_t = matrix<short>;

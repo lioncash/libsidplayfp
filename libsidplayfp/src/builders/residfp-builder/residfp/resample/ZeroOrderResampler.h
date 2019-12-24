@@ -34,19 +34,6 @@ namespace reSIDfp
  */
 class ZeroOrderResampler final : public Resampler
 {
-
-private:
-    /// Last sample
-    int cachedSample;
-
-    /// Number of cycles per sample
-    const int cyclesPerSample;
-
-    int sampleOffset;
-
-    /// Calculated sample
-    int outputValue;
-
 public:
     explicit ZeroOrderResampler(double clockFrequency, double samplingFrequency) :
         cachedSample(0),
@@ -79,6 +66,18 @@ public:
         sampleOffset = 0;
         cachedSample = 0;
     }
+
+private:
+    /// Last sample
+    int cachedSample;
+
+    /// Number of cycles per sample
+    const int cyclesPerSample;
+
+    int sampleOffset;
+
+    /// Calculated sample
+    int outputValue;
 };
 
 } // namespace reSIDfp

@@ -48,23 +48,6 @@ namespace reSIDfp
  */
 class Integrator8580
 {
-private:
-    const unsigned short* opamp_rev;
-
-    mutable int vx;
-    mutable int vc;
-
-    unsigned short kVgt;
-    unsigned short n_dac;
-
-    const double Vth;
-    const double denorm;
-    const double C;
-    const double k;
-    const double uCox;
-    const double vmin;
-    const double N16;
-
 public:
     Integrator8580(const unsigned short* opamp_rev, double Vth, double denorm, double C, double k, double uCox, double vmin, double N16) :
         opamp_rev(opamp_rev),
@@ -108,6 +91,23 @@ public:
     }
 
     int solve(int vi) const;
+
+private:
+    const unsigned short* opamp_rev;
+
+    mutable int vx;
+    mutable int vc;
+
+    unsigned short kVgt;
+    unsigned short n_dac;
+
+    const double Vth;
+    const double denorm;
+    const double C;
+    const double k;
+    const double uCox;
+    const double vmin;
+    const double N16;
 };
 
 } // namespace reSIDfp

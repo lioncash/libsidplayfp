@@ -90,14 +90,6 @@ struct CombinedWaveformConfig
  */
 class WaveformCalculator
 {
-private:
-	using cw_cache_t = std::map<const CombinedWaveformConfig*, matrix_t>;
-
-private:
-    cw_cache_t CACHE;
-
-    WaveformCalculator() {}
-
 public:
     /**
      * Get the singleton instance.
@@ -111,6 +103,13 @@ public:
      * @return Waveform table
      */
     matrix_t* buildTable(ChipModel model);
+
+private:
+    using cw_cache_t = std::map<const CombinedWaveformConfig*, matrix_t>;
+
+    WaveformCalculator() = default;
+
+    cw_cache_t CACHE;
 };
 
 } // namespace reSIDfp

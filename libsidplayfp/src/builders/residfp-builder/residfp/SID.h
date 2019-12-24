@@ -43,13 +43,13 @@ class Voice;
  */
 class SIDError
 {
-private:
-    const char* message;
-
 public:
     explicit SIDError(const char* msg) :
         message(msg) {}
     const char* getMessage() const { return message; }
+
+private:
+    const char* message;
 };
 
 /**
@@ -57,75 +57,6 @@ public:
  */
 class SID
 {
-private:
-    /// Currently active filter
-    Filter* filter;
-
-    /// Filter used, if model is set to 6581
-    std::unique_ptr<Filter6581> const filter6581;
-
-    /// Filter used, if model is set to 8580
-    std::unique_ptr<Filter8580> const filter8580;
-
-    /**
-     * External filter that provides high-pass and low-pass filtering
-     * to adjust sound tone slightly.
-     */
-    std::unique_ptr<ExternalFilter> const externalFilter;
-
-    /// Resampler used by audio generation code.
-    std::unique_ptr<Resampler> resampler;
-
-    /// Paddle X register support
-    std::unique_ptr<Potentiometer> const potX;
-
-    /// Paddle Y register support
-    std::unique_ptr<Potentiometer> const potY;
-
-    /// SID voices
-    std::unique_ptr<Voice> voice[3];
-
-    /// Time to live for the last written value
-    int busValueTtl;
-
-    /// Current chip model's bus value TTL
-    int modelTTL;
-
-    /// Time until #voiceSync must be run.
-    unsigned int nextVoiceSync;
-
-    /// Currently active chip model.
-    ChipModel model;
-
-    /// Last written value
-    unsigned char busValue;
-
-    /// Flags for muted channels
-    bool muted[3];
-
-private:
-    /**
-     * Age the bus value and zero it if it's TTL has expired.
-     *
-     * @param n the number of cycles
-     */
-    void ageBusValue(unsigned int n);
-
-    /**
-     * Get output sample.
-     *
-     * @return the output sample
-     */
-    int output() const;
-
-    /**
-     * Calculate the numebr of cycles according to current parameters
-     * that it takes to reach sync.
-     *
-     * @param sync whether to do the actual voice synchronization
-     */
-    void voiceSync(bool sync);
-
 public:
     SID();
     ~SID();
@@ -264,6 +195,74 @@ public:
      * @param enable false to turn off filter emulation
      */
     void enableFilter(bool enable);
+
+private:
+    /**
+     * Age the bus value and zero it if it's TTL has expired.
+     *
+     * @param n the number of cycles
+     */
+    void ageBusValue(unsigned int n);
+
+    /**
+     * Get output sample.
+     *
+     * @return the output sample
+     */
+    int output() const;
+
+    /**
+     * Calculate the numebr of cycles according to current parameters
+     * that it takes to reach sync.
+     *
+     * @param sync whether to do the actual voice synchronization
+     */
+    void voiceSync(bool sync);
+
+    /// Currently active filter
+    Filter* filter;
+
+    /// Filter used, if model is set to 6581
+    std::unique_ptr<Filter6581> const filter6581;
+
+    /// Filter used, if model is set to 8580
+    std::unique_ptr<Filter8580> const filter8580;
+
+    /**
+     * External filter that provides high-pass and low-pass filtering
+     * to adjust sound tone slightly.
+     */
+    std::unique_ptr<ExternalFilter> const externalFilter;
+
+    /// Resampler used by audio generation code.
+    std::unique_ptr<Resampler> resampler;
+
+    /// Paddle X register support
+    std::unique_ptr<Potentiometer> const potX;
+
+    /// Paddle Y register support
+    std::unique_ptr<Potentiometer> const potY;
+
+    /// SID voices
+    std::unique_ptr<Voice> voice[3];
+
+    /// Time to live for the last written value
+    int busValueTtl;
+
+    /// Current chip model's bus value TTL
+    int modelTTL;
+
+    /// Time until #voiceSync must be run.
+    unsigned int nextVoiceSync;
+
+    /// Currently active chip model.
+    ChipModel model;
+
+    /// Last written value
+    unsigned char busValue;
+
+    /// Flags for muted channels
+    bool muted[3];
 };
 
 } // namespace reSIDfp

@@ -44,6 +44,13 @@ public:
         double y;
     };
 
+    explicit Spline(const Point input[], size_t inputLength);
+
+    /**
+     * Evaluate y and its derivative at given point x.
+     */
+    Point evaluate(double x) const;
+
 private:
     struct Param
     {
@@ -57,20 +64,11 @@ private:
 
     using ParamVector = std::vector<Param>;
 
-private:
     /// Interpolation parameters
     ParamVector params;
 
     /// Last used parameters, cached for speed up
     mutable ParamVector::const_pointer c;
-
-public:
-    explicit Spline(const Point input[], size_t inputLength);
-
-    /**
-     * Evaluate y and its derivative at given point x.
-     */
-    Point evaluate(double x) const;
 };
 
 } // namespace reSIDfp

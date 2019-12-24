@@ -37,16 +37,6 @@ namespace reSIDfp
  */
 class TwoPassSincResampler final : public Resampler
 {
-private:
-    std::unique_ptr<SincResampler> const s1;
-    std::unique_ptr<SincResampler> const s2;
-
-private:
-    explicit TwoPassSincResampler(double clockFrequency, double samplingFrequency, double highestAccurateFrequency, double intermediateFrequency) :
-        s1(std::make_unique<SincResampler>(clockFrequency, intermediateFrequency, highestAccurateFrequency)),
-        s2(std::make_unique<SincResampler>(intermediateFrequency, samplingFrequency, highestAccurateFrequency))
-    {}
-
 public:
     // Named constructor
     static TwoPassSincResampler* create(double clockFrequency, double samplingFrequency, double highestAccurateFrequency)
@@ -74,6 +64,15 @@ public:
         s1->reset();
         s2->reset();
     }
+
+private:
+    explicit TwoPassSincResampler(double clockFrequency, double samplingFrequency, double highestAccurateFrequency, double intermediateFrequency) :
+        s1(std::make_unique<SincResampler>(clockFrequency, intermediateFrequency, highestAccurateFrequency)),
+        s2(std::make_unique<SincResampler>(intermediateFrequency, samplingFrequency, highestAccurateFrequency))
+    {}
+
+    std::unique_ptr<SincResampler> const s1;
+    std::unique_ptr<SincResampler> const s2;
 };
 
 } // namespace reSIDfp

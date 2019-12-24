@@ -47,33 +47,6 @@ namespace reSIDfp
  */
 class SincResampler final : public Resampler
 {
-private:
-    /// Size of the ring buffer, must be a power of 2
-    static const int RINGSIZE = 2048;
-
-private:
-    /// Table of the fir filter coefficients
-    matrix_t* firTable;
-
-    int sampleIndex;
-
-    /// Filter resolution
-    int firRES;
-
-    /// Filter length
-    int firN;
-
-    const int cyclesPerSample;
-
-    int sampleOffset;
-
-    int outputValue;
-
-    short sample[RINGSIZE * 2];
-
-private:
-    int fir(int subcycle);
-
 public:
     /**
      * Use a clock freqency of 985248Hz for PAL C64, 1022730Hz for NTSC C64.
@@ -102,6 +75,31 @@ public:
     int output() const override { return outputValue; }
 
     void reset() override;
+
+private:
+    int fir(int subcycle);
+
+    /// Size of the ring buffer, must be a power of 2
+    static const int RINGSIZE = 2048;
+
+    /// Table of the fir filter coefficients
+    matrix_t* firTable;
+
+    int sampleIndex;
+
+    /// Filter resolution
+    int firRES;
+
+    /// Filter length
+    int firN;
+
+    const int cyclesPerSample;
+
+    int sampleOffset;
+
+    int outputValue;
+
+    short sample[RINGSIZE * 2];
 };
 
 } // namespace reSIDfp

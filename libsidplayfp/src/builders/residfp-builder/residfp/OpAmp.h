@@ -65,16 +65,6 @@ namespace reSIDfp
  */
 class OpAmp
 {
-private:
-    /// Current root position (cached as guess to speed up next iteration)
-    mutable double x;
-
-    const double kVddt;
-    const double vmin;
-    const double vmax;
-
-    std::unique_ptr<Spline> const opamp;
-
 public:
     /**
      * Opamp input -> output voltage conversion
@@ -103,6 +93,16 @@ public:
      * @return vo
      */
     double solve(double n, double vi) const;
+
+private:
+    /// Current root position (cached as guess to speed up next iteration)
+    mutable double x;
+
+    const double kVddt;
+    const double vmin;
+    const double vmax;
+
+    std::unique_ptr<Spline> const opamp;
 };
 
 } // namespace reSIDfp

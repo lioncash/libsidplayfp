@@ -27,7 +27,6 @@
 
 #include "EnvelopeGenerator.h"
 #include "WaveformGenerator.h"
-#include "siddefs-fp.h"
 
 namespace reSIDfp
 {
@@ -37,12 +36,18 @@ namespace reSIDfp
  */
 class Voice
 {
-private:
-    std::unique_ptr<WaveformGenerator> const waveformGenerator;
-
-    std::unique_ptr<EnvelopeGenerator> const envelopeGenerator;
-
 public:
+    /**
+     * Constructor.
+     */
+    Voice() :
+        waveformGenerator(std::make_unique<WaveformGenerator>()),
+        envelopeGenerator(std::make_unique<EnvelopeGenerator>()) {}
+
+    WaveformGenerator* wave() const { return waveformGenerator.get(); }
+
+    EnvelopeGenerator* envelope() const { return envelopeGenerator.get(); }
+
     /**
      * Amplitude modulated waveform output.
      *
@@ -63,17 +68,6 @@ public:
     }
 
     /**
-     * Constructor.
-     */
-    Voice() :
-        waveformGenerator(std::make_unique<WaveformGenerator>()),
-        envelopeGenerator(std::make_unique<EnvelopeGenerator>()) {}
-
-    WaveformGenerator* wave() const { return waveformGenerator.get(); }
-
-    EnvelopeGenerator* envelope() const { return envelopeGenerator.get(); }
-
-    /**
      * Write control register.
      *
      * @param control Control register value.
@@ -92,6 +86,10 @@ public:
         waveformGenerator->reset();
         envelopeGenerator->reset();
     }
+
+private:
+    std::unique_ptr<WaveformGenerator> const waveformGenerator;
+    std::unique_ptr<EnvelopeGenerator> const envelopeGenerator;
 };
 
 } // namespace reSIDfp

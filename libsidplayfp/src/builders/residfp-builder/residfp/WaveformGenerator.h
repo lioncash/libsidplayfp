@@ -83,62 +83,6 @@ namespace reSIDfp
  */
 class WaveformGenerator
 {
-private:
-    matrix_t* model_wave;
-
-    short* wave;
-
-    // PWout = (PWn/40.95)%
-    unsigned int pw;
-
-    unsigned int shift_register;
-
-    /// Emulation of pipeline causing bit 19 to clock the shift register.
-    int shift_pipeline;
-
-    unsigned int ring_msb_mask;
-    unsigned int no_noise;
-    unsigned int noise_output;
-    unsigned int no_noise_or_noise_output;
-    unsigned int no_pulse;
-    unsigned int pulse_output;
-
-    /// The control register right-shifted 4 bits; used for output function table lookup.
-    unsigned int waveform;
-
-    int floating_output_ttl;
-
-    unsigned int waveform_output;
-
-    /// Current and previous accumulator value.
-    unsigned int accumulator;
-
-    // Fout  = (Fn*Fclk/16777216)Hz
-    unsigned int freq;
-
-    // 8580 tri/saw pipeline
-    unsigned int tri_saw_pipeline;
-    unsigned int osc3;
-
-    /// Remaining time to fully reset shift register.
-    int shift_register_reset;
-
-    /// Current chip model's shift register reset time.
-    int model_shift_register_reset;
-
-    /// The control register bits. Gate is handled by EnvelopeGenerator.
-    //@{
-    bool test;
-    bool sync;
-    //@}
-
-    /// Tell whether the accumulator MSB was set high on this cycle.
-    bool msb_rising;
-
-    bool is6581;
-
-    float dac[4096];
-
 public:
     // These five functions are not intended to be used in anything other than unit tests and internally.
     void clock_shift_register(unsigned int bit0);
@@ -273,6 +217,62 @@ public:
      * Read sync value.
      */
     bool readSync() const { return sync; }
+
+private:
+    matrix_t* model_wave;
+
+    short* wave;
+
+    // PWout = (PWn/40.95)%
+    unsigned int pw;
+
+    unsigned int shift_register;
+
+    /// Emulation of pipeline causing bit 19 to clock the shift register.
+    int shift_pipeline;
+
+    unsigned int ring_msb_mask;
+    unsigned int no_noise;
+    unsigned int noise_output;
+    unsigned int no_noise_or_noise_output;
+    unsigned int no_pulse;
+    unsigned int pulse_output;
+
+    /// The control register right-shifted 4 bits; used for output function table lookup.
+    unsigned int waveform;
+
+    int floating_output_ttl;
+
+    unsigned int waveform_output;
+
+    /// Current and previous accumulator value.
+    unsigned int accumulator;
+
+    // Fout  = (Fn*Fclk/16777216)Hz
+    unsigned int freq;
+
+    // 8580 tri/saw pipeline
+    unsigned int tri_saw_pipeline;
+    unsigned int osc3;
+
+    /// Remaining time to fully reset shift register.
+    int shift_register_reset;
+
+    /// Current chip model's shift register reset time.
+    int model_shift_register_reset;
+
+    /// The control register bits. Gate is handled by EnvelopeGenerator.
+    //@{
+    bool test;
+    bool sync;
+    //@}
+
+    /// Tell whether the accumulator MSB was set high on this cycle.
+    bool msb_rising;
+
+    bool is6581;
+
+    float dac[4096];
 };
 
 } // namespace reSIDfp

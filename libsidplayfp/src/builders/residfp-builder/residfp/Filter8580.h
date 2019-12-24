@@ -277,22 +277,21 @@ class Integrator8580;
  */
 class Filter8580 final : public Filter
 {
-private:
-    unsigned short** mixer;
-    unsigned short** summer;
-    unsigned short** gain_res;
-    unsigned short** gain_vol;
+public:
+    Filter8580();
+    ~Filter8580() override;
 
-    const int voiceScaleS14;
-    const int voiceDC;
+    int clock(int voice1, int voice2, int voice3) override;
 
-    double cp;
+    void input(int sample) override { ve = (sample * voiceScaleS14 * 3 >> 14) + mixer[0][0]; }
 
-    /// VCR + associated capacitor connected to highpass output.
-    std::unique_ptr<Integrator8580> const hpIntegrator;
-
-    /// VCR + associated capacitor connected to bandpass output.
-    std::unique_ptr<Integrator8580> const bpIntegrator;
+    /**
+     * Set filter curve type based on single parameter.
+     *
+     * FIXME find a reasonable range of values
+     * @param curvePosition
+     */
+    void setFilterCurve(double curvePosition);
 
 protected:
     /**
@@ -313,21 +312,22 @@ protected:
 
     void updatedMixing() override;
 
-public:
-    Filter8580();
-    ~Filter8580();
+private:
+    unsigned short** mixer;
+    unsigned short** summer;
+    unsigned short** gain_res;
+    unsigned short** gain_vol;
 
-    int clock(int voice1, int voice2, int voice3) override;
+    const int voiceScaleS14;
+    const int voiceDC;
 
-    void input(int sample) override { ve = (sample * voiceScaleS14 * 3 >> 14) + mixer[0][0]; }
+    double cp;
 
-    /**
-     * Set filter curve type based on single parameter.
-     *
-     * FIXME find a reasonable range of values
-     * @param curvePosition
-     */
-    void setFilterCurve(double curvePosition);
+    /// VCR + associated capacitor connected to highpass output.
+    std::unique_ptr<Integrator8580> const hpIntegrator;
+
+    /// VCR + associated capacitor connected to bandpass output.
+    std::unique_ptr<Integrator8580> const bpIntegrator;
 };
 
 } // namespace reSIDfp

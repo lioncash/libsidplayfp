@@ -35,7 +35,38 @@ class Integrator8580;
  */
 class FilterModelConfig8580
 {
+public:
+    static FilterModelConfig8580* getInstance();
+
+    /**
+     * The digital range of one voice is 20 bits; create a scaling term
+     * for multiplication which fits in 11 bits.
+     */
+    int getVoiceScaleS14() const { return static_cast<int>((norm * ((1 << 14) - 1)) * voice_voltage_range); }
+
+    /**
+     * The "zero" output level of the voices.
+     */
+    int getVoiceDC() const { return static_cast<int>(N16 * (voice_DC_voltage - vmin)); }
+
+    unsigned short** getGainVol() { return gain_vol; }
+    unsigned short** getGainRes() { return gain_res; }
+
+    unsigned short** getSummer() { return summer; }
+
+    unsigned short** getMixer() { return mixer; }
+
+    /**
+     * Construct an integrator solver.
+     *
+     * @return the integrator
+     */
+    std::unique_ptr<Integrator8580> buildIntegrator();
+
 private:
+    FilterModelConfig8580();
+    ~FilterModelConfig8580();
+
     static std::unique_ptr<FilterModelConfig8580> instance;
 
     // This allows access to the private constructor
@@ -74,38 +105,6 @@ private:
 
     /// Reverse op-amp transfer function.
     unsigned short opamp_rev[1 << 16];
-
-private:
-    FilterModelConfig8580();
-    ~FilterModelConfig8580();
-
-public:
-    static FilterModelConfig8580* getInstance();
-
-    /**
-     * The digital range of one voice is 20 bits; create a scaling term
-     * for multiplication which fits in 11 bits.
-     */
-    int getVoiceScaleS14() const { return static_cast<int>((norm * ((1 << 14) - 1)) * voice_voltage_range); }
-
-    /**
-     * The "zero" output level of the voices.
-     */
-    int getVoiceDC() const { return static_cast<int>(N16 * (voice_DC_voltage - vmin)); }
-
-    unsigned short** getGainVol() { return gain_vol; }
-    unsigned short** getGainRes() { return gain_res; }
-
-    unsigned short** getSummer() { return summer; }
-
-    unsigned short** getMixer() { return mixer; }
-
-    /**
-     * Construct an integrator solver.
-     *
-     * @return the integrator
-     */
-    std::unique_ptr<Integrator8580> buildIntegrator();
 };
 
 } // namespace reSIDfp
