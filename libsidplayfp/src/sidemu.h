@@ -90,8 +90,9 @@ public:
      * @param method
      * @param fast
      */
-    virtual void sampling(float systemfreq SID_UNUSED, float outputfreq SID_UNUSED,
-        SidConfig::sampling_method_t method SID_UNUSED, bool fast SID_UNUSED) {}
+    virtual void sampling([[maybe_unused]] float systemfreq, [[maybe_unused]] float outputfreq,
+                          [[maybe_unused]] SidConfig::sampling_method_t method,
+                          [[maybe_unused]] bool fast) {}
 
     /**
      * Get a detailed error message.
