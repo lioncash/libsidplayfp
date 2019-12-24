@@ -90,7 +90,9 @@ uint8_t* loadRom(const SID_STRING &romPath, const int size)
             }
             delete [] buffer;
         }
-        catch (std::bad_alloc const &ba) {}
+        catch (const std::bad_alloc&)
+        {
+        }
     }
 
     return nullptr;
@@ -134,7 +136,7 @@ uint8_t* loadRom(const SID_STRING &romPath, const int size, const TCHAR defaultR
 
         return loadRom(dataPath, size);
     }
-    catch (utils::error const &e)
+    catch (const utils::error&)
     {
         return nullptr;
     }
@@ -285,7 +287,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
         {
             m_driver.device = new audioDrv();
         }
-        catch (std::bad_alloc const &ba)
+        catch (const std::bad_alloc&)
         {
             m_driver.device = nullptr;
         }
@@ -301,7 +303,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
                 wav->setInfo(tuneInfo->infoString(0), tuneInfo->infoString(1), tuneInfo->infoString(2));
             m_driver.device = wav;
         }
-        catch (std::bad_alloc const &ba)
+        catch (const std::bad_alloc&)
         {
             m_driver.device = nullptr;
         }
@@ -314,7 +316,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
             title.append(auFile::extension());
             m_driver.device = new auFile(title);
         }
-        catch (std::bad_alloc const &ba)
+        catch (const std::bad_alloc&)
         {
             m_driver.device = nullptr;
         }
@@ -413,7 +415,9 @@ bool ConsolePlayer::createSidEmu (SIDEMUS emu)
             if (m_filter.filterCurve8580)
                 rs->filter8580Curve((double)m_filter.filterCurve8580);
         }
-        catch (std::bad_alloc const &ba) {}
+        catch (const std::bad_alloc&)
+        {
+        }
         break;
     }
 #endif // HAVE_SIDPLAYFP_BUILDERS_RESIDFP_H
@@ -432,7 +436,9 @@ bool ConsolePlayer::createSidEmu (SIDEMUS emu)
 
             rs->bias(m_filter.bias);
         }
-        catch (std::bad_alloc const &ba) {}
+        catch (const std::bad_alloc&)
+        {
+        }
         break;
     }
 #endif // HAVE_SIDPLAYFP_BUILDERS_RESID_H
