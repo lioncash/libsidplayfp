@@ -35,7 +35,7 @@ namespace reSIDfp
 class Resampler
 {
 public:
-    virtual ~Resampler() {}
+    virtual ~Resampler() = default;
 
     /**
      * Input a sample into resampler. Output "true" when resampler is ready with new sample.
@@ -63,7 +63,7 @@ public:
 protected:
     virtual int output() const = 0;
 
-    Resampler() {}
+    Resampler() = default;
 };
 
 } // namespace reSIDfp
