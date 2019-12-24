@@ -3,10 +3,12 @@
 #ifndef SMARTPTR_H
 #define SMARTPTR_H
 
+#include <cstddef>
+
 namespace libsidplayfp
 {
 
-using ulint_smartpt = unsigned long int;
+using ulint_smartpt = std::size_t;
 
 template<class T>
 class SmartPtrBase_sidtt

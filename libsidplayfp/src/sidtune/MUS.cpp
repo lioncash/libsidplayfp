@@ -115,7 +115,7 @@ void MUS::placeSidTuneInC64mem(sidmemory& mem)
 
 bool MUS::mergeParts(buffer_t& musBuf, buffer_t& strBuf)
 {
-    const uint_least32_t mergeLen = musBuf.size() + strBuf.size();
+    const std::size_t mergeLen = musBuf.size() + strBuf.size();
 
     // Sanity check. I do not trust those MUS/STR files around.
     const uint_least32_t freeSpace = endian_16(player1[1], player1[0]) - SIDTUNE_MUS_DATA_ADDR;
@@ -223,7 +223,7 @@ void MUS::tryLoad(buffer_t& musBuf,
         }
     }
 
-    musDataLen = musBuf.size();
+    musDataLen = static_cast<std::uint16_t>(musBuf.size());
     info->m_loadAddr = SIDTUNE_MUS_DATA_ADDR;
 
     SmartPtr_sidtt<const uint8_t> spPet(&musBuf[fileOffset], musBuf.size() - fileOffset);
@@ -285,11 +285,11 @@ void MUS::tryLoad(buffer_t& musBuf,
     setPlayerAddress();
 
     // Remove trailing empty lines.
-    const int lines = info->m_commentString.size();
+    const int lines = static_cast<int>(info->m_commentString.size());
     {
         for (int line = lines-1; line >= 0; line--)
         {
-            if (info->m_commentString[line].length() == 0)
+            if (info->m_commentString[line].empty())
                 info->m_commentString.pop_back();
             else
                 break;
