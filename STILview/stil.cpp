@@ -40,13 +40,11 @@
 
 #include "stringutils.h"
 
-using namespace std;
+constexpr std::ios::openmode STILopenFlags = std::ios::in | std::ios::binary;
 
-const ios_base::openmode STILopenFlags = ios::in | ios::binary;
+constexpr float VERSION_NO = 3.0f;
 
-const float VERSION_NO = 3.0f;
-
-#define CERR_STIL_DEBUG if (STIL_DEBUG) cerr << "Line #" << __LINE__ << " STIL::"
+#define CERR_STIL_DEBUG if (STIL_DEBUG) std::cerr << "Line #" << __LINE__ << " STIL::"
 
 // These are the hardcoded STIL/BUG field names.
 const char    _NAME_STR[] = "   NAME: ";
@@ -108,11 +106,11 @@ STIL::STIL(const char *stilPath, const char *bugsPath) :
 
 void STIL::setVersionString()
 {
-    ostringstream ss;
-    ss << fixed << setw(4) << setprecision(2);
-    ss << "STILView v" << VERSION_NO << endl;
-    ss << "\tCopyright (C) 1998, 2002 by LaLa (LaLa@C64.org)" << endl;
-    ss << "\tCopyright (C) 2012-2015 by Leandro Nini <drfiemost@users.sourceforge.net>" << endl;
+    std::ostringstream ss;
+    ss << std::fixed << std::setw(4) << std::setprecision(2);
+    ss << "STILView v" << VERSION_NO << std::endl;
+    ss << "\tCopyright (C) 1998, 2002 by LaLa (LaLa@C64.org)" << std::endl;
+    ss << "\tCopyright (C) 2012-2015 by Leandro Nini <drfiemost@users.sourceforge.net>" << std::endl;
     versionString = ss.str();
 }
 
@@ -149,20 +147,20 @@ STIL::setBaseDir(const char *pathToHVSC)
 
     lastError = NO_STIL_ERROR;
 
-    CERR_STIL_DEBUG << "setBaseDir() called, pathToHVSC=" << pathToHVSC << endl;
+    CERR_STIL_DEBUG << "setBaseDir() called, pathToHVSC=" << pathToHVSC << std::endl;
 
-    string tempBaseDir(pathToHVSC);
+    std::string tempBaseDir(pathToHVSC);
 
     // Sanity check the length.
     if (tempBaseDir.empty())
     {
-        CERR_STIL_DEBUG << "setBaseDir() has problem with the size of pathToHVSC" << endl;
+        CERR_STIL_DEBUG << "setBaseDir() has problem with the size of pathToHVSC" << std::endl;
         lastError = BASE_DIR_LENGTH;
         return false;
     }
 
     // Chop the trailing slash
-    const string::iterator lastChar = tempBaseDir.end() - 1;
+    const auto lastChar = tempBaseDir.end() - 1;
 
     if (*lastChar == SLASH)
     {
@@ -172,20 +170,20 @@ STIL::setBaseDir(const char *pathToHVSC)
     // Attempt to open STIL
 
     // Create the full path+filename
-    string tempName = tempBaseDir;
+    std::string tempName = tempBaseDir;
     tempName.append(PATH_TO_STIL);
     convertSlashes(tempName);
 
-    ifstream stilFile(tempName.c_str(), STILopenFlags);
+    std::ifstream stilFile(tempName.c_str(), STILopenFlags);
 
     if (stilFile.fail())
     {
-        CERR_STIL_DEBUG << "setBaseDir() open failed for " << tempName << endl;
+        CERR_STIL_DEBUG << "setBaseDir() open failed for " << tempName << std::endl;
         lastError = STIL_OPEN;
         return false;
     }
 
-    CERR_STIL_DEBUG << "setBaseDir(): open succeeded for " << tempName << endl;
+    CERR_STIL_DEBUG << "setBaseDir(): open succeeded for " << tempName << std::endl;
 
     // Attempt to open BUGlist
 
@@ -194,31 +192,31 @@ STIL::setBaseDir(const char *pathToHVSC)
     tempName.append(PATH_TO_BUGLIST);
     convertSlashes(tempName);
 
-    ifstream bugFile(tempName.c_str(), STILopenFlags);
+    std::ifstream bugFile(tempName.c_str(), STILopenFlags);
 
     if (bugFile.fail())
     {
         // This is not a critical error - some earlier versions of HVSC did
         // not have a BUGlist.txt file at all.
 
-        CERR_STIL_DEBUG << "setBaseDir() open failed for " << tempName << endl;
+        CERR_STIL_DEBUG << "setBaseDir() open failed for " << tempName << std::endl;
         lastError = BUG_OPEN;
     }
     else
     {
-        CERR_STIL_DEBUG << "setBaseDir(): open succeeded for " << tempName << endl;
+        CERR_STIL_DEBUG << "setBaseDir(): open succeeded for " << tempName << std::endl;
     }
 
     // Find out what the EOL really is
     if (determineEOL(stilFile) != true)
     {
-        CERR_STIL_DEBUG << "determinEOL() failed" << endl;
+        CERR_STIL_DEBUG << "determinEOL() failed" << std::endl;
         lastError = NO_EOL;
         return false;
     }
 
     // Save away the current string so we can restore it if needed.
-    const string tempVersionString(versionString);
+    const std::string tempVersionString(versionString);
 
     setVersionString();
 
@@ -230,7 +228,7 @@ STIL::setBaseDir(const char *pathToHVSC)
 
     if (getDirs(stilFile, tempStilDirs, true) != true)
     {
-        CERR_STIL_DEBUG << "getDirs() failed for stilFile" << endl;
+        CERR_STIL_DEBUG << "getDirs() failed for stilFile" << std::endl;
         lastError = NO_STIL_DIRS;
 
         // Clean up and restore things.
@@ -247,7 +245,7 @@ STIL::setBaseDir(const char *pathToHVSC)
             // BUGlist.txt file has no entries in it at all (in fact, that's
             // good!).
 
-            CERR_STIL_DEBUG << "getDirs() failed for bugFile" << endl;
+            CERR_STIL_DEBUG << "getDirs() failed for bugFile" << std::endl;
             lastError = BUG_OPEN;
         }
     }
@@ -266,7 +264,7 @@ STIL::setBaseDir(const char *pathToHVSC)
     globalbuf.clear();
     bugbuf.clear();
 
-    CERR_STIL_DEBUG << "setBaseDir() succeeded" << endl;
+    CERR_STIL_DEBUG << "setBaseDir() succeeded" << std::endl;
 
     return true;
 }
@@ -276,11 +274,11 @@ STIL::getAbsEntry(const char *absPathToEntry, int tuneNo, STILField field)
 {
     lastError = NO_STIL_ERROR;
 
-    CERR_STIL_DEBUG << "getAbsEntry() called, absPathToEntry=" << absPathToEntry << endl;
+    CERR_STIL_DEBUG << "getAbsEntry() called, absPathToEntry=" << absPathToEntry << std::endl;
 
     if (baseDir.empty())
     {
-        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << endl;
+        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << std::endl;
         lastError = STIL_OPEN;
         return nullptr;
     }
@@ -289,13 +287,13 @@ STIL::getAbsEntry(const char *absPathToEntry, int tuneNo, STILField field)
 
     if (!stringutils::equal(absPathToEntry, baseDir.data(), baseDir.size()))
     {
-        CERR_STIL_DEBUG << "getAbsEntry() failed: baseDir=" << baseDir << ", absPath=" << absPathToEntry << endl;
+        CERR_STIL_DEBUG << "getAbsEntry() failed: baseDir=" << baseDir << ", absPath=" << absPathToEntry << std::endl;
         lastError = WRONG_DIR;
         return nullptr;
     }
 
 
-    string tempDir(absPathToEntry + baseDir.size());
+    std::string tempDir(absPathToEntry + baseDir.size());
     convertToSlashes(tempDir);
 
     return getEntry(tempDir.c_str(), tuneNo, field);
@@ -306,11 +304,11 @@ STIL::getEntry(const char *relPathToEntry, int tuneNo, STILField field)
 {
     lastError = NO_STIL_ERROR;
 
-    CERR_STIL_DEBUG << "getEntry() called, relPath=" << relPathToEntry << ", rest=" << tuneNo << "," << field << endl;
+    CERR_STIL_DEBUG << "getEntry() called, relPath=" << relPathToEntry << ", rest=" << tuneNo << ',' << field << std::endl;
 
     if (baseDir.empty())
     {
-        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << endl;
+        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << std::endl;
         lastError = STIL_OPEN;
         return nullptr;
     }
@@ -321,7 +319,7 @@ STIL::getEntry(const char *relPathToEntry, int tuneNo, STILField field)
 
     if (*(relPathToEntry + relPathToEntryLen - 1) == '/')
     {
-        CERR_STIL_DEBUG << "getEntry() section-global comment was asked for - failed" << endl;
+        CERR_STIL_DEBUG << "getEntry() section-global comment was asked for - failed" << std::endl;
         lastError = WRONG_ENTRY;
         return nullptr;
     }
@@ -343,36 +341,36 @@ STIL::getEntry(const char *relPathToEntry, int tuneNo, STILField field)
         // The relative pathnames don't match or they're not the same length:
         // we don't have it in the buffer, so pull it in.
 
-        CERR_STIL_DEBUG << "getEntry(): entry not in buffer" << endl;
+        CERR_STIL_DEBUG << "getEntry(): entry not in buffer" << std::endl;
 
         // Create the full path+filename
-        string tempName(baseDir);
+        std::string tempName(baseDir);
         tempName.append(PATH_TO_STIL);
         convertSlashes(tempName);
 
-        ifstream stilFile(tempName.c_str(), STILopenFlags);
+        std::ifstream stilFile(tempName.c_str(), STILopenFlags);
 
         if (stilFile.fail())
         {
-            CERR_STIL_DEBUG << "getEntry() open failed for stilFile" << endl;
+            CERR_STIL_DEBUG << "getEntry() open failed for stilFile" << std::endl;
             lastError = STIL_OPEN;
             return nullptr;
         }
 
-        CERR_STIL_DEBUG << "getEntry() open succeeded for stilFile" << endl;
+        CERR_STIL_DEBUG << "getEntry() open succeeded for stilFile" << std::endl;
 
         if (positionToEntry(relPathToEntry, stilFile, stilDirs) == false)
         {
             // Copy the entry's name to the buffer.
             entrybuf.assign(relPathToEntry).append("\n");
-            CERR_STIL_DEBUG << "getEntry() posToEntry() failed" << endl;
+            CERR_STIL_DEBUG << "getEntry() posToEntry() failed" << std::endl;
             lastError = NOT_IN_STIL;
         }
         else
         {
             entrybuf.clear();
             readEntry(stilFile, entrybuf);
-            CERR_STIL_DEBUG << "getEntry() entry read" << endl;
+            CERR_STIL_DEBUG << "getEntry() entry read" << std::endl;
         }
     }
 
@@ -385,11 +383,11 @@ STIL::getAbsBug(const char *absPathToEntry, int tuneNo)
 {
     lastError = NO_STIL_ERROR;
 
-    CERR_STIL_DEBUG << "getAbsBug() called, absPathToEntry=" << absPathToEntry << endl;
+    CERR_STIL_DEBUG << "getAbsBug() called, absPathToEntry=" << absPathToEntry << std::endl;
 
     if (baseDir.empty())
     {
-        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << endl;
+        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << std::endl;
         lastError = BUG_OPEN;
         return nullptr;
     }
@@ -398,12 +396,12 @@ STIL::getAbsBug(const char *absPathToEntry, int tuneNo)
 
     if (!stringutils::equal(absPathToEntry, baseDir.data(), baseDir.size()))
     {
-        CERR_STIL_DEBUG << "getAbsBug() failed: baseDir=" << baseDir << ", absPath=" << absPathToEntry << endl;
+        CERR_STIL_DEBUG << "getAbsBug() failed: baseDir=" << baseDir << ", absPath=" << absPathToEntry << std::endl;
         lastError = WRONG_DIR;
         return nullptr;
     }
 
-    string tempDir(absPathToEntry + baseDir.size());
+    std::string tempDir(absPathToEntry + baseDir.size());
     convertToSlashes(tempDir);
 
     return getBug(tempDir.c_str(), tuneNo);
@@ -414,11 +412,11 @@ STIL::getBug(const char *relPathToEntry, int tuneNo)
 {
     lastError = NO_STIL_ERROR;
 
-    CERR_STIL_DEBUG << "getBug() called, relPath=" << relPathToEntry << ", rest=" << tuneNo << endl;
+    CERR_STIL_DEBUG << "getBug() called, relPath=" << relPathToEntry << ", rest=" << tuneNo << std::endl;
 
     if (baseDir.empty())
     {
-        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << endl;
+        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << std::endl;
         lastError = BUG_OPEN;
         return nullptr;
     }
@@ -443,36 +441,36 @@ STIL::getBug(const char *relPathToEntry, int tuneNo)
         // The relative pathnames don't match or they're not the same length:
         // we don't have it in the buffer, so pull it in.
 
-        CERR_STIL_DEBUG << "getBug(): entry not in buffer" << endl;
+        CERR_STIL_DEBUG << "getBug(): entry not in buffer" << std::endl;
 
         // Create the full path+filename
-        string tempName(baseDir);
+        std::string tempName(baseDir);
         tempName.append(PATH_TO_BUGLIST);
         convertSlashes(tempName);
 
-        ifstream bugFile(tempName.c_str(), STILopenFlags);
+        std::ifstream bugFile(tempName.c_str(), STILopenFlags);
 
         if (bugFile.fail())
         {
-            CERR_STIL_DEBUG << "getBug() open failed for bugFile" << endl;
+            CERR_STIL_DEBUG << "getBug() open failed for bugFile" << std::endl;
             lastError = BUG_OPEN;
             return nullptr;
         }
 
-        CERR_STIL_DEBUG << "getBug() open succeeded for bugFile" << endl;
+        CERR_STIL_DEBUG << "getBug() open succeeded for bugFile" << std::endl;
 
         if (positionToEntry(relPathToEntry, bugFile, bugDirs) == false)
         {
             // Copy the entry's name to the buffer.
             bugbuf.assign(relPathToEntry).append("\n");
-            CERR_STIL_DEBUG << "getBug() posToEntry() failed" << endl;
+            CERR_STIL_DEBUG << "getBug() posToEntry() failed" << std::endl;
             lastError = NOT_IN_BUG;
         }
         else
         {
             bugbuf.clear();
             readEntry(bugFile, bugbuf);
-            CERR_STIL_DEBUG << "getBug() entry read" << endl;
+            CERR_STIL_DEBUG << "getBug() entry read" << std::endl;
         }
     }
 
@@ -485,11 +483,11 @@ STIL::getAbsGlobalComment(const char *absPathToEntry)
 {
     lastError = NO_STIL_ERROR;
 
-    CERR_STIL_DEBUG << "getAbsGC() called, absPathToEntry=" << absPathToEntry << endl;
+    CERR_STIL_DEBUG << "getAbsGC() called, absPathToEntry=" << absPathToEntry << std::endl;
 
     if (baseDir.empty())
     {
-        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << endl;
+        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << std::endl;
         lastError = STIL_OPEN;
         return nullptr;
     }
@@ -498,12 +496,12 @@ STIL::getAbsGlobalComment(const char *absPathToEntry)
 
     if (!stringutils::equal(absPathToEntry, baseDir.data(), baseDir.size()))
     {
-        CERR_STIL_DEBUG << "getAbsGC() failed: baseDir=" << baseDir << ", absPath=" << absPathToEntry << endl;
+        CERR_STIL_DEBUG << "getAbsGC() failed: baseDir=" << baseDir << ", absPath=" << absPathToEntry << std::endl;
         lastError = WRONG_DIR;
         return nullptr;
     }
 
-    string tempDir(absPathToEntry + baseDir.size());
+    std::string tempDir(absPathToEntry + baseDir.size());
     convertToSlashes(tempDir);
 
     return getGlobalComment(tempDir.c_str());
@@ -514,11 +512,11 @@ STIL::getGlobalComment(const char *relPathToEntry)
 {
     lastError = NO_STIL_ERROR;
 
-    CERR_STIL_DEBUG << "getGC() called, relPath=" << relPathToEntry << endl;
+    CERR_STIL_DEBUG << "getGC() called, relPath=" << relPathToEntry << std::endl;
 
     if (baseDir.empty())
     {
-        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << endl;
+        CERR_STIL_DEBUG << "HVSC baseDir is not yet set!" << std::endl;
         lastError = STIL_OPEN;
         return nullptr;
     }
@@ -533,8 +531,8 @@ STIL::getGlobalComment(const char *relPathToEntry)
         return nullptr;
     }
 
-    const size_t pathLen = lastSlash - relPathToEntry + 1;
-    const string dir(relPathToEntry, pathLen);
+    const std::size_t pathLen = lastSlash - relPathToEntry + 1;
+    const std::string dir(relPathToEntry, pathLen);
 
     // Find out whether we have this global comment in the buffer.
     // If the baseDir was changed, we'll have to read it in again,
@@ -547,18 +545,18 @@ STIL::getGlobalComment(const char *relPathToEntry)
         // The relative pathnames don't match or they're not the same length:
         // we don't have it in the buffer, so pull it in.
 
-        CERR_STIL_DEBUG << "getGC(): entry not in buffer" << endl;
+        CERR_STIL_DEBUG << "getGC(): entry not in buffer" << std::endl;
 
         // Create the full path+filename
-        string tempName(baseDir);
+        std::string tempName(baseDir);
         tempName.append(PATH_TO_STIL);
         convertSlashes(tempName);
 
-        ifstream stilFile(tempName.c_str(), STILopenFlags);
+        std::ifstream stilFile(tempName.c_str(), STILopenFlags);
 
         if (stilFile.fail())
         {
-            CERR_STIL_DEBUG << "getGC() open failed for stilFile" << endl;
+            CERR_STIL_DEBUG << "getGC() open failed for stilFile" << std::endl;
             lastError = STIL_OPEN;
             return nullptr;
         }
@@ -567,19 +565,19 @@ STIL::getGlobalComment(const char *relPathToEntry)
         {
             // Copy the dirname to the buffer.
             globalbuf.assign(dir).append("\n");
-            CERR_STIL_DEBUG << "getGC() posToEntry() failed" << endl;
+            CERR_STIL_DEBUG << "getGC() posToEntry() failed" << std::endl;
             lastError = NOT_IN_STIL;
         }
         else
         {
             globalbuf.clear();
             readEntry(stilFile, globalbuf);
-            CERR_STIL_DEBUG << "getGC() entry read" << endl;
+            CERR_STIL_DEBUG << "getGC() entry read" << std::endl;
         }
     }
 
-    CERR_STIL_DEBUG << "getGC() globalbuf=" << globalbuf << endl;
-    CERR_STIL_DEBUG << "-=END=-" << endl;
+    CERR_STIL_DEBUG << "getGC() globalbuf=" << globalbuf << std::endl;
+    CERR_STIL_DEBUG << "-=END=-" << std::endl;
 
     // Position pointer to the global comment field.
 
@@ -591,14 +589,13 @@ STIL::getGlobalComment(const char *relPathToEntry)
 
 //////// PRIVATE
 
-bool
-STIL::determineEOL(ifstream &stilFile)
+bool STIL::determineEOL(std::ifstream &stilFile)
 {
-    CERR_STIL_DEBUG << "detEOL() called" << endl;
+    CERR_STIL_DEBUG << "detEOL() called" << std::endl;
 
     if (stilFile.fail())
     {
-        CERR_STIL_DEBUG << "detEOL() open failed" << endl;
+        CERR_STIL_DEBUG << "detEOL() open failed" << std::endl;
         return false;
     }
 
@@ -609,17 +606,17 @@ STIL::determineEOL(ifstream &stilFile)
 
     // Determine what the EOL character is
     // (it can be different from OS to OS).
-    istream::sentry se(stilFile, true);
+    std::istream::sentry se(stilFile, true);
     if (se)
     {
-        streambuf *sb = stilFile.rdbuf();
+        std::streambuf *sb = stilFile.rdbuf();
 
-        const int eof = char_traits<char>::eof();
+        const int eof = std::char_traits<char>::eof();
 
         while (sb->sgetc() != eof)
         {
             const int c = sb->sbumpc();
-            if ((c == '\n') || (c == '\r'))
+            if (c == '\n' || c == '\r')
             {
                 STIL_EOL = c;
 
@@ -636,27 +633,26 @@ STIL::determineEOL(ifstream &stilFile)
     if (STIL_EOL == '\0')
     {
         // Something is wrong - no EOL-like char was found.
-        CERR_STIL_DEBUG << "detEOL() no EOL found" << endl;
+        CERR_STIL_DEBUG << "detEOL() no EOL found" << std::endl;
         return false;
     }
 
-    CERR_STIL_DEBUG << "detEOL() EOL1=0x" << hex << static_cast<int>(STIL_EOL) << " EOL2=0x" << hex << static_cast<int>(STIL_EOL2) << dec << endl;
+    CERR_STIL_DEBUG << "detEOL() EOL1=0x" << std::hex << static_cast<int>(STIL_EOL) << " EOL2=0x" << std::hex << static_cast<int>(STIL_EOL2) << std::dec << std::endl;
 
     return true;
 }
 
-bool
-STIL::getDirs(ifstream &inFile, dirList &dirs, bool isSTILFile)
+bool STIL::getDirs(std::ifstream &inFile, dirList &dirs, bool isSTILFile)
 {
     bool newDir = !isSTILFile;
 
-    CERR_STIL_DEBUG << "getDirs() called" << endl;
+    CERR_STIL_DEBUG << "getDirs() called" << std::endl;
 
     inFile.seekg(0);
 
     while (inFile.good())
     {
-        string line;
+        std::string line;
 
         getStilLine(inFile, line);
 
@@ -672,12 +668,12 @@ STIL::getDirs(ifstream &inFile, dirList &dirs, bool isSTILFile)
                 STILVersion = static_cast<float>(std::atof(line.c_str() + 9));
 
                 // Put it into the string, too.
-                ostringstream ss;
-                ss << fixed << setw(4) << setprecision(2);
-                ss << "SID Tune Information List (STIL) v" << STILVersion << endl;
+                std::ostringstream ss;
+                ss << std::fixed << std::setw(4) << std::setprecision(2);
+                ss << "SID Tune Information List (STIL) v" << STILVersion << std::endl;
                 versionString.append(ss.str());
 
-                CERR_STIL_DEBUG << "getDirs() STILVersion=" << STILVersion << endl;
+                CERR_STIL_DEBUG << "getDirs() STILVersion=" << STILVersion << std::endl;
 
                 continue;
             }
@@ -696,7 +692,7 @@ STIL::getDirs(ifstream &inFile, dirList &dirs, bool isSTILFile)
         if (newDir && (line[0] == '/'))
         {
             // Get the directory only
-            const string dirName(line, 0, line.find_last_of('/') + 1);
+            const std::string dirName(line, 0, line.find_last_of('/') + 1);
 
             if (!isSTILFile)
             {
@@ -707,11 +703,11 @@ STIL::getDirs(ifstream &inFile, dirList &dirs, bool isSTILFile)
             // Store the info
             if (newDir)
             {
-                const streampos position = inFile.tellg() - (streampos)line.size() - 1L;
+                const std::streampos position = inFile.tellg() - static_cast<std::streampos>(line.size()) - 1L;
 
-                CERR_STIL_DEBUG << "getDirs() dirName=" << dirName << ", pos=" << position <<  endl;
+                CERR_STIL_DEBUG << "getDirs() dirName=" << dirName << ", pos=" << position <<  std::endl;
 
-                dirs.insert(make_pair(dirName, position));
+                dirs.insert(std::make_pair(dirName, position));
             }
 
             newDir = !isSTILFile;
@@ -723,25 +719,24 @@ STIL::getDirs(ifstream &inFile, dirList &dirs, bool isSTILFile)
         // No entries found - something is wrong.
         // NOTE: It's perfectly valid to have a BUGlist.txt file with no
         // entries in it!
-        CERR_STIL_DEBUG << "getDirs() no dirs found" << endl;
+        CERR_STIL_DEBUG << "getDirs() no dirs found" << std::endl;
         return false;
     }
 
-    CERR_STIL_DEBUG << "getDirs() successful" << endl;
+    CERR_STIL_DEBUG << "getDirs() successful" << std::endl;
 
     return true;
 }
 
-bool
-STIL::positionToEntry(const char *entryStr, ifstream &inFile, dirList &dirs)
+bool STIL::positionToEntry(const char *entryStr, std::ifstream &inFile, dirList &dirs)
 {
-    CERR_STIL_DEBUG << "pos2Entry() called, entryStr=" << entryStr << endl;
+    CERR_STIL_DEBUG << "pos2Entry() called, entryStr=" << entryStr << std::endl;
 
     inFile.seekg(0);
 
     // Get the dirpath.
 
-    char *chrptr = strrchr((char *)entryStr, '/');
+    const char *chrptr = std::strrchr(entryStr, '/');
 
     // If no slash was found, something is screwed up in the entryStr.
 
@@ -754,17 +749,17 @@ STIL::positionToEntry(const char *entryStr, ifstream &inFile, dirList &dirs)
 
     // Determine whether a section-global comment is asked for.
 
-    const size_t entryStrLen = strlen(entryStr);
+    const size_t entryStrLen = std::strlen(entryStr);
     const bool globComm = (pathLen == entryStrLen);
 
     // Find it in the table.
-    const string entry(entryStr, pathLen);
+    const std::string entry(entryStr, pathLen);
     dirList::iterator elem = dirs.find(entry);
 
     if (elem == dirs.end())
     {
         // The directory was not found.
-        CERR_STIL_DEBUG << "pos2Entry() did not find the dir" << endl;
+        CERR_STIL_DEBUG << "pos2Entry() did not find the dir" << std::endl;
         return false;
     }
 
@@ -774,7 +769,7 @@ STIL::positionToEntry(const char *entryStr, ifstream &inFile, dirList &dirs)
 
     // Now find the desired entry
 
-    string line;
+    std::string line;
 
     do
     {
@@ -811,7 +806,7 @@ STIL::positionToEntry(const char *entryStr, ifstream &inFile, dirList &dirs)
                 foundIt = stringutils::equal(line.data(), entryStr, entryStrLen);
             }
 
-            CERR_STIL_DEBUG << "pos2Entry() line=" << line << endl;
+            CERR_STIL_DEBUG << "pos2Entry() line=" << line << std::endl;
         }
     }
     while (!foundIt);
@@ -819,27 +814,26 @@ STIL::positionToEntry(const char *entryStr, ifstream &inFile, dirList &dirs)
     if (foundIt)
     {
         // Reposition the file pointer back to the start of the entry.
-        inFile.seekg(inFile.tellg() - (streampos)line.size() - 1L);
-        CERR_STIL_DEBUG << "pos2Entry() entry found" << endl;
+        inFile.seekg(inFile.tellg() - static_cast<std::streampos>(line.size()) - 1L);
+        CERR_STIL_DEBUG << "pos2Entry() entry found" << std::endl;
         return true;
     }
     else
     {
-        CERR_STIL_DEBUG << "pos2Entry() entry not found" << endl;
+        CERR_STIL_DEBUG << "pos2Entry() entry not found" << std::endl;
         return false;
     }
 }
 
-void
-STIL::readEntry(ifstream &inFile, string &buffer)
+void STIL::readEntry(std::ifstream &inFile, std::string &buffer)
 {
-    string line;
+    std::string line;
 
-    for (;;)
+    while (true)
     {
         getStilLine(inFile, line);
 
-        if (line.size() == 0)
+        if (line.empty())
             break;
 
         buffer.append(line);
@@ -847,28 +841,27 @@ STIL::readEntry(ifstream &inFile, string &buffer)
     }
 }
 
-bool
-STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
+bool STIL::getField(std::string &result, const char *buffer, int tuneNo, STILField field)
 {
-    CERR_STIL_DEBUG << "getField() called, buffer=" << buffer << ", rest=" << tuneNo << "," << field << endl;
+    CERR_STIL_DEBUG << "getField() called, buffer=" << buffer << ", rest=" << tuneNo << ',' << field << std::endl;
 
     // Clean out the result buffer first.
     result.clear();
 
     // Position pointer to the first char beyond the file designation.
 
-    const char *start = strchr(buffer, '\n') + 1;
+    const char *start = std::strchr(buffer, '\n') + 1;
 
     // Check whether this is a NULL entry or not.
 
     if (*start == '\0')
     {
-        CERR_STIL_DEBUG << "getField() null entry" << endl;
+        CERR_STIL_DEBUG << "getField() null entry" << std::endl;
         return false;
     }
 
     // Is this a multitune entry?
-    const char *firstTuneNo = strstr(start, "(#");
+    const char *firstTuneNo = std::strstr(start, "(#");
 
     // This is a tune designation only if the previous char was
     // a newline (ie. if the "(#" is on the beginning of a line).
@@ -885,25 +878,25 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
 
         // Is the first thing in this STIL entry the COMMENT?
 
-        const char *temp = strstr(start, _COMMENT_STR);
+        const char *temp = std::strstr(start, _COMMENT_STR);
         const char *temp2 = nullptr;
 
         // Search for other potential fields beyond the COMMENT.
         if (temp == start)
         {
-            temp2 = strstr(start, _NAME_STR);
+            temp2 = std::strstr(start, _NAME_STR);
 
             if (temp2 == nullptr)
             {
-                temp2 = strstr(start, _AUTHOR_STR);
+                temp2 = std::strstr(start, _AUTHOR_STR);
 
                 if (temp2 == nullptr)
                 {
-                    temp2 = strstr(start, _TITLE_STR);
+                    temp2 = std::strstr(start, _TITLE_STR);
 
                     if (temp2 == nullptr)
                     {
-                        temp2 = strstr(start, _ARTIST_STR);
+                        temp2 = std::strstr(start, _ARTIST_STR);
                     }
                 }
             }
@@ -913,34 +906,34 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
         {
             // Yes. So it's assumed to be a file-global comment.
 
-            CERR_STIL_DEBUG << "getField() single-tune entry, COMMENT only" << endl;
+            CERR_STIL_DEBUG << "getField() single-tune entry, COMMENT only" << std::endl;
 
             if (tuneNo == 0 && (field == all || (field == comment && temp2 == nullptr)))
             {
                 // Simply copy the stuff in.
                 result.append(start);
-                CERR_STIL_DEBUG << "getField() copied to resultbuf" << endl;
+                CERR_STIL_DEBUG << "getField() copied to resultbuf" << std::endl;
                 return true;
             }
             else if (tuneNo == 0 && field == comment)
             {
                 // Copy just the comment.
                 result.append(start, temp2 - start);
-                CERR_STIL_DEBUG << "getField() copied to just the COMMENT to resultbuf" << endl;
+                CERR_STIL_DEBUG << "getField() copied to just the COMMENT to resultbuf" << std::endl;
                 return true;
             }
             else if (tuneNo == 1 && temp2 != nullptr)
             {
                 // A specific field was asked for.
 
-                CERR_STIL_DEBUG << "getField() copying COMMENT to resultbuf" << endl;
+                CERR_STIL_DEBUG << "getField() copying COMMENT to resultbuf" << std::endl;
                 return getOneField(result, temp2, temp2 + strlen(temp2), field);
             }
             else
             {
                 // Anything else is invalid as of v2.00.
 
-                CERR_STIL_DEBUG << "getField() invalid parameter combo: single tune, tuneNo=" << tuneNo << ", field=" << field << endl;
+                CERR_STIL_DEBUG << "getField() invalid parameter combo: single tune, tuneNo=" << tuneNo << ", field=" << field << std::endl;
                 return false;
             }
         }
@@ -948,27 +941,27 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
         {
             // No. Handle it as a regular entry.
 
-            CERR_STIL_DEBUG << "getField() single-tune regular entry" << endl;
+            CERR_STIL_DEBUG << "getField() single-tune regular entry" << std::endl;
 
             if ((field == all) && ((tuneNo == 0) || (tuneNo == 1)))
             {
                 // The complete entry was asked for. Simply copy the stuff in.
                 result.append(start);
-                CERR_STIL_DEBUG << "getField() copied to resultbuf" << endl;
+                CERR_STIL_DEBUG << "getField() copied to resultbuf" << std::endl;
                 return true;
             }
             else if (tuneNo == 1)
             {
                 // A specific field was asked for.
 
-                CERR_STIL_DEBUG << "getField() copying COMMENT to resultbuf" << endl;
-                return getOneField(result, start, start + strlen(start), field);
+                CERR_STIL_DEBUG << "getField() copying COMMENT to resultbuf" << std::endl;
+                return getOneField(result, start, start + std::strlen(start), field);
             }
             else
             {
                 // Anything else is invalid as of v2.00.
 
-                CERR_STIL_DEBUG << "getField() invalid parameter combo: single tune, tuneNo=" << tuneNo << ", field=" << field << endl;
+                CERR_STIL_DEBUG << "getField() invalid parameter combo: single tune, tuneNo=" << tuneNo << ", field=" << field << std::endl;
                 return false;
             }
         }
@@ -979,7 +972,7 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
         // MULTITUNE ENTRY
         //-------------------//
 
-        CERR_STIL_DEBUG << "getField() multitune entry" << endl;
+        CERR_STIL_DEBUG << "getField() multitune entry" << std::endl;
 
         // Was the complete entry asked for?
 
@@ -990,7 +983,7 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
             case all:
                 // Yes. Simply copy the stuff in.
                 result.append(start);
-                CERR_STIL_DEBUG << "getField() copied all to resultbuf" << endl;
+                CERR_STIL_DEBUG << "getField() copied all to resultbuf" << std::endl;
                 return true;
 
             case comment:
@@ -998,12 +991,12 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
 
                 if (firstTuneNo != start)
                 {
-                    CERR_STIL_DEBUG << "getField() copying file-global comment to resultbuf" << endl;
+                    CERR_STIL_DEBUG << "getField() copying file-global comment to resultbuf" << std::endl;
                     return getOneField(result, start, firstTuneNo, comment);
                 }
                 else
                 {
-                    CERR_STIL_DEBUG << "getField() no file-global comment" << endl;
+                    CERR_STIL_DEBUG << "getField() no file-global comment" << std::endl;
                     return false;
                 }
 
@@ -1013,7 +1006,7 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
                 // If a specific field other than a comment is
                 // asked for tuneNo=0, this is illegal.
 
-                CERR_STIL_DEBUG << "getField() invalid parameter combo: multitune, tuneNo=" << tuneNo << ", field=" << field << endl;
+                CERR_STIL_DEBUG << "getField() invalid parameter combo: multitune, tuneNo=" << tuneNo << ", field=" << field << std::endl;
                 return false;
             }
         }
@@ -1022,24 +1015,24 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
 
         // Search for the requested tune number.
 
-        snprintf(tuneNoStr, 7, "(#%d)", tuneNo);
+        std::snprintf(tuneNoStr, 7, "(#%d)", tuneNo);
         tuneNoStr[7] = '\0';
-        const char *myTuneNo = strstr(start, tuneNoStr);
+        const char *myTuneNo = std::strstr(start, tuneNoStr);
 
         if (myTuneNo != nullptr)
         {
             // We found the requested tune number.
             // Set the pointer beyond it.
-            myTuneNo = strchr(myTuneNo, '\n') + 1;
+            myTuneNo = std::strchr(myTuneNo, '\n') + 1;
 
             // Where is the next one?
 
-            const char *nextTuneNo = strstr(myTuneNo, "\n(#");
+            const char *nextTuneNo = std::strstr(myTuneNo, "\n(#");
 
             if (nextTuneNo == nullptr)
             {
                 // There is no next one - set pointer to end of entry.
-                nextTuneNo = start + strlen(start);
+                nextTuneNo = start + std::strlen(start);
             }
             else
             {
@@ -1049,29 +1042,28 @@ STIL::getField(string &result, const char *buffer, int tuneNo, STILField field)
 
             // Put the desired fields into the result (which may be 'all').
 
-            CERR_STIL_DEBUG << "getField() myTuneNo=" << myTuneNo << ", nextTuneNo=" << nextTuneNo << endl;
+            CERR_STIL_DEBUG << "getField() myTuneNo=" << myTuneNo << ", nextTuneNo=" << nextTuneNo << std::endl;
             return getOneField(result, myTuneNo, nextTuneNo, field);
         }
         else
         {
-            CERR_STIL_DEBUG << "getField() nothing found" << endl;
+            CERR_STIL_DEBUG << "getField() nothing found" << std::endl;
             return false;
         }
     }
 }
 
-bool
-STIL::getOneField(string &result, const char *start, const char *end, STILField field)
+bool STIL::getOneField(std::string &result, const char *start, const char *end, STILField field)
 {
     // Sanity checking
 
     if ((end < start) || (*(end - 1) != '\n'))
     {
-        CERR_STIL_DEBUG << "getOneField() illegal parameters" << endl;
+        CERR_STIL_DEBUG << "getOneField() illegal parameters" << std::endl;
         return false;
     }
 
-    CERR_STIL_DEBUG << "getOneField() called, start=" << start << ", rest=" << field << endl;
+    CERR_STIL_DEBUG << "getOneField() called, start=" << start << ", rest=" << field << std::endl;
 
     const char *temp = nullptr;
 
@@ -1082,23 +1074,23 @@ STIL::getOneField(string &result, const char *start, const char *end, STILField 
         return true;
 
     case name:
-        temp = strstr(start, _NAME_STR);
+        temp = std::strstr(start, _NAME_STR);
         break;
 
     case author:
-        temp = strstr(start, _AUTHOR_STR);
+        temp = std::strstr(start, _AUTHOR_STR);
         break;
 
     case title:
-        temp = strstr(start, _TITLE_STR);
+        temp = std::strstr(start, _TITLE_STR);
         break;
 
     case artist:
-        temp = strstr(start, _ARTIST_STR);
+        temp = std::strstr(start, _ARTIST_STR);
         break;
 
     case comment:
-        temp = strstr(start, _COMMENT_STR);
+        temp = std::strstr(start, _COMMENT_STR);
         break;
 
     default:
@@ -1116,11 +1108,11 @@ STIL::getOneField(string &result, const char *start, const char *end, STILField 
     // Search for the end of this field. This is done by finding
     // where the next field starts.
 
-    const char *nextName = strstr(temp + 1, _NAME_STR);
-    const char *nextAuthor = strstr(temp + 1, _AUTHOR_STR);
-    const char *nextTitle = strstr(temp + 1, _TITLE_STR);
-    const char *nextArtist = strstr(temp + 1, _ARTIST_STR);
-    const char *nextComment = strstr(temp + 1, _COMMENT_STR);
+    const char *nextName = std::strstr(temp + 1, _NAME_STR);
+    const char *nextAuthor = std::strstr(temp + 1, _AUTHOR_STR);
+    const char *nextTitle = std::strstr(temp + 1, _TITLE_STR);
+    const char *nextArtist = std::strstr(temp + 1, _ARTIST_STR);
+    const char *nextComment = std::strstr(temp + 1, _COMMENT_STR);
 
     // If any of these fields is beyond 'end', they are ignored.
 
@@ -1202,8 +1194,7 @@ STIL::getOneField(string &result, const char *start, const char *end, STILField 
     return true;
 }
 
-void
-STIL::getStilLine(ifstream &infile, string &line)
+void STIL::getStilLine(std::ifstream &infile, std::string &line)
 {
     if (STIL_EOL2 != '\0')
     {
@@ -1211,11 +1202,11 @@ STIL::getStilLine(ifstream &infile, string &line)
 
         char temp = infile.peek();
 
-        if ((temp == 0x0d) || (temp == 0x0a))
+        if (temp == 0x0d || temp == 0x0a)
         {
             infile.get(temp);
         }
     }
 
-    getline(infile, line, STIL_EOL);
+    std::getline(infile, line, STIL_EOL);
 }
