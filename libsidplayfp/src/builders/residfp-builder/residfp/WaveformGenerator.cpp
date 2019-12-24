@@ -22,6 +22,8 @@
 
 #include "WaveformGenerator.h"
 
+#include <cstddef>
+
 #include "Dac.h"
 
 namespace reSIDfp
@@ -52,7 +54,7 @@ constexpr int FLOATING_OUTPUT_TTL_8580 = 5000000; // ~5s;
 constexpr int SHIFT_REGISTER_RESET_6581 = 200000;  // ~200ms
 constexpr int SHIFT_REGISTER_RESET_8580 = 5000000; // ~5s
 
-constexpr int DAC_BITS = 12;
+constexpr std::size_t DAC_BITS = 12;
 
 /*
  * This is what happens when the lfsr is clocked:
