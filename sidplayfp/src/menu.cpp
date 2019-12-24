@@ -122,8 +122,8 @@ void ConsolePlayer::menu ()
         cerr << setw(54/2 + version.length()/2) << version << endl;
     }
 
-    const unsigned int n = tuneInfo->numberOfInfoStrings();
-    if (n)
+    const std::size_t n = tuneInfo->numberOfInfoStrings();
+    if (n != 0)
     {
         consoleTable (tableSeparator);
 
@@ -132,7 +132,7 @@ void ConsolePlayer::menu ()
         cerr << " Title        : ";
         consoleColour (magenta, true);
         cerr << tuneInfo->infoString(0) << endl;
-        if (n>1)
+        if (n > 1)
         {
             consoleTable  (tableMiddle);
             consoleColour (cyan, true);
@@ -147,7 +147,7 @@ void ConsolePlayer::menu ()
         }
     }
 
-    for (unsigned int i = 0; i < tuneInfo->numberOfCommentStrings(); i++)
+    for (std::size_t i = 0; i < tuneInfo->numberOfCommentStrings(); i++)
     {
         consoleTable  (tableMiddle);
         consoleColour (cyan, true);
