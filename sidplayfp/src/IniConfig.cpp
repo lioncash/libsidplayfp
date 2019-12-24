@@ -142,7 +142,7 @@ void readDouble(iniHandler &ini, const TCHAR *key, double &result)
     {
         result = dataParser::parseDouble(value);
     }
-    catch (dataParser::parseError const &e)
+    catch (const dataParser::parseError&)
     {
         error(TEXT("Error parsing double at "), key);
     }
@@ -159,7 +159,7 @@ void readInt(iniHandler &ini, const TCHAR *key, int &result)
     {
         result = dataParser::parseInt(value);
     }
-    catch (dataParser::parseError const &e)
+    catch (const dataParser::parseError&)
     {
         error(TEXT("Error parsing int at "), key);
     }
@@ -176,7 +176,7 @@ void readBool(iniHandler &ini, const TCHAR *key, bool &result)
     {
         result = dataParser::parseBool(value);
     }
-    catch (dataParser::parseError const &e)
+    catch (const dataParser::parseError&)
     {
         error(TEXT("Error parsing bool at "), key);
     }
@@ -220,7 +220,7 @@ void readChar(iniHandler &ini, const TCHAR *key, char &ch)
         {
             c = dataParser::parseInt(str.c_str());
         }
-        catch (dataParser::parseError const &e)
+        catch (const dataParser::parseError&)
         {
             error(TEXT("Error parsing int at "), key);
         }
@@ -259,7 +259,7 @@ bool readTime(iniHandler &ini, const TCHAR *key, int &value)
             time += sec;
         }
     }
-    catch (dataParser::parseError const &e)
+    catch (const dataParser::parseError&)
     {
         error(TEXT("Error parsing time at "), key);
         return false;
@@ -423,7 +423,7 @@ SID_STRING getConfigPath()
     {
         configPath = utils::getConfigPath();
     }
-    catch (utils::error const &e)
+    catch (const utils::error&)
     {
         throw iniError(TEXT("Cannot get config path!"));
     }
