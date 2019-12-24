@@ -32,12 +32,12 @@ class AudioBase : public IAudio
 protected:
     class error
     {
+    public:
+        explicit error(const char* msg) : m_msg(msg) {}
+        const char* message() const { return m_msg; }
+
     private:
         const char* m_msg;
-
-    public:
-        error(const char* msg) : m_msg(msg) {}
-        const char* message() const { return m_msg; }
     };
 
 private:
@@ -46,7 +46,7 @@ private:
 
 protected:
     AudioConfig _settings;
-    short      *_sampleBuffer;
+    short      *_sampleBuffer = nullptr;
 
 protected:
     void setError(const char* msg)
@@ -60,10 +60,9 @@ protected:
     }
 
 public:
-    AudioBase(const char* name) :
-        _backendName(name),
-        _sampleBuffer(nullptr) {}
-    virtual ~AudioBase() {}
+    explicit AudioBase(const char* name) :
+        _backendName(name) {}
+    ~AudioBase() override = default;
 
     short *buffer() const override { return _sampleBuffer; }
 
