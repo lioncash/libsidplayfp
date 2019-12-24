@@ -77,7 +77,7 @@ void WaveformGenerator::clock_shift_register(unsigned int bit0)
     set_noise_output();
 }
 
-unsigned int WaveformGenerator::get_noise_writeback()
+unsigned int WaveformGenerator::get_noise_writeback() const
 {
   return
     ~(

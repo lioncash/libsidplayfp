@@ -89,7 +89,6 @@ public:
     void clock_shift_register(unsigned int bit0);
     void write_shift_register();
     void reset_shift_register();
-    unsigned int get_noise_writeback();
     void set_noise_output();
 
     void setWaveformModels(matrix_t* models);
@@ -192,6 +191,8 @@ public:
     bool readSync() const { return sync; }
 
 private:
+    unsigned int get_noise_writeback() const;
+
     matrix_t* model_wave = nullptr;
 
     short* wave = nullptr;
