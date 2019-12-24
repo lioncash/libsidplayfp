@@ -23,6 +23,7 @@
 #ifndef SIDBUILDER_H
 #define SIDBUILDER_H
 
+#include <cstddef>
 #include <set>
 #include <string>
 
@@ -51,7 +52,7 @@ public:
      *
      * @return number of used sids, 0 if none.
      */
-    unsigned int usedDevices() const { return sidobjs.size(); }
+    std::size_t usedDevices() const { return sidobjs.size(); }
 
     /**
      * Available devices.
