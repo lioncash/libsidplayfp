@@ -150,18 +150,6 @@ namespace reSIDfp
  */
 class Integrator
 {
-private:
-    const FilterModelConfig::OpAmpTable& vcr_kVg;
-    const FilterModelConfig::OpAmpTable& vcr_n_Ids_term;
-    const FilterModelConfig::OpAmpTable& opamp_rev;
-
-    std::uint32_t Vddt_Vw_2 = 0;
-    int vx = 0;
-    int vc = 0;
-
-    const std::uint16_t kVddt;
-    const std::uint16_t n_snake;
-
 public:
     Integrator(const FilterModelConfig::OpAmpTable& vcr_kVg,
                const FilterModelConfig::OpAmpTable& vcr_n_Ids_term,
@@ -176,6 +164,18 @@ public:
     void setVw(std::uint16_t Vw) { Vddt_Vw_2 = (kVddt - Vw) * (kVddt - Vw) >> 1; }
 
     int solve(int vi);
+
+private:
+    const FilterModelConfig::OpAmpTable& vcr_kVg;
+    const FilterModelConfig::OpAmpTable& vcr_n_Ids_term;
+    const FilterModelConfig::OpAmpTable& opamp_rev;
+
+    std::uint32_t Vddt_Vw_2 = 0;
+    int vx = 0;
+    int vc = 0;
+
+    const std::uint16_t kVddt;
+    const std::uint16_t n_snake;
 };
 
 } // namespace reSIDfp
