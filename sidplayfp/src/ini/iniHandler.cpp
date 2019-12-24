@@ -110,8 +110,9 @@ bool iniHandler::open(const TCHAR *fName)
                 const keys_t keys;
                 sections.push_back(make_pair(section, keys));
             }
-            catch (parseError const &e) {}
-
+            catch (const parseError&)
+            {
+            }
             break;
 
         default:
@@ -123,8 +124,9 @@ bool iniHandler::open(const TCHAR *fName)
                     lastSect.second.push_back(parseKey(buffer));
                 }
             }
-            catch (parseError const &e) {}
-
+            catch (const parseError&)
+            {
+            }
             break;
         }
     }

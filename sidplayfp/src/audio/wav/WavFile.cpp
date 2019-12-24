@@ -153,7 +153,7 @@ bool WavFile::open(AudioConfig &cfg)
     {
         _sampleBuffer = new short[bufSize];
     }
-    catch (std::bad_alloc const &ba)
+    catch (const std::bad_alloc&)
     {
         setError("Unable to allocate memory for sample buffers.");
         return false;
