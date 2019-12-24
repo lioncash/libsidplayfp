@@ -38,8 +38,8 @@ namespace reSIDfp
  * and /MUSICIANS/P/PVCF/Thomkat_with_Strange_End.sid;
  * see [VICE Bug #290](http://sourceforge.net/p/vice-emu/bugs/290/)
  */
-const int FLOATING_OUTPUT_TTL_6581 = 200000;  // ~200ms
-const int FLOATING_OUTPUT_TTL_8580 = 5000000; // ~5s;
+constexpr int FLOATING_OUTPUT_TTL_6581 = 200000;  // ~200ms
+constexpr int FLOATING_OUTPUT_TTL_8580 = 5000000; // ~5s;
 
 /**
  * Number of cycles after which the shift register is reset
@@ -49,10 +49,10 @@ const int FLOATING_OUTPUT_TTL_8580 = 5000000; // ~5s;
  * from chip to chip so the numbers here represents
  * only the big difference between the old and new models.
  */
-const int SHIFT_REGISTER_RESET_6581 = 200000;  // ~200ms
-const int SHIFT_REGISTER_RESET_8580 = 5000000; // ~5s
+constexpr int SHIFT_REGISTER_RESET_6581 = 200000;  // ~200ms
+constexpr int SHIFT_REGISTER_RESET_8580 = 5000000; // ~5s
 
-const int DAC_BITS = 12;
+constexpr int DAC_BITS = 12;
 
 /*
  * This is what happens when the lfsr is clocked:
@@ -156,7 +156,7 @@ void WaveformGenerator::setChipModel(ChipModel chipModel)
 
     const double offset = dacBuilder.getOutput(is6581 ? 0x380 : 0x9c0);
 
-    for (unsigned int i = 0; i < (1 << DAC_BITS); i++)
+    for (unsigned int i = 0; i < dac.size(); i++)
     {
         const double dacValue = dacBuilder.getOutput(i);
         dac[i] = static_cast<float>(dacValue - offset);
