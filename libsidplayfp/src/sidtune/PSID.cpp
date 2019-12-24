@@ -350,9 +350,9 @@ void PSID::tryLoad(const psidHeader &pHeader)
     convertOldStyleSpeedToTables(speed, clock);
 
     // Copy info strings.
-    info->m_infoString.push_back(std::string(pHeader.name, PSID_MAXSTRLEN));
-    info->m_infoString.push_back(std::string(pHeader.author, PSID_MAXSTRLEN));
-    info->m_infoString.push_back(std::string(pHeader.released, PSID_MAXSTRLEN));
+    info->m_infoString.emplace_back(std::string(pHeader.name, PSID_MAXSTRLEN));
+    info->m_infoString.emplace_back(std::string(pHeader.author, PSID_MAXSTRLEN));
+    info->m_infoString.emplace_back(std::string(pHeader.released, PSID_MAXSTRLEN));
 
     if (musPlayer)
         throw loadError("Compute!'s Sidplayer MUS data is not supported yet"); // TODO

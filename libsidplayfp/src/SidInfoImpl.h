@@ -58,7 +58,7 @@ public:
         m_driverLength(0),
         m_powerOnDelay(0)
     {
-        m_credits.push_back(PACKAGE_NAME " V" PACKAGE_VERSION " Engine:\n"
+        m_credits.emplace_back(PACKAGE_NAME " V" PACKAGE_VERSION " Engine:\n"
             "\tCopyright (C) 2000 Simon White\n"
             "\tCopyright (C) 2007-2010 Antti Lankila\n"
             "\tCopyright (C) 2010-2015 Leandro Nini\n"

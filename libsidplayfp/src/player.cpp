@@ -74,9 +74,9 @@ Player::Player() :
     config(m_cfg);
 
     // Get component credits
-    m_info.m_credits.push_back(m_c64.cpuCredits());
-    m_info.m_credits.push_back(m_c64.ciaCredits());
-    m_info.m_credits.push_back(m_c64.vicCredits());
+    m_info.m_credits.emplace_back(m_c64.cpuCredits());
+    m_info.m_credits.emplace_back(m_c64.ciaCredits());
+    m_info.m_credits.emplace_back(m_c64.vicCredits());
 }
 
 Player::~Player() = default;
