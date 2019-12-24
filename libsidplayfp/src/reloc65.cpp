@@ -206,7 +206,7 @@ bool reloc65::reloc(unsigned char **buf, int *fsize)
     }
 }
 
-int reloc65::reldiff(unsigned char s)
+int reloc65::reldiff(unsigned char s) const
 {
     switch (s)
     {

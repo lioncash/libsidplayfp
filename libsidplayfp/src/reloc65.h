@@ -73,7 +73,7 @@ public:
     bool reloc(unsigned char** buf, int* fsize);
 
 private:
-    int reldiff(unsigned char s);
+    int reldiff(unsigned char s) const;
 
     /**
      * Relocate segment.
