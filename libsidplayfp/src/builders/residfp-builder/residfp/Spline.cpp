@@ -104,15 +104,13 @@ Spline::Point Spline::evaluate(double x) const
     // Interpolate
     const double diff = x - c->x1;
 
-    Point out;
+    return Point{
+        // y = a*x^3 + b*x^2 + c*x + d
+        ((c->a * diff + c->b) * diff + c->c) * diff + c->d,
 
-    // y = a*x^3 + b*x^2 + c*x + d
-    out.x = ((c->a * diff + c->b) * diff + c->c) * diff + c->d;
-
-    // dy = 3*a*x^2 + 2*b*x + c
-    out.y = (3.0 * c->a * diff + 2.0 * c->b) * diff + c->c;
-
-    return out;
+        // dy = 3*a*x^2 + 2*b*x + c
+        (3.0 * c->a * diff + 2.0 * c->b) * diff + c->c
+    };
 }
 
 } // namespace reSIDfp
