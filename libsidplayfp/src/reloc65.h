@@ -93,11 +93,20 @@ private:
      */
     unsigned char* reloc_globals(unsigned char* buf);
 
-    int m_tbase, m_dbase, m_bbase, m_zbase;
-    int m_tdiff, m_ddiff, m_bdiff, m_zdiff;
-    bool m_tflag, m_dflag, m_bflag, m_zflag;
+    int m_tbase = 0;
+    int m_dbase = 0;
+    int m_bbase = 0;
+	int m_zbase = 0;
+    int m_tdiff = 0;
+    int m_ddiff = 0;
+    int m_bdiff = 0;
+	int m_zdiff = 0;
+    bool m_tflag = false;
+    bool m_dflag = false;
+    bool m_bflag = false;
+	bool m_zflag = false;
 
-    segment_t m_extract;
+    segment_t m_extract = segment_t::WHOLE;
 };
 
 #endif

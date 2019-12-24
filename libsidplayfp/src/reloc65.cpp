@@ -95,16 +95,7 @@ int read_undef(const unsigned char *buf)
 }
 } // Anonymous namespace
 
-reloc65::reloc65() :
-    m_tbase(0),
-    m_dbase(0),
-    m_bbase(0),
-    m_zbase(0),
-    m_tflag(false),
-    m_dflag(false),
-    m_bflag(false),
-    m_zflag(false),
-    m_extract(WHOLE) {}
+reloc65::reloc65() = default;
 
 void reloc65::setReloc(segment_t type, int addr)
 {
