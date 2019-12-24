@@ -22,8 +22,8 @@
 #ifndef COLORRAMBANK_H
 #define COLORRAMBANK_H
 
+#include <array>
 #include <cstdint>
-#include <cstring>
 
 #include "Banks/Bank.h"
 
@@ -42,7 +42,7 @@ class ColorRAMBank final : public Bank
 public:
     void reset()
     {
-        memset(ram, 0, sizeof(ram));
+        ram.fill(0);
     }
 
     void poke(uint_least16_t address, uint8_t value) override
@@ -56,7 +56,7 @@ public:
     }
 
 private:
-    uint8_t ram[0x400];
+    std::array<uint8_t, 0x400> ram;
 };
 
 }
