@@ -193,12 +193,12 @@ bool auFile::open(AudioConfig &cfg)
 {
     precision = cfg.precision;
 
-    unsigned short bits       = precision;
-    unsigned long  format     = (precision == 16) ? 3 : 6;
-    unsigned long  channels   = cfg.channels;
-    unsigned long  freq       = cfg.frequency;
-    unsigned short blockAlign = (bits>>3)*channels;
-    unsigned long  bufSize    = freq * blockAlign;
+    const unsigned short bits       = precision;
+    const unsigned long  format     = (precision == 16) ? 3 : 6;
+    const unsigned long  channels   = cfg.channels;
+    const unsigned long  freq       = cfg.frequency;
+    const auto blockAlign           = static_cast<unsigned short>((bits >> 3) * channels);
+    const unsigned long  bufSize    = freq * blockAlign;
     cfg.bufSize = bufSize;
 
     if (name.empty())
@@ -265,10 +265,10 @@ bool auFile::write()
             std::vector<float> buffer(_settings.bufSize);
             bytes *= 4;
             // normalize floats
-            for (unsigned long i=0; i<_settings.bufSize; i++)
+            for (std::size_t i = 0; i < _settings.bufSize; i++)
             {
-                float temp = ((float)_sampleBuffer[i])/32768.f;
-                buffer[i] = endian_big32((uint8_t*)&temp);
+                float temp = static_cast<float>(_sampleBuffer[i]) / 32768.f;
+                buffer[i] = static_cast<float>(endian_big32((uint8_t*)&temp));
             }
             file->write((char*)&buffer.front(), bytes);
         }
