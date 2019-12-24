@@ -45,29 +45,18 @@ namespace reSIDfp
  */
 class ExternalFilter
 {
-private:
-    /// Lowpass filter voltage
-    int Vlp;
-
-    /// Highpass filter voltage
-    int Vhp;
-
-    int w0lp_1_s7;
-
-    int w0hp_1_s17;
-
 public:
+    /**
+     * Constructor.
+     */
+    ExternalFilter();
+
     /**
      * SID clocking.
      *
      * @param Vi
      */
     int clock(int Vi);
-
-    /**
-     * Constructor.
-     */
-    ExternalFilter();
 
     /**
      * Setup of the external filter sampling parameters.
@@ -80,6 +69,17 @@ public:
      * SID reset.
      */
     void reset();
+
+private:
+    /// Lowpass filter voltage
+    int Vlp;
+
+    /// Highpass filter voltage
+    int Vhp;
+
+    int w0lp_1_s7;
+
+    int w0hp_1_s17;
 };
 
 } // namespace reSIDfp
