@@ -23,6 +23,7 @@
 #ifndef SIDTUNEBASE_H
 #define SIDTUNEBASE_H
 
+#include <array>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -220,11 +221,11 @@ protected:
 
     std::unique_ptr<SidTuneInfoImpl> info;
 
-    uint_least8_t songSpeed[MAX_SONGS];
-    SidTuneInfo::clock_t clockSpeed[MAX_SONGS];
+    std::array<uint_least8_t, MAX_SONGS> songSpeed;
+    std::array<SidTuneInfo::clock_t, MAX_SONGS> clockSpeed;
 
     /// For files with header: offset to real data
-    uint_least32_t fileOffset;
+    uint_least32_t fileOffset = 0;
 
     buffer_t cache;
 

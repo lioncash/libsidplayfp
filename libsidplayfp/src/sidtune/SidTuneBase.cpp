@@ -216,15 +216,11 @@ void SidTuneBase::loadFile(const char* fileName, buffer_t& bufferRef)
 }
 
 SidTuneBase::SidTuneBase() :
-    info(std::make_unique<SidTuneInfoImpl>()),
-    fileOffset(0)
+    info(std::make_unique<SidTuneInfoImpl>())
 {
     // Initialize the object with some safe defaults.
-    for (unsigned int si = 0; si < MAX_SONGS; si++)
-    {
-        songSpeed[si] = info->m_songSpeed;
-        clockSpeed[si] = info->m_clockSpeed;
-    }
+    songSpeed.fill(info->m_songSpeed);
+    clockSpeed.fill(info->m_clockSpeed);
 }
 
 #if !defined(SIDTUNE_NO_STDIN_LOADER)
