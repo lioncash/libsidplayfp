@@ -23,12 +23,15 @@
 
 #include "EnvelopeGenerator.h"
 
+#include <array>
+
 #include "Dac.h"
 
 namespace reSIDfp
 {
-
-const unsigned int DAC_BITS = 8;
+namespace
+{
+constexpr unsigned int DAC_BITS = 8;
 
 /**
  * Lookup table to convert from attack, decay, or release value to rate
@@ -41,8 +44,7 @@ const unsigned int DAC_BITS = 8;
  *
  * see [kevtris.org](http://blog.kevtris.org/?p=13)
  */
-const unsigned int EnvelopeGenerator::adsrtable[16] =
-{
+constexpr std::array<unsigned int, 16> adsrtable{
     0x007f,
     0x3000,
     0x1e00,
@@ -60,6 +62,7 @@ const unsigned int EnvelopeGenerator::adsrtable[16] =
     0x5237,
     0x64a8
 };
+} // Anonymous namespace
 
 /**
  * This is what happens on chip during state switching,
@@ -106,22 +109,22 @@ void EnvelopeGenerator::state_change()
 
     switch (next_state)
     {
-    case ATTACK:
+    case State::Attack:
         if (state_pipeline == 0)
         {
-            state = ATTACK;
+            state = State::Attack;
             // The attack rate register is correctly enabled during second cycle of attack phase
             rate = adsrtable[attack];
             counter_enabled = true;
         }
         break;
-    case DECAY_SUSTAIN:
+    case State::DecaySustain:
         break;
-    case RELEASE:
-        if (((state == ATTACK) && (state_pipeline == 0))
-            || ((state == DECAY_SUSTAIN) && (state_pipeline == 1)))
+    case State::Release:
+        if ((state == State::Attack && state_pipeline == 0) ||
+            (state == State::DecaySustain && state_pipeline == 1))
         {
-            state = RELEASE;
+            state = State::Release;
             rate = adsrtable[release];
         }
         break;
@@ -171,7 +174,7 @@ void EnvelopeGenerator::setChipModel(ChipModel chipModel)
     Dac dacBuilder(DAC_BITS);
     dacBuilder.kinkedDac(chipModel);
 
-    for (unsigned int i = 0; i < (1 << DAC_BITS); i++)
+    for (unsigned int i = 0; i < dac.size(); i++)
     {
         dac[i] = static_cast<float>(dacBuilder.getOutput(i));
     }
@@ -190,15 +193,15 @@ void EnvelopeGenerator::clock()
     {
         if (likely(counter_enabled))
         {
-            if (state == ATTACK)
+            if (state == State::Attack)
             {
                 if (++envelope_counter == 0xff)
                 {
-                    state = DECAY_SUSTAIN;
+                    state = State::DecaySustain;
                     rate = adsrtable[decay];
                 }
             }
-            else if ((state == DECAY_SUSTAIN) || (state == RELEASE))
+            else if (state == State::DecaySustain || state == State::Release)
             {
                 if (--envelope_counter == 0x00)
                 {
@@ -213,8 +216,8 @@ void EnvelopeGenerator::clock()
     {
         exponential_counter = 0;
 
-        if (((state == DECAY_SUSTAIN) && (envelope_counter != sustain))
-            || (state == RELEASE))
+        if (((state == State::DecaySustain) && (envelope_counter != sustain))
+            || (state == State::Release))
         {
             // The envelope counter can flip from 0x00 to 0xff by changing state to
             // attack, then to release. The envelope counter will then continue
@@ -229,7 +232,7 @@ void EnvelopeGenerator::clock()
         lfsr = 0x7fff;
         resetLfsr = false;
 
-        if (state == ATTACK)
+        if (state == State::Attack)
         {
             // The first envelope step in the attack state also resets the exponential
             // counter. This has been verified by sampling ENV3.
@@ -289,7 +292,7 @@ void EnvelopeGenerator::reset()
     exponential_counter = 0;
     exponential_counter_period = 1;
 
-    state = RELEASE;
+    state = State::Release;
     counter_enabled = true;
     rate = adsrtable[release];
 }
@@ -308,8 +311,8 @@ void EnvelopeGenerator::writeCONTROL_REG(unsigned char control)
         if (gate_next)
         {
             // Gate bit on:  Start attack, decay, sustain.
-            next_state = ATTACK;
-            state = DECAY_SUSTAIN;
+            next_state = State::Attack;
+            state = State::DecaySustain;
             // The decay rate register is "accidentally" enabled during first cycle of attack phase
             rate = adsrtable[decay];
             state_pipeline = 2;
@@ -325,7 +328,7 @@ void EnvelopeGenerator::writeCONTROL_REG(unsigned char control)
         else
         {
             // Gate bit off: Start release.
-            next_state = RELEASE;
+            next_state = State::Release;
             if (counter_enabled)
             {
                 state_pipeline = envelope_pipeline > 0 ? 3 : 2;
@@ -339,11 +342,11 @@ void EnvelopeGenerator::writeATTACK_DECAY(unsigned char attack_decay)
     attack = (attack_decay >> 4) & 0x0f;
     decay = attack_decay & 0x0f;
 
-    if (state == ATTACK)
+    if (state == State::Attack)
     {
         rate = adsrtable[attack];
     }
-    else if (state == DECAY_SUSTAIN)
+    else if (state == State::DecaySustain)
     {
         rate = adsrtable[decay];
     }
@@ -361,7 +364,7 @@ void EnvelopeGenerator::writeSUSTAIN_RELEASE(unsigned char sustain_release)
 
     release = sustain_release & 0x0f;
 
-    if (state == RELEASE)
+    if (state == State::Release)
     {
         rate = adsrtable[release];
     }

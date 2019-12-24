@@ -24,6 +24,7 @@
 #ifndef ENVELOPEGENERATOR_H
 #define ENVELOPEGENERATOR_H
 
+#include <array>
 #include "siddefs-fp.h"
 
 namespace reSIDfp
@@ -47,77 +48,75 @@ private:
      * The envelope state machine's distinct states. In addition to this,
      * envelope has a hold mode, which freezes envelope counter to zero.
      */
-    enum State
+    enum class State
     {
-        ATTACK, DECAY_SUSTAIN, RELEASE
+        Attack,
+        DecaySustain,
+        Release,
     };
 
-private:
     /// XOR shift register for ADSR prescaling.
-    unsigned int lfsr;
+    unsigned int lfsr = 0x7fff;
 
     /// Comparison value (period) of the rate counter before next event.
-    unsigned int rate;
+    unsigned int rate = 0;
 
     /**
      * During release mode, the SID arpproximates envelope decay via piecewise
      * linear decay rate.
      */
-    unsigned int exponential_counter;
+    unsigned int exponential_counter = 0;
 
     /**
      * Comparison value (period) of the exponential decay counter before next
      * decrement.
      */
-    unsigned int exponential_counter_period;
+    unsigned int exponential_counter_period = 1;
 
-    unsigned int state_pipeline;
+    unsigned int state_pipeline = 0;
 
     ///
-    unsigned int envelope_pipeline;
+    unsigned int envelope_pipeline = 0;
 
-    unsigned int exponential_pipeline;
+    unsigned int exponential_pipeline = 0;
 
     /// Current envelope state
-    State state;
-    State next_state;
+    State state = State::Release;
+    State next_state = State::Release;
 
     /// Whether counter is enabled. Only switching to ATTACK can release envelope.
-    bool counter_enabled;
+    bool counter_enabled = true;
 
     /// Gate bit
-    bool gate;
+    bool gate = false;
 
     ///
-    bool resetLfsr;
+    bool resetLfsr = false;
 
     /// The current digital value of envelope output.
-    unsigned char envelope_counter;
+    unsigned char envelope_counter = 0xaa;
 
     /// Attack register
-    unsigned char attack;
+    unsigned char attack = 0;
 
     /// Decay register
-    unsigned char decay;
+    unsigned char decay = 0;
 
     /// Sustain register
-    unsigned char sustain;
+    unsigned char sustain = 0;
 
     /// Release register
-    unsigned char release;
+    unsigned char release = 0;
 
     /// The ENV3 value, sampled at the first phase of the clock
-    unsigned char env3;
+    unsigned char env3 = 0;
 
     /**
      * Emulated nonlinearity of the envelope DAC.
      *
      * @See Dac
      */
-    float dac[256];
-
-private:
-    static const unsigned int adsrtable[16];
+    std::array<float, 256> dac;
 
 private:
     void set_exponential_counter();
@@ -145,30 +144,6 @@ public:
      * into a DAC lookup table. readENV() uses envelope_counter directly.
      */
     float output() const { return dac[envelope_counter]; }
-
-    /**
-     * Constructor.
-     */
-    EnvelopeGenerator() :
-        lfsr(0x7fff),
-        rate(0),
-        exponential_counter(0),
-        exponential_counter_period(1),
-        state_pipeline(0),
-        envelope_pipeline(0),
-        exponential_pipeline(0),
-        state(RELEASE),
-        next_state(RELEASE),
-        counter_enabled(true),
-        gate(false),
-        resetLfsr(false),
-        envelope_counter(0xaa),
-        attack(0),
-        decay(0),
-        sustain(0),
-        release(0),
-        env3(0)
-    {}
 
     /**
      * SID reset.
