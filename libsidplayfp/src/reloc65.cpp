@@ -154,11 +154,11 @@ bool reloc65::reloc(unsigned char **buf, int *fsize)
     m_ddiff = m_dflag ? m_dbase - dbase : 0;
 
     const int bbase = getWord(tmpBuf, 16);
-    const int blen SID_UNUSED = getWord(tmpBuf, 18);
+    [[maybe_unused]] const int blen = getWord(tmpBuf, 18);
     m_bdiff = m_bflag ? m_bbase - bbase : 0;
 
     const int zbase = getWord(tmpBuf, 20);
-    const int zlen SID_UNUSED = getWord(tmpBuf, 21);
+    [[maybe_unused]] const int zlen = getWord(tmpBuf, 21);
     m_zdiff = m_zflag ? m_zbase - zbase : 0;
 
     unsigned char *segt = tmpBuf + hlen;                    // Text segment
