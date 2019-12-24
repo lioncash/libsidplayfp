@@ -38,9 +38,6 @@ namespace libsidplayfp
  */
 class sidmd5
 {
-private:
-    std::unique_ptr<iMd5> m_md5;
-
 public:
     /**
      * @throw md5Error
@@ -85,6 +82,9 @@ public:
 
         return ss.str();
     }
+
+private:
+    std::unique_ptr<iMd5> m_md5;
 };
 
 }

@@ -33,12 +33,6 @@ namespace libsidplayfp
  */
 class c64sid : public Bank
 {
-protected:
-    virtual ~c64sid() {}
-
-    virtual uint8_t read(uint_least8_t addr) = 0;
-    virtual void write(uint_least8_t addr, uint8_t data) = 0;
-
 public:
     virtual void reset(uint8_t volume) = 0;
 
@@ -47,6 +41,12 @@ public:
     // Bank functions
     void poke(uint_least16_t address, uint8_t value) override { write(address & 0x1f, value); }
     uint8_t peek(uint_least16_t address) override { return read(address & 0x1f); }
+
+protected:
+    virtual ~c64sid() {}
+
+    virtual uint8_t read(uint_least8_t addr) = 0;
+    virtual void write(uint_least8_t addr, uint8_t data) = 0;
 };
 
 }

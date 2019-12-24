@@ -70,6 +70,9 @@ public:
     const char *chargenDesc() const;
     //@}
 
+protected:
+    ~SidInfo() = default;
+
 private:
     virtual const char *getName() const =0;
 
@@ -93,9 +96,6 @@ private:
     virtual const char *getKernalDesc() const =0;
     virtual const char *getBasicDesc() const =0;
     virtual const char *getChargenDesc() const =0;
-
-protected:
-    ~SidInfo() {}
 };
 
 #endif  /* SIDINFO_H */

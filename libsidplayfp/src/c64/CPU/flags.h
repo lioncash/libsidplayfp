@@ -33,16 +33,8 @@ namespace libsidplayfp
  */
 class Flags
 {
-private:
-    bool C; ///< Carry
-    bool Z; ///< Zero
-    bool I; ///< Interrupt disabled
-    bool D; ///< Decimal
-    bool V; ///< Overflow
-    bool N; ///< Negative
-
 public:
-    inline void reset()
+    void reset()
     {
         C = Z = I = D = V = N = false;
     }
@@ -52,7 +44,7 @@ public:
      *
      * @param value to set flags from
      */
-    inline void setNZ(uint8_t value)
+    void setNZ(uint8_t value)
     {
         Z = value == 0;
         N = value & 0x80;
@@ -61,7 +53,7 @@ public:
     /**
      * Get status register value.
      */
-    inline uint8_t get()
+    uint8_t get()
     {
         uint8_t sr = 0;
 
@@ -78,7 +70,7 @@ public:
     /**
      * Set status register value.
      */
-    inline void set(uint8_t sr)
+    void set(uint8_t sr)
     {
         C = sr & 0x01;
         Z = sr & 0x02;
@@ -88,19 +80,27 @@ public:
         N = sr & 0x80;
     }
 
-    inline bool getN() const { return N; }
-    inline bool getC() const { return C; }
-    inline bool getD() const { return D; }
-    inline bool getZ() const { return Z; }
-    inline bool getV() const { return V; }
-    inline bool getI() const { return I; }
+    bool getN() const { return N; }
+    bool getC() const { return C; }
+    bool getD() const { return D; }
+    bool getZ() const { return Z; }
+    bool getV() const { return V; }
+    bool getI() const { return I; }
 
-    inline void setN(bool f) { N = f; }
-    inline void setC(bool f) { C = f; }
-    inline void setD(bool f) { D = f; }
-    inline void setZ(bool f) { Z = f; }
-    inline void setV(bool f) { V = f; }
-    inline void setI(bool f) { I = f; }
+    void setN(bool f) { N = f; }
+    void setC(bool f) { C = f; }
+    void setD(bool f) { D = f; }
+    void setZ(bool f) { Z = f; }
+    void setV(bool f) { V = f; }
+    void setI(bool f) { I = f; }
+
+private:
+    bool C; ///< Carry
+    bool Z; ///< Zero
+    bool I; ///< Interrupt disabled
+    bool D; ///< Decimal
+    bool V; ///< Overflow
+    bool N; ///< Negative
 };
 
 }

@@ -59,14 +59,12 @@ public:
         COMPATIBILITY_BASIC  ///< File requires C64 Basic
     };
 
-public:
     /// Vertical-Blanking-Interrupt
     static const int SPEED_VBI = 0;
 
     /// CIA 1 Timer A
     static const int SPEED_CIA_1A = 60;
 
-public:
     /**
      * Load Address.
      */
@@ -198,6 +196,9 @@ public:
      */
     const char* infoFileName() const;
 
+protected:
+    ~SidTuneInfo() = default;
+
 private:
     virtual uint_least16_t getLoadAddr() const =0;
 
@@ -246,9 +247,6 @@ private:
     virtual const char* getDataFileName() const =0;
 
     virtual const char* getInfoFileName() const =0;
-
-protected:
-    ~SidTuneInfo() {}
 };
 
 #endif  /* SIDTUNEINFO_H */

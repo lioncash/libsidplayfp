@@ -75,7 +75,15 @@ public:
         RESAMPLE_INTERPOLATE
     };
 
-public:
+    SidConfig();
+
+    /**
+     * Compare two config objects.
+     *
+     * @return true if different
+     */
+    bool compare(const SidConfig& config);
+
     /**
      * Maximum power on delay.
      * - Delays <= MAX produce constant results
@@ -86,7 +94,6 @@ public:
 
     static const uint_least32_t DEFAULT_SAMPLING_FREQ  = 44100;
 
-public:
     /**
      * Intended c64 model when unknown or forced.
      * - PAL
@@ -179,16 +186,6 @@ public:
      * available only for reSID.
      */
     bool fastSampling;
-
-    /**
-     * Compare two config objects.
-     *
-     * @return true if different
-     */
-    bool compare(const SidConfig &config);
-
-public:
-    SidConfig();
 };
 
 #endif // SIDCONFIG_H

@@ -50,57 +50,18 @@ public:
         INTERRUPT_REQUEST      = 1 << 7  ///< control bit
     };
 
-protected:
-    /// Pointer to the MOS6526 which this Interrupt belongs to.
-    MOS6526 &parent;
-
-    /// Event scheduler.
-    EventScheduler &eventScheduler;
-
-private:
-    /// Interrupt control register
-    uint8_t icr;
-
-    /// Interrupt data register
-    uint8_t idr;
-
-protected:
-    bool interruptMasked() const { return icr & idr; }
-
-    bool interruptTriggered() const { return idr & INTERRUPT_REQUEST; }
-
-    void triggerInterrupt() { idr |= INTERRUPT_REQUEST; }
-
-    void triggerBug() { idr &= ~INTERRUPT_UNDERFLOW_B; }
-
-protected:
-    /**
-     * Create a new InterruptSource.
-     *
-     * @param scheduler event scheduler
-     * @param parent the MOS6526 which this Interrupt belongs to
-     */
-    explicit InterruptSource(EventScheduler &scheduler, MOS6526 &parent) :
-        Event("CIA Interrupt"),
-        parent(parent),
-        eventScheduler(scheduler),
-        icr(0),
-        idr(0)
-    {}
-
-public:
     virtual ~InterruptSource() {}
 
     /**
      * Trigger an interrupt.
-     * 
+     *
      * @param interruptMask Interrupt flag number
      */
     virtual void trigger(uint8_t interruptMask) { idr |= interruptMask; }
 
     /**
      * Clear interrupt state.
-     * 
+     *
      * @return old interrupt state
      */
     virtual uint8_t clear()
@@ -138,6 +99,42 @@ public:
             icr &= ~interruptMask;
         }
     }
+
+protected:
+    /**
+     * Create a new InterruptSource.
+     *
+     * @param scheduler event scheduler
+     * @param parent the MOS6526 which this Interrupt belongs to
+     */
+    explicit InterruptSource(EventScheduler& scheduler, MOS6526& parent) :
+        Event("CIA Interrupt"),
+        parent(parent),
+        eventScheduler(scheduler),
+        icr(0),
+        idr(0)
+    {}
+
+    bool interruptMasked() const { return icr & idr; }
+
+    bool interruptTriggered() const { return idr & INTERRUPT_REQUEST; }
+
+    void triggerInterrupt() { idr |= INTERRUPT_REQUEST; }
+
+    void triggerBug() { idr &= ~INTERRUPT_UNDERFLOW_B; }
+
+    /// Pointer to the MOS6526 which this Interrupt belongs to.
+    MOS6526 &parent;
+
+    /// Event scheduler.
+    EventScheduler &eventScheduler;
+
+private:
+    /// Interrupt control register
+    uint8_t icr;
+
+    /// Interrupt data register
+    uint8_t idr;
 };
 
 }

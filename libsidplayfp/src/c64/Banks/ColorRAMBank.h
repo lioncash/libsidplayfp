@@ -39,13 +39,10 @@ namespace libsidplayfp
  */
 class ColorRAMBank final : public Bank
 {
-private:
-    uint8_t ram[0x400];
-
 public:
     void reset()
     {
-         memset(ram, 0, sizeof(ram));
+        memset(ram, 0, sizeof(ram));
     }
 
     void poke(uint_least16_t address, uint8_t value) override
@@ -57,6 +54,9 @@ public:
     {
         return ram[address & 0x3ff];
     }
+
+private:
+    uint8_t ram[0x400];
 };
 
 }

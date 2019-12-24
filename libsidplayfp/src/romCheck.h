@@ -36,45 +36,16 @@ namespace libsidplayfp
  */
 class romCheck
 {
-private:
-    using md5map = std::map<std::string, const char*>;
-
+public:
     /**
-     * Maps checksums to respective ROM description.
-     * Must be filled by derived class.
+     * Get ROM description.
+     *
+     * @return the ROM description or "Unknown Rom".
      */
-    md5map m_checksums;
-
-    /**
-     * Pointer to the ROM buffer
-     */ 
-    const uint8_t* m_rom;
-
-    /**
-     * Size of the ROM buffer.
-     */
-    unsigned int m_size;
-
-private:
-    romCheck();
-
-    /**
-     * Calculate the md5 digest.
-     */
-    std::string checksum() const
+    const char* info() const
     {
-        try
-        {
-            sidmd5 md5;
-            md5.append(m_rom, m_size);
-            md5.finish();
-
-            return md5.getDigest();
-        }
-        catch (md5Error const &)
-        {
-            return std::string();
-        }
+        const auto res = m_checksums.find(checksum());
+        return (res != m_checksums.end()) ? res->second : "Unknown Rom";
     }
 
 protected:
@@ -93,17 +64,45 @@ protected:
         m_checksums.insert(std::make_pair(md5, desc));
     }
 
-public:
+private:
+    using md5map = std::map<std::string, const char*>;
+
+    romCheck();
+
     /**
-     * Get ROM description.
-     *
-     * @return the ROM description or "Unknown Rom".
+     * Calculate the md5 digest.
      */
-    const char* info() const
+    std::string checksum() const
     {
-        md5map::const_iterator res = m_checksums.find(checksum());
-        return (res != m_checksums.end()) ? res->second : "Unknown Rom";
+        try
+        {
+            sidmd5 md5;
+            md5.append(m_rom, m_size);
+            md5.finish();
+
+            return md5.getDigest();
+        }
+        catch (md5Error const&)
+        {
+            return std::string();
+        }
     }
+
+    /**
+     * Maps checksums to respective ROM description.
+     * Must be filled by derived class.
+     */
+    md5map m_checksums;
+
+    /**
+     * Pointer to the ROM buffer
+     */ 
+    const uint8_t* m_rom;
+
+    /**
+     * Size of the ROM buffer.
+     */
+    unsigned int m_size;
 };
 
 /**
@@ -112,7 +111,7 @@ public:
 class kernalCheck : public romCheck
 {
 public:
-    kernalCheck(const uint8_t* kernal) :
+    explicit kernalCheck(const uint8_t* kernal) :
         romCheck(kernal, 0x2000)
     {
         add("1ae0ea224f2b291dafa2c20b990bb7d4", "C64 KERNAL first revision");
@@ -150,7 +149,7 @@ public:
 class basicCheck : public romCheck
 {
 public:
-    basicCheck(const uint8_t* basic) :
+    explicit basicCheck(const uint8_t* basic) :
         romCheck(basic, 0x2000)
     {
         add("57af4ae21d4b705c2991d98ed5c1f7b8", "C64 BASIC V2");
@@ -163,7 +162,7 @@ public:
 class chargenCheck : public romCheck
 {
 public:
-    chargenCheck(const uint8_t* chargen) :
+    explicit chargenCheck(const uint8_t* chargen) :
         romCheck(chargen, 0x1000)
     {
         add("12a4202f5331d45af846af6c58fba946", "C64 character generator");

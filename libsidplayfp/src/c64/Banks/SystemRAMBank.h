@@ -38,11 +38,6 @@ namespace libsidplayfp
 class SystemRAMBank final : public Bank
 {
     friend class MMU;
-
-private:
-    /// C64 RAM area
-    uint8_t ram[0x10000];
-
 public:
     /**
      * Initialize RAM with powerup pattern.
@@ -52,7 +47,7 @@ public:
         memset(ram, 0, sizeof(ram));
         for (int i = 0x40; i < 0x10000; i += 0x80)
         {
-            memset(ram+i, 0xff, 0x40);
+            memset(ram + i, 0xff, 0x40);
         }
     }
 
@@ -65,6 +60,10 @@ public:
     {
         ram[address] = value;
     }
+
+private:
+    /// C64 RAM area
+    uint8_t ram[0x10000];
 };
 
 }

@@ -45,11 +45,12 @@ template <class T> class SmartPtr_sidtt;
  */
 class loadError
 {
+public:
+    explicit loadError(const char* msg) : m_msg(msg) {}
+    const char* message() const { return m_msg; }
+
 private:
     const char* m_msg;
-public:
-    loadError(const char* msg) : m_msg(msg) {}
-    const char* message() const { return m_msg; }
 };
 
 /**
@@ -57,26 +58,18 @@ public:
  */
 class SidTuneBase
 {
-protected:
-    using buffer_t = std::vector<uint8_t>;
+public:
+    virtual ~SidTuneBase() = default;
 
-protected:
-    /// Also PSID file format limit.
-    static const unsigned int MAX_SONGS = 256;
-
-    // Generic error messages
-    static const char ERR_TRUNCATED[];
-    static const char ERR_INVALID[];
-
-public:  // ----------------------------------------------------------------
-    virtual ~SidTuneBase() {}
+    SidTuneBase(const SidTuneBase&) = delete;
+    SidTuneBase& operator=(const SidTuneBase&) = delete;
 
     /**
      * Load a sidtune from a file.
      *
      * To retrieve data from standard input pass in filename "-".
      * If you want to override the default filename extensions use this
-     * contructor. Please note, that if the specified "sidTuneFileName"
+     * constructor. Please note, that if the specified "sidTuneFileName"
      * does exist and the loader is able to determine its file format,
      * this function does not try to append any file name extension.
      * See "SidTune.cpp" for the default list of file name extensions.
@@ -87,7 +80,7 @@ public:  // ----------------------------------------------------------------
      * @return the sid tune
      * @throw loadError
      */
-    static SidTuneBase* load(const char* fileName, const char **fileNameExt, bool separatorIsSlash);
+    static SidTuneBase* load(const char* fileName, const char** fileNameExt, bool separatorIsSlash);
 
     /**
      * Load a single-file sidtune from a memory buffer.
@@ -98,7 +91,7 @@ public:  // ----------------------------------------------------------------
      * @return the sid tune
      * @throw loadError
      */
-    static SidTuneBase* read(const uint_least8_t* sourceBuffer, uint_least32_t bufferLen);
+    static SidTuneBase* read(const uint_least8_t * sourceBuffer, uint_least32_t bufferLen);
 
     /**
      * Select sub-song (0 = default starting song)
@@ -127,7 +120,7 @@ public:  // ----------------------------------------------------------------
      *
      * @param mem
      */
-    virtual void placeSidTuneInC64mem(sidmemory& mem);
+    virtual void placeSidTuneInC64mem(sidmemory & mem);
 
     /**
      * Calculates the MD5 hash of the tune.
@@ -136,7 +129,7 @@ public:  // ----------------------------------------------------------------
      *
      * @return a pointer to the buffer containing the md5 string.
      */
-    virtual const char *createMD5(char *) { return nullptr; }
+    virtual const char* createMD5(char*) { return nullptr; }
 
     /**
      * Calculates the MD5 hash of the tune.
@@ -145,26 +138,23 @@ public:  // ----------------------------------------------------------------
      *
      * @return a pointer to the buffer containing the md5 string.
      */
-    virtual const char *createMD5New(char *) { return nullptr; }
+    virtual const char* createMD5New(char*) { return nullptr; }
 
     /**
      * Get the pointer to the tune data.
      */
     const uint_least8_t* c64Data() const { return &cache[fileOffset]; }
 
-protected:  // -------------------------------------------------------------
-
-    std::unique_ptr<SidTuneInfoImpl> info;
-
-    uint_least8_t songSpeed[MAX_SONGS];
-    SidTuneInfo::clock_t clockSpeed[MAX_SONGS];
-
-    /// For files with header: offset to real data
-    uint_least32_t fileOffset;
-
-    buffer_t cache;
-
 protected:
+    using buffer_t = std::vector<uint8_t>;
+
+    /// Also PSID file format limit.
+    static const unsigned int MAX_SONGS = 256;
+
+    // Generic error messages
+    static const char ERR_TRUNCATED[];
+    static const char ERR_INVALID[];
+
     SidTuneBase();
 
     /**
@@ -184,7 +174,7 @@ protected:
      * @param clock
      */
     void convertOldStyleSpeedToTables(uint_least32_t speed,
-         SidTuneInfo::clock_t clock = SidTuneInfo::CLOCK_PAL);
+        SidTuneInfo::clock_t clock = SidTuneInfo::CLOCK_PAL);
 
     /**
      * Check if compatibility constraints are fulfilled.
@@ -221,15 +211,24 @@ protected:
      * @throw loadError
      */
     virtual void acceptSidTune(const char* dataFileName, const char* infoFileName,
-                        buffer_t& buf, bool isSlashedFileName);
+        buffer_t& buf, bool isSlashedFileName);
 
     /**
      * Petscii to Ascii converter.
      */
     std::string petsciiToAscii(SmartPtr_sidtt<const uint8_t>& spPet);
 
-private:  // ---------------------------------------------------------------
+    std::unique_ptr<SidTuneInfoImpl> info;
 
+    uint_least8_t songSpeed[MAX_SONGS];
+    SidTuneInfo::clock_t clockSpeed[MAX_SONGS];
+
+    /// For files with header: offset to real data
+    uint_least32_t fileOffset;
+
+    buffer_t cache;
+
+private:
 #if !defined(SIDTUNE_NO_STDIN_LOADER)
     static SidTuneBase* getFromStdIn();
 #endif
@@ -249,11 +248,6 @@ private:  // ---------------------------------------------------------------
      */
     static void createNewFileName(std::string& destString,
                            const char* sourceName, const char* sourceExt);
-
-private:
-    // prevent copying
-    SidTuneBase(const SidTuneBase&);
-    SidTuneBase& operator=(SidTuneBase&);
 };
 
 }

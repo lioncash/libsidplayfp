@@ -31,29 +31,11 @@ struct psidHeader;
 
 class PSID final : public SidTuneBase
 {
-private:
-    char m_md5[SidTune::MD5_LENGTH+1];
-
-private:
-    /**
-     * Load PSID file.
-     *
-     * @throw loadError
-     */
-    void tryLoad(const psidHeader &pHeader);
-
-    /**
-     * Read PSID file header.
-     *
-     * @throw loadError
-     */
-    static void readHeader(const buffer_t &dataBuf, psidHeader &hdr);
-
-protected:
-    PSID() {}
-
 public:
-    virtual ~PSID() {}
+    ~PSID() override = default;
+
+    PSID(const PSID&) = delete;
+    PSID& operator=(const PSID&) = delete;
 
     /**
      * @return pointer to a SidTune or 0 if not a PSID file
@@ -61,14 +43,29 @@ public:
      */
     static SidTuneBase* load(buffer_t& dataBuf);
 
-    virtual const char *createMD5(char *md5) override;
+    const char* createMD5(char* md5) override;
 
-    virtual const char *createMD5New(char *md5) override;
+    const char* createMD5New(char* md5) override;
+
+protected:
+    PSID() {}
 
 private:
-    // prevent copying
-    PSID(const PSID&);
-    PSID& operator=(PSID&);
+    /**
+     * Load PSID file.
+     *
+     * @throw loadError
+     */
+    void tryLoad(const psidHeader& pHeader);
+
+    /**
+     * Read PSID file header.
+     *
+     * @throw loadError
+     */
+    static void readHeader(const buffer_t& dataBuf, psidHeader& hdr);
+
+    char m_md5[SidTune::MD5_LENGTH+1];
 };
 
 }

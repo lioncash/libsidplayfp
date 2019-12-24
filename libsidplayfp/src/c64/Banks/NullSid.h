@@ -32,15 +32,11 @@ namespace libsidplayfp
  */
 class NullSid final : public c64sid
 {
-private:
-    NullSid() {}
-    virtual ~NullSid() {}
-
 public:
     /**
      * Returns singleton instance.
      */
-    static NullSid *getInstance()
+    static NullSid* getInstance()
     {
         static NullSid nullsid;
         return &nullsid;
@@ -50,6 +46,10 @@ public:
 
     void write(uint_least8_t, uint8_t) override {}
     uint8_t read(uint_least8_t) override { return 0xff; }
+
+private:
+    NullSid() = default;
+    ~NullSid() override = default;
 };
 
 }

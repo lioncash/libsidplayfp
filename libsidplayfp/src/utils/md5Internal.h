@@ -30,9 +30,6 @@ namespace libsidplayfp
 
 class md5Internal final : public iMd5
 {
-private:
-    MD5 hd;
-
 public:
     void append(const void* data, int nbytes) override { hd.append(data, nbytes); }
 
@@ -41,6 +38,9 @@ public:
     const unsigned char* getDigest() override { return hd.getDigest(); }
 
     void reset() override { hd.reset(); }
+
+private:
+    MD5 hd;
 };
 
 }

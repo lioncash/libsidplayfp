@@ -38,8 +38,10 @@ namespace libsidplayfp
 
 class c64cpu final : public MOS6510
 {
-private:
-    c64env &m_env;
+public:
+    explicit c64cpu(c64env& env) :
+        MOS6510(env.scheduler()),
+        m_env(env) {}
 
 protected:
     uint8_t cpuRead(uint_least16_t addr) override { return m_env.cpuRead(addr); }
@@ -64,10 +66,8 @@ protected:
         m_env.cpuWrite(addr, data);
     }
 
-public:
-    explicit c64cpu(c64env &env) :
-        MOS6510(env.scheduler()),
-        m_env(env) {}
+private:
+    c64env &m_env;
 };
 
 }

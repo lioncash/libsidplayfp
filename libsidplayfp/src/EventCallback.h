@@ -31,20 +31,20 @@ namespace libsidplayfp
 template <class This>
 class EventCallback final : public Event
 {
-private:
+public:
     using Callback = void (This::*)();
 
-    This &m_this;
-    Callback const m_callback;
-
-    void event() override { (m_this.*m_callback)(); }
-
-public:
-    explicit EventCallback(const char* const name, This &object, Callback callback) :
+    explicit EventCallback(const char* const name, This& object, Callback callback) :
         Event(name),
         m_this(object),
         m_callback(callback)
     {}
+
+private:
+    This &m_this;
+    Callback const m_callback;
+
+    void event() override { (m_this.*m_callback)(); }
 };
 
 }

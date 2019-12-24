@@ -34,7 +34,22 @@ class MOS6526;
 
 class SerialPort : private Event
 {
+public:
+    explicit SerialPort(EventScheduler& scheduler, MOS6526& parent) :
+        Event("Serial Port interrupt"),
+        parent(parent),
+        eventScheduler(scheduler)
+    {}
+
+    void reset();
+
+    void setBuffered() { buffered = true; }
+
+    void handle(uint8_t serialDataReg);
+
 private:
+    void event() override;
+
     /// Pointer to the MOS6526 which this Serial Port belongs to.
     MOS6526 &parent;
 
@@ -46,22 +61,6 @@ private:
     bool buffered;
 
     uint8_t out;
-
-private:
-    void event() override;
-
-public:
-    explicit SerialPort(EventScheduler &scheduler, MOS6526 &parent) :
-        Event("Serial Port interrupt"),
-        parent(parent),
-        eventScheduler(scheduler)
-    {}
-
-    void reset();
-
-    void setBuffered() { buffered = true; }
-
-    void handle(uint8_t serialDataReg);
 };
 
 }

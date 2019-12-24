@@ -30,44 +30,41 @@ namespace libsidplayfp
 
 class MUS final : public SidTuneBase
 {
-private:
-    /// Needed for MUS/STR player installation.
-    uint_least16_t musDataLen;
+public:
+    ~MUS() override = default;
 
-private:
-    bool mergeParts(buffer_t& musBuf, buffer_t& strBuf);
+    MUS(const MUS&) = delete;
+    MUS& operator=(const MUS&) = delete;
 
-    void tryLoad(buffer_t& musBuf,
-                    buffer_t& strBuf,
-                    uint_least32_t fileOffset,
-                    uint_least32_t voice3Index,
-                    bool init);
+    static SidTuneBase* load(buffer_t& dataBuf, bool init = false);
+    static SidTuneBase* load(buffer_t& musBuf,
+        buffer_t& strBuf,
+        uint_least32_t fileOffset,
+        bool init = false);
+
+    void placeSidTuneInC64mem(sidmemory& mem) override;
 
 protected:
-    MUS() {}
+    MUS() = default;
 
     void installPlayer(sidmemory& mem);
 
     void setPlayerAddress();
 
-    virtual void acceptSidTune(const char* dataFileName, const char* infoFileName,
-                                buffer_t& buf, bool isSlashedFileName) override;
-
-public:
-    virtual ~MUS() {}
-
-    static SidTuneBase* load(buffer_t& dataBuf, bool init = false);
-    static SidTuneBase* load(buffer_t& musBuf,
-                                buffer_t& strBuf,
-                                uint_least32_t fileOffset,
-                                bool init = false);
-
-    virtual void placeSidTuneInC64mem(sidmemory& mem) override;
+    void acceptSidTune(const char* dataFileName, const char* infoFileName,
+                       buffer_t& buf, bool isSlashedFileName) override;
 
 private:
-    // prevent copying
-    MUS(const MUS&);
-    MUS& operator=(MUS&);
+    bool mergeParts(buffer_t& musBuf, buffer_t& strBuf);
+
+    void tryLoad(buffer_t& musBuf,
+        buffer_t& strBuf,
+        uint_least32_t fileOffset,
+        uint_least32_t voice3Index,
+        bool init);
+
+    /// Needed for MUS/STR player installation.
+    uint_least16_t musDataLen = 0;
 };
 
 }

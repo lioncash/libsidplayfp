@@ -43,7 +43,7 @@ public:
     virtual event_clock_t getPhi2Time() const =0;
 
 protected:
-    ~PLA() {}
+    ~PLA() = default;
 };
 
 /**
@@ -64,6 +64,30 @@ protected:
 template <int Bit>
 class dataBit
 {
+public:
+    void reset()
+    {
+        isFallingOff = false;
+        dataSet = 0;
+    }
+
+    uint8_t readBit(event_clock_t phi2time)
+    {
+        if (isFallingOff && dataSetClk < phi2time)
+        {
+            // discharge the "capacitor"
+            reset();
+        }
+        return dataSet;
+    }
+
+    void writeBit(event_clock_t phi2time, uint8_t value)
+    {
+        dataSetClk = phi2time + C64_CPU6510_DATA_PORT_FALL_OFF_CYCLES;
+        dataSet = value & (1 << Bit);
+        isFallingOff = true;
+    }
+
 private:
     /**
      * $01 bits 6 and 7 fall-off cycles (1->0), average is about 350 msec for a 6510
@@ -91,7 +115,6 @@ private:
     static event_clock_t const C64_CPU8500_DATA_PORT_FALL_OFF_CYCLES = 1500000; // Curently unused
     //@}
 
-private:
     /// Cycle that should invalidate the bit.
     event_clock_t dataSetClk;
 
@@ -100,30 +123,6 @@ private:
 
     /// Value of the bit.
     uint8_t dataSet;
-
-public:
-    void reset()
-    {
-        isFallingOff = false;
-        dataSet = 0;
-    }
-
-    uint8_t readBit(event_clock_t phi2time)
-    {
-        if (isFallingOff && dataSetClk < phi2time)
-        {
-            // discharge the "capacitor"
-            reset();
-        }
-        return dataSet;
-    }
-
-    void writeBit(event_clock_t phi2time, uint8_t value)
-    {
-        dataSetClk = phi2time + C64_CPU6510_DATA_PORT_FALL_OFF_CYCLES;
-        dataSet = value & (1 << Bit);
-        isFallingOff = true;
-    }
 };
 
 /**
@@ -140,56 +139,8 @@ public:
  */
 class ZeroRAMBank final : public Bank
 {
-private:
-    // not emulated
-    static bool const tape_sense = false;
-
-private:
-    PLA &pla;
-
-    /// C64 RAM area
-    SystemRAMBank &ramBank;
-
-    /// Unused bits of the data port.
-    //@{
-    dataBit<6> dataBit6;
-    dataBit<7> dataBit7;
-    //@}
-
-    /// Value written to processor port.
-    //@{
-    uint8_t dir;
-    uint8_t data;
-    //@}
-
-    /// Value read from processor port.
-    uint8_t dataRead;
-
-    /// State of processor port pins.
-    uint8_t procPortPins;
-
-private:
-    void updateCpuPort()
-    {
-        // Update data pins for which direction is OUTPUT
-        procPortPins = (procPortPins & ~dir) | (data & dir);
-
-        dataRead = (data | ~dir) & (procPortPins | 0x17);
-
-        pla.setCpuPort((data | ~dir) & 0x07);
-
-        if ((dir & 0x20) == 0)
-        {
-            dataRead &= ~0x20;
-        }
-        if (tape_sense && (dir & 0x10) == 0)
-        {
-            dataRead &= ~0x10;
-        }
-    }
-
 public:
-    explicit ZeroRAMBank(PLA &pla, SystemRAMBank &ramBank) :
+    explicit ZeroRAMBank(PLA& pla, SystemRAMBank& ramBank) :
         pla(pla),
         ramBank(ramBank)
     {}
@@ -289,6 +240,52 @@ public:
 
         ramBank.poke(address, value);
     }
+
+private:
+    // not emulated
+    static bool const tape_sense = false;
+
+    void updateCpuPort()
+    {
+        // Update data pins for which direction is OUTPUT
+        procPortPins = (procPortPins & ~dir) | (data & dir);
+
+        dataRead = (data | ~dir) & (procPortPins | 0x17);
+
+        pla.setCpuPort((data | ~dir) & 0x07);
+
+        if ((dir & 0x20) == 0)
+        {
+            dataRead &= ~0x20;
+        }
+        if (tape_sense && (dir & 0x10) == 0)
+        {
+            dataRead &= ~0x10;
+        }
+    }
+
+    PLA &pla;
+
+    /// C64 RAM area
+    SystemRAMBank &ramBank;
+
+    /// Unused bits of the data port.
+    //@{
+    dataBit<6> dataBit6;
+    dataBit<7> dataBit7;
+    //@}
+
+    /// Value written to processor port.
+    //@{
+    uint8_t dir;
+    uint8_t data;
+    //@}
+
+    /// Value read from processor port.
+    uint8_t dataRead;
+
+    /// State of processor port pins.
+    uint8_t procPortPins;
 };
 
 }

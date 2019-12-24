@@ -41,22 +41,8 @@ namespace libsidplayfp
  */
 class c64vic final : public MOS656X, public Bank
 {
-private:
-    c64env &m_env;
-
-protected:
-    void interrupt(bool state) override
-    {
-        m_env.interruptIRQ(state);
-    }
-
-    void setBA(bool state) override
-    {
-        m_env.setBA(state);
-    }
-
 public:
-    explicit c64vic(c64env &env) :
+    explicit c64vic(c64env& env) :
         MOS656X(env.scheduler()),
         m_env(env) {}
 
@@ -69,6 +55,20 @@ public:
     {
         return read(endian_16lo8(address));
     }
+
+protected:
+    void interrupt(bool state) override
+    {
+        m_env.interruptIRQ(state);
+    }
+
+    void setBA(bool state) override
+    {
+        m_env.setBA(state);
+    }
+
+private:
+    c64env &m_env;
 };
 
 }

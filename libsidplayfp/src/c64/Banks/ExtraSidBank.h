@@ -35,31 +35,6 @@ namespace libsidplayfp
  */
 class ExtraSidBank final : public Bank
 {
-private:
-    using sids_t = std::vector<c64sid*>;
-
-private:
-    /**
-     * Size of mapping table. Each 32 bytes another SID chip base address
-     * can be assigned to.
-     */
-    static const int MAPPER_SIZE = 8;
-
-private:
-    /**
-     * SID mapping table.
-     * Maps a SID chip base address to a SID
-     * or to the underlying bank.
-     */
-    Bank *mapper[MAPPER_SIZE];
-
-    sids_t sids;
-
-private:
-    static void resetSID(sids_t::value_type &e) { e->reset(0xf); }
-
-    static unsigned int mapperIndex(int address) { return address >> 5 & (MAPPER_SIZE - 1); }
-
 public:
     virtual ~ExtraSidBank() {}
 
@@ -68,7 +43,7 @@ public:
         std::for_each(sids.begin(), sids.end(), resetSID);
     }
 
-    void resetSIDMapper(Bank *bank)
+    void resetSIDMapper(Bank* bank)
     {
         for (int i = 0; i < MAPPER_SIZE; i++)
             mapper[i] = bank;
@@ -90,11 +65,33 @@ public:
      * @param s the emulation
      * @param address the address where to put the chip
      */
-    void addSID(c64sid *s, int address)
+    void addSID(c64sid* s, int address)
     {
         sids.push_back(s);
         mapper[mapperIndex(address)] = s;
     }
+
+private:
+    using sids_t = std::vector<c64sid*>;
+
+    static void resetSID(sids_t::value_type& e) { e->reset(0xf); }
+
+    static unsigned int mapperIndex(int address) { return address >> 5 & (MAPPER_SIZE - 1); }
+
+    /**
+     * Size of mapping table. Each 32 bytes another SID chip base address
+     * can be assigned to.
+     */
+    static const int MAPPER_SIZE = 8;
+
+    /**
+     * SID mapping table.
+     * Maps a SID chip base address to a SID
+     * or to the underlying bank.
+     */
+    Bank *mapper[MAPPER_SIZE];
+
+    sids_t sids;
 };
 
 }

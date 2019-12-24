@@ -39,9 +39,6 @@ namespace libsidplayfp
  */
 class c64env
 {
-private:
-    EventScheduler &eventScheduler;
-
 public:
     explicit c64env(EventScheduler &scheduler) :
         eventScheduler(scheduler) {}
@@ -60,6 +57,9 @@ public:
 
 protected:
     ~c64env() {}
+
+private:
+    EventScheduler& eventScheduler;
 };
 
 }

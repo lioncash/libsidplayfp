@@ -49,6 +49,13 @@ class MOS6526;
  */
 class TimerA final : public Timer
 {
+public:
+    /**
+     * Create timer A.
+     */
+    TimerA(EventScheduler& scheduler, MOS6526& parent) :
+        Timer("CIA Timer A", scheduler, parent) {}
+
 private:
     /**
      * Signal underflows of Timer A to Timer B.
@@ -56,13 +63,6 @@ private:
     void underFlow() override;
 
     void serialPort() override;
-
-public:
-    /**
-     * Create timer A.
-     */
-    TimerA(EventScheduler &scheduler, MOS6526 &parent) :
-        Timer("CIA Timer A", scheduler, parent) {}
 };
 
 /**
@@ -73,14 +73,11 @@ public:
  */
 class TimerB final : public Timer
 {
-private:
-    void underFlow() override;
-
 public:
     /**
      * Create timer B.
      */
-    TimerB(EventScheduler &scheduler, MOS6526 &parent) :
+    TimerB(EventScheduler& scheduler, MOS6526& parent) :
         Timer("CIA Timer B", scheduler, parent) {}
 
     /**
@@ -100,6 +97,9 @@ public:
      * @return true if start flag is set, false otherwise
      */
     bool started() const { return (state & CIAT_CR_START) != 0; }
+
+private:
+    void underFlow() override;
 };
 
 /**
@@ -127,31 +127,8 @@ public:
  */
 class InterruptSource6526 final : public InterruptSource
 {
-private:
-    /// Clock when clear was called last
-    event_clock_t last_clear;
-
-    /// Have we already scheduled CIA->CPU interrupt transition?
-    bool scheduled;
-
-    /// Timer B bug
-    bool tbBug;
-
-private:
-    /**
-     * Schedules an IRQ asserting state transition for next cycle.
-     */
-    void schedule()
-    {
-        if (!scheduled)
-        {
-            eventScheduler.schedule(*this, 1, EVENT_CLOCK_PHI1);
-            scheduled = true;
-        }
-    }
-
 public:
-    explicit InterruptSource6526(EventScheduler &scheduler, MOS6526 &parent) :
+    explicit InterruptSource6526(EventScheduler& scheduler, MOS6526& parent) :
         InterruptSource(scheduler, parent),
         last_clear(0),
         scheduled(false),
@@ -168,6 +145,28 @@ public:
     void event() override;
 
     void reset() override;
+
+private:
+    /**
+     * Schedules an IRQ asserting state transition for next cycle.
+     */
+    void schedule()
+    {
+        if (!scheduled)
+        {
+            eventScheduler.schedule(*this, 1, EVENT_CLOCK_PHI1);
+            scheduled = true;
+        }
+    }
+
+    /// Clock when clear was called last
+    event_clock_t last_clear;
+
+    /// Have we already scheduled CIA->CPU interrupt transition?
+    bool scheduled;
+
+    /// Timer B bug
+    bool tbBug;
 };
 
 /**
@@ -185,10 +184,70 @@ class MOS6526
     friend class TimerB;
     friend class Tod;
 
-private:
-    static const char *credit;
+public:
+    /**
+     * Select chip model.
+     *
+     * @param newModel true for new model 8521, false for old 6526
+     */
+    void setModel(bool newModel);
+
+    /**
+     * Reset CIA.
+     */
+    virtual void reset();
+
+    /**
+     * Get the credits.
+     *
+     * @return the credits
+     */
+    static const char* credits();
+
+    /**
+     * Set day-of-time event occurence of rate.
+     *
+     * @param clock
+     */
+    void setDayOfTimeRate(unsigned int clock) { tod.setPeriod(clock); }
 
 protected:
+    /**
+     * Create a new CIA.
+     *
+     * @param scheduler the event scheduler
+     */
+    explicit MOS6526(EventScheduler& scheduler);
+
+    /**
+     * Signal interrupt.
+     *
+     * @param state
+     *            interrupt state
+     */
+    virtual void interrupt(bool state) = 0;
+
+    virtual void portA() {}
+    virtual void portB() {}
+
+    /**
+     * Read CIA register.
+     *
+     * @param addr
+     *            register address to read (lowest 4 bits)
+     */
+    uint8_t read(uint_least8_t addr);
+
+    /**
+     * Write CIA register.
+     *
+     * @param addr
+     *            register address to write (lowest 4 bits)
+     * @param data
+     *            value to write
+     */
+    void write(uint_least8_t addr, uint8_t data);
+
     /// Event context.
     EventScheduler &eventScheduler;
 
@@ -258,69 +317,7 @@ private:
      */
     void handleSerialPort();
 
-protected:
-    /**
-     * Create a new CIA.
-     *
-     * @param context the event context
-     */
-    explicit MOS6526(EventScheduler &scheduler);
-
-    /**
-     * Signal interrupt.
-     *
-     * @param state
-     *            interrupt state
-     */
-    virtual void interrupt(bool state) = 0;
-
-    virtual void portA() {}
-    virtual void portB() {}
-
-    /**
-     * Read CIA register.
-     *
-     * @param addr
-     *            register address to read (lowest 4 bits)
-     */
-    uint8_t read(uint_least8_t addr);
-
-    /**
-     * Write CIA register.
-     *
-     * @param addr
-     *            register address to write (lowest 4 bits)
-     * @param data
-     *            value to write
-     */
-    void write(uint_least8_t addr, uint8_t data);
-
-public:
-    /**
-     * Select chip model.
-     * 
-     * @param newModel true for new model 8521, false for old 6526
-     */
-    void setModel(bool newModel);
-
-    /**
-     * Reset CIA.
-     */
-    virtual void reset();
-
-    /**
-     * Get the credits.
-     *
-     * @return the credits
-     */
-    static const char *credits();
-
-    /**
-     * Set day-of-time event occurence of rate.
-     *
-     * @param clock
-     */
-    void setDayOfTimeRate(unsigned int clock) { tod.setPeriod(clock); }
+    static const char* credit;
 };
 
 }

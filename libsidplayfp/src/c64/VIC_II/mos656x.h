@@ -51,6 +51,56 @@ public:
         MOS6573,         ///< PAL-M
     };
 
+    void event() override;
+
+    /**
+     * Set chip model.
+     */
+    void chip(model_t model);
+
+    /**
+     * Trigger the lightpen. Sets the lightpen usage flag.
+     */
+    void triggerLightpen();
+
+    /**
+     * Clears the lightpen usage flag.
+     */
+    void clearLightpen();
+
+    /**
+     * Reset VIC II.
+     */
+    void reset();
+
+    static const char* credits();
+
+protected:
+    explicit MOS656X(EventScheduler& scheduler);
+    ~MOS656X() {}
+
+    // Environment Interface
+    virtual void interrupt(bool state) = 0;
+    virtual void setBA(bool state) = 0;
+
+    /**
+     * Read VIC register.
+     *
+     * @param addr
+     *            Register to read.
+     */
+    uint8_t read(uint_least8_t addr);
+
+    /**
+     * Write to VIC register.
+     *
+     * @param addr
+     *            Register to write to.
+     * @param data
+     *            Data byte to write.
+     */
+    void write(uint_least8_t addr, uint8_t data);
+
 private:
     using ClockFunc = event_clock_t (MOS656X::*)();
 
@@ -61,81 +111,6 @@ private:
         ClockFunc clock;
     };
 
-private:
-    static const model_data_t modelData[];
-
-    /// raster IRQ flag
-    static const int IRQ_RASTER = 1 << 0;
-
-    /// Light-Pen IRQ flag
-    static const int IRQ_LIGHTPEN = 1 << 3;
-
-    /// First line when we check for bad lines
-    static const unsigned int FIRST_DMA_LINE = 0x30;
-
-    /// Last line when we check for bad lines
-    static const unsigned int LAST_DMA_LINE = 0xf7;
-
-private:
-    /// Current model clock function.
-    ClockFunc clock;
-
-    /// Current raster clock.
-    event_clock_t rasterClk;
-
-    /// System's event scheduler.
-    EventScheduler &eventScheduler;
-
-    /// Number of cycles per line.
-    unsigned int cyclesPerLine;
-
-    /// Number of raster lines.
-    unsigned int maxRasters;
-
-    /// Current visible line
-    unsigned int lineCycle;
-
-    /// current raster line
-    unsigned int rasterY;
-
-    /// vertical scrolling value
-    unsigned int yscroll;
-
-    /// are bad lines enabled for this frame?
-    bool areBadLinesEnabled;
-
-    /// is the current line a bad line
-    bool isBadLine;
-
-    /// Is rasterYIRQ condition true?
-    bool rasterYIRQCondition;
-
-    /// Set when new frame starts.
-    bool vblanking;
-
-    /// Is CIA asserting lightpen?
-    bool lpAsserted;
-
-    /// internal IRQ flags
-    uint8_t irqFlags;
-
-    /// masks for the IRQ flags
-    uint8_t irqMask;
-
-    /// Light pen
-    Lightpen lp;
-
-    /// the 8 sprites data
-    Sprites sprites;
-
-    /// memory for chip registers
-    uint8_t regs[0x40];
-
-    EventCallback<MOS656X> badLineStateChangeEvent;
-
-    EventCallback<MOS656X> rasterYIRQEdgeDetectorEvent;
-
-private:
     event_clock_t clockPAL();
     event_clock_t clockNTSC();
     event_clock_t clockOldNTSC();
@@ -199,12 +174,12 @@ private:
     /**
      * Get previous value of Y raster
      */
-    inline unsigned int oldRasterY() const
+    unsigned int oldRasterY() const
     {
         return (rasterY > 0 ? rasterY : maxRasters) - 1;
     }
 
-    inline void sync()
+    void sync()
     {
         eventScheduler.cancel(*this);
         event();
@@ -213,7 +188,7 @@ private:
     /**
      * Check for vertical blanking.
      */
-    inline void checkVblank()
+    void checkVblank()
     {
         // IRQ occurred (xraster != 0)
         if (rasterY == (maxRasters - 1))
@@ -250,7 +225,7 @@ private:
     /**
      * Vertical blank (line 0).
      */
-    inline void vblank()
+    void vblank()
     {
         if (vblanking)
         {
@@ -269,7 +244,7 @@ private:
      * Start DMA for sprite n.
      */
     template<int n>
-    inline void startDma()
+    void startDma()
     {
         if (sprites.isDma(0x01 << n))
             setBA(false);
@@ -279,7 +254,7 @@ private:
      * End DMA for sprite n.
      */
     template<int n>
-    inline void endDma()
+    void endDma()
     {
         if (!sprites.isDma(0x06 << n))
             setBA(true);
@@ -288,62 +263,83 @@ private:
     /**
      * Start bad line.
      */
-    inline void startBadline()
+    void startBadline()
     {
         if (isBadLine)
             setBA(false);
     }
 
-protected:
-    explicit MOS656X(EventScheduler &scheduler);
-    ~MOS656X() {}
+    static const model_data_t modelData[];
 
-    // Environment Interface
-    virtual void interrupt(bool state) = 0;
-    virtual void setBA(bool state) = 0;
+    /// raster IRQ flag
+    static const int IRQ_RASTER = 1 << 0;
 
-    /**
-     * Read VIC register.
-     *
-     * @param addr
-     *            Register to read.
-     */
-    uint8_t read(uint_least8_t addr);
+    /// Light-Pen IRQ flag
+    static const int IRQ_LIGHTPEN = 1 << 3;
 
-    /**
-     * Write to VIC register.
-     *
-     * @param addr
-     *            Register to write to.
-     * @param data
-     *            Data byte to write.
-     */
-    void write(uint_least8_t addr, uint8_t data);
+    /// First line when we check for bad lines
+    static const unsigned int FIRST_DMA_LINE = 0x30;
 
-public:
-    void event() override;
+    /// Last line when we check for bad lines
+    static const unsigned int LAST_DMA_LINE = 0xf7;
 
-    /**
-     * Set chip model.
-     */
-    void chip(model_t model);
+    /// Current model clock function.
+    ClockFunc clock;
 
-    /**
-     * Trigger the lightpen. Sets the lightpen usage flag.
-     */
-    void triggerLightpen();
+    /// Current raster clock.
+    event_clock_t rasterClk;
 
-    /**
-     * Clears the lightpen usage flag.
-     */
-    void clearLightpen();
+    /// System's event scheduler.
+    EventScheduler &eventScheduler;
 
-    /**
-     * Reset VIC II.
-     */
-    void reset();
+    /// Number of cycles per line.
+    unsigned int cyclesPerLine;
 
-    static const char *credits();
+    /// Number of raster lines.
+    unsigned int maxRasters;
+
+    /// Current visible line
+    unsigned int lineCycle;
+
+    /// current raster line
+    unsigned int rasterY;
+
+    /// vertical scrolling value
+    unsigned int yscroll;
+
+    /// are bad lines enabled for this frame?
+    bool areBadLinesEnabled;
+
+    /// is the current line a bad line
+    bool isBadLine;
+
+    /// Is rasterYIRQ condition true?
+    bool rasterYIRQCondition;
+
+    /// Set when new frame starts.
+    bool vblanking;
+
+    /// Is CIA asserting lightpen?
+    bool lpAsserted;
+
+    /// internal IRQ flags
+    uint8_t irqFlags;
+
+    /// masks for the IRQ flags
+    uint8_t irqMask;
+
+    /// Light pen
+    Lightpen lp;
+
+    /// the 8 sprites data
+    Sprites sprites;
+
+    /// memory for chip registers
+    uint8_t regs[0x40];
+
+    EventCallback<MOS656X> badLineStateChangeEvent;
+
+    EventCallback<MOS656X> rasterYIRQEdgeDetectorEvent;
 };
 
 // Template specializations

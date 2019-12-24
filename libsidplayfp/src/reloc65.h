@@ -47,12 +47,30 @@ public:
         ZEROPAGE
     };
 
-private:
-    int m_tbase, m_dbase, m_bbase, m_zbase;
-    int m_tdiff, m_ddiff, m_bdiff, m_zdiff;
-    bool m_tflag, m_dflag, m_bflag, m_zflag;
+    reloc65();
 
-    segment_t m_extract;
+    /**
+     * Select segment to relocate.
+     *
+     * @param type the segment to relocate
+     * @param addr new address
+     */
+    void setReloc(segment_t type, int addr);
+
+    /**
+     * Select segment to extract.
+     *
+     * @param type the segment to extract
+     */
+    void setExtract(segment_t type);
+
+    /**
+     * Do the relocation.
+     *
+     * @param buf beffer containing o65 data
+     * @param fsize size of the data
+     */
+    bool reloc(unsigned char** buf, int* fsize);
 
 private:
     int reldiff(unsigned char s);
@@ -65,7 +83,7 @@ private:
      * @param rtab relocation table
      * @return a pointer to the next section
      */
-    unsigned char* reloc_seg(unsigned char *buf, int len, unsigned char *rtab);
+    unsigned char* reloc_seg(unsigned char* buf, int len, unsigned char* rtab);
 
     /**
      * Relocate exported globals list.
@@ -73,33 +91,13 @@ private:
      * @param buf exported globals list
      * @return a pointer to the next section
      */
-    unsigned char* reloc_globals(unsigned char *buf);
+    unsigned char* reloc_globals(unsigned char* buf);
 
-public:
-    reloc65();
+    int m_tbase, m_dbase, m_bbase, m_zbase;
+    int m_tdiff, m_ddiff, m_bdiff, m_zdiff;
+    bool m_tflag, m_dflag, m_bflag, m_zflag;
 
-    /**
-     * Select segment to relocate.
-     * 
-     * @param type the segment to relocate
-     * @param addr new address
-     */
-    void setReloc(segment_t type, int addr);
-
-    /**
-     * Select segment to extract.
-     * 
-     * @param type the segment to extract
-     */
-    void setExtract(segment_t type);
-
-    /**
-     * Do the relocation.
-     *
-     * @param buf beffer containing o65 data
-     * @param fsize size of the data
-     */
-    bool reloc(unsigned char **buf, int *fsize);
+    segment_t m_extract;
 };
 
 #endif

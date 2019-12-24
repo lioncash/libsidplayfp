@@ -29,9 +29,6 @@ namespace libsidplayfp
  */
 class sidrandom
 {
-private:
-    unsigned int m_seed;
-
 public:
     /**
      * Initialize PRNG.
@@ -49,6 +46,9 @@ public:
         m_seed = m_seed * 13 + 1;
         return m_seed;
     }
+
+private:
+    unsigned int m_seed;
 };
 
 }

@@ -28,24 +28,23 @@ namespace libsidplayfp
 
 class iniParser
 {
+public:
+    bool open(const char* fName);
+    void close();
+
+    bool setSection(const char* section);
+    const char* getValue(const char* key);
+
 private:
     using keys_t = std::map<std::string, std::string>;
     using sections_t = std::map<std::string, keys_t>;
 
+    std::string parseSection(const std::string& buffer);
+
+    keys_t::value_type parseKey(const std::string& buffer);
+
     sections_t sections;
     sections_t::const_iterator curSection;
-
-private:
-    std::string parseSection(const std::string &buffer);
-
-    keys_t::value_type parseKey(const std::string &buffer);
-
-public:
-    bool open(const char *fName);
-    void close();
-
-    bool setSection(const char *section);
-    const char *getValue(const char *key);
 };
 
 }

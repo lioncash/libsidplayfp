@@ -36,17 +36,6 @@ using event_clock_t = int_fast64_t;
 class Event
 {
     friend class EventScheduler;
-
-private:
-    /// The next event in sequence.
-    Event *next;
-
-    /// The clock this event fires.
-    event_clock_t triggerTime;
-
-    /// Describe event for humans.
-    const char * const m_name;
-
 public:
     /**
      * Events are used for delayed execution. Name is
@@ -66,6 +55,16 @@ public:
 
 protected:
     ~Event() {}
+
+private:
+    /// The next event in sequence.
+    Event* next;
+
+    /// The clock this event fires.
+    event_clock_t triggerTime;
+
+    /// Describe event for humans.
+    const char* const m_name;
 };
 
 }

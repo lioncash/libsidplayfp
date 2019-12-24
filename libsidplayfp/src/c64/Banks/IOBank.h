@@ -38,16 +38,13 @@ namespace libsidplayfp
  */
 class IOBank final : public Bank
 {
-private:
-    Bank* map[16];
-
 public:
     void setBank(int num, Bank* bank)
     {
         map[num] = bank;
     }
 
-    Bank *getBank(int num) const
+    Bank* getBank(int num) const
     {
         return map[num];
     }
@@ -61,6 +58,9 @@ public:
     {
         map[addr >> 8 & 0xf]->poke(addr, data);
     }
+
+private:
+    Bank* map[16];
 };
 
 }

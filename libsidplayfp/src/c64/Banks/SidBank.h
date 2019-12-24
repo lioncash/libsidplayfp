@@ -36,13 +36,9 @@ namespace libsidplayfp
  */
 class SidBank final : public Bank
 {
-private:
-    /// SID chip
-    c64sid *sid;
-
 public:
     SidBank()
-      : sid(NullSid::getInstance())
+        : sid(NullSid::getInstance())
     {}
 
     void reset()
@@ -65,7 +61,11 @@ public:
      *
      * @param s the emulation, nullptr to remove current sid
      */
-    void setSID(c64sid *s) { sid = (s != nullptr) ? s : NullSid::getInstance(); }
+    void setSID(c64sid* s) { sid = (s != nullptr) ? s : NullSid::getInstance(); }
+
+private:
+    /// SID chip
+    c64sid *sid;
 };
 
 }

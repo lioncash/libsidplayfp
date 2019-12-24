@@ -55,12 +55,12 @@ const char ERR_INVALID_PERCENTAGE[]   = "SIDPLAYER ERROR: Percentage value out o
  */
 class configError
 {
+public:
+    explicit configError(const char* msg) : m_msg(msg) {}
+    const char* message() const { return m_msg; }
+
 private:
     const char* m_msg;
-
-public:
-    configError(const char* msg) : m_msg(msg) {}
-    const char* message() const { return m_msg; }
 };
 
 Player::Player() :
@@ -78,6 +78,8 @@ Player::Player() :
     m_info.m_credits.push_back(m_c64.ciaCredits());
     m_info.m_credits.push_back(m_c64.vicCredits());
 }
+
+Player::~Player() = default;
 
 template<class T>
 inline void checkRom(const uint8_t* rom, std::string &desc)

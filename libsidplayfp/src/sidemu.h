@@ -51,40 +51,15 @@ public:
         OUTPUTBUFFERSIZE = 5000
     };
 
-private:
-    sidbuilder* const m_builder;
-
-protected:
-    static const char ERR_UNSUPPORTED_FREQ[];
-    static const char ERR_INVALID_SAMPLING[];
-    static const char ERR_INVALID_CHIP[];
-
-protected:
-    EventScheduler *eventScheduler;
-
-    event_clock_t m_accessClk;
-
-    /// The sample buffer
-    short *m_buffer;
-
-    /// Current position in buffer
-    int m_bufferpos;
-
-    bool m_status;
-    bool isLocked;
-
-    std::string m_error;
-
-public:
-    explicit sidemu(sidbuilder *builder) :
-        m_builder(builder),
+    explicit sidemu(sidbuilder* builder) :
         eventScheduler(nullptr),
         m_buffer(nullptr),
         m_bufferpos(0),
         m_status(true),
         isLocked(false),
-        m_error("N/A") {}
-    virtual ~sidemu() {}
+        m_error("N/A"),
+        m_builder(builder) {}
+    ~sidemu() override = default;
 
     /**
      * Clock the SID chip.
@@ -94,7 +69,7 @@ public:
     /**
      * Set execution environment and lock sid to it.
      */
-    virtual bool lock(EventScheduler *scheduler);
+    virtual bool lock(EventScheduler* scheduler);
 
     /**
      * Unlock sid.
@@ -102,7 +77,7 @@ public:
     virtual void unlock();
 
     // Standard SID functions
-    
+
     /**
      * Mute/unmute voice.
      */
@@ -144,7 +119,30 @@ public:
     /**
      * Get the buffer.
      */
-    short *buffer() const { return m_buffer; }
+    short* buffer() const { return m_buffer; }
+
+protected:
+    static const char ERR_UNSUPPORTED_FREQ[];
+    static const char ERR_INVALID_SAMPLING[];
+    static const char ERR_INVALID_CHIP[];
+
+    EventScheduler *eventScheduler;
+
+    event_clock_t m_accessClk;
+
+    /// The sample buffer
+    short *m_buffer;
+
+    /// Current position in buffer
+    int m_bufferpos;
+
+    bool m_status;
+    bool isLocked;
+
+    std::string m_error;
+
+private:
+    sidbuilder* const m_builder;
 };
 
 }

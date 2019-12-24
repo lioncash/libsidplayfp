@@ -28,25 +28,23 @@ namespace libsidplayfp
 
 class prg final : public SidTuneBase
 {
-protected:
-    prg() {}
-
-private:
-    void load();
-
 public:
     /**
      * @return pointer to a SidTune or 0 if not a prg file
      * @throw loadError if prg file is corrupt
      */
-    static SidTuneBase* load(const char *fileName, buffer_t& dataBuf);
+    static SidTuneBase* load(const char* fileName, buffer_t& dataBuf);
 
-    virtual ~prg() {}
+    ~prg() override = default;
+
+    prg(const prg&) = delete;
+    prg& operator=(const prg&) = delete;
+
+protected:
+    prg() = default;
 
 private:
-    // prevent copying
-    prg(const prg&);
-    prg& operator=(prg&);
+    void load();
 };
 
 }

@@ -51,6 +51,40 @@ namespace libsidplayfp
 
 class Player
 {
+public:
+    Player();
+    ~Player();
+
+    const SidConfig& config() const { return m_cfg; }
+
+    const SidInfo& info() const { return m_info; }
+
+    bool config(const SidConfig& cfg, bool force = false);
+
+    bool fastForward(unsigned int percent);
+
+    bool load(SidTune* tune);
+
+    uint_least32_t play(short* buffer, uint_least32_t samples);
+
+    bool isPlaying() const { return m_isPlaying != STOPPED; }
+
+    void stop();
+
+    uint_least32_t time() const { return m_c64.getTime(); }
+
+    uint_least32_t timeMs() const { return m_c64.getTimeMs(); }
+
+    void debug(const bool enable, FILE* out) { m_c64.debug(enable, out); }
+
+    void mute(unsigned int sidNum, unsigned int voice, bool enable);
+
+    const char* error() const { return m_errorString; }
+
+    void setRoms(const uint8_t* kernal, const uint8_t* basic, const uint8_t* character);
+
+    uint_least16_t getCia1TimerA() const { return m_c64.getCia1TimerA(); }
+
 private:
     enum state_t
     {
@@ -59,33 +93,6 @@ private:
         STOPPING
     };
 
-private:
-    /// Commodore 64 emulator
-    c64 m_c64;
-
-    /// Mixer
-    Mixer m_mixer;
-
-    /// Emulator info
-    SidTune *m_tune;
-
-    /// User Configuration Settings
-    SidInfoImpl m_info;
-
-    /// User Configuration Settings
-    SidConfig m_cfg;
-
-    /// Error message
-    const char *m_errorString;
-
-    volatile state_t m_isPlaying;
-
-    sidrandom m_rand;
-
-    /// PAL/NTSC switch value
-    uint8_t videoSwitch;
-
-private:
     /**
      * Get the C64 model for the current loaded tune.
      *
@@ -111,8 +118,8 @@ private:
      *
      * @throw configError
      */
-    void sidCreate(sidbuilder *builder, SidConfig::sid_model_t defaultModel, bool digiboost,
-                    bool forced, const std::vector<unsigned int> &extraSidAddresses);
+    void sidCreate(sidbuilder* builder, SidConfig::sid_model_t defaultModel, bool digiboost,
+        bool forced, const std::vector<unsigned int>& extraSidAddresses);
 
     /**
      * Set the SID emulation parameters.
@@ -123,43 +130,34 @@ private:
      * @param fastSampling true to enable fast low quality resampling (only for reSID)
      */
     void sidParams(double cpuFreq, int frequency,
-                    SidConfig::sampling_method_t sampling, bool fastSampling);
+        SidConfig::sampling_method_t sampling, bool fastSampling);
 
     inline void run(unsigned int events);
 
-public:
-    Player();
-    ~Player() {}
+    /// Commodore 64 emulator
+    c64 m_c64;
 
-    const SidConfig &config() const { return m_cfg; }
+    /// Mixer
+    Mixer m_mixer;
 
-    const SidInfo &info() const { return m_info; }
+    /// Emulator info
+    SidTune *m_tune;
 
-    bool config(const SidConfig &cfg, bool force=false);
+    /// User Configuration Settings
+    SidInfoImpl m_info;
 
-    bool fastForward(unsigned int percent);
+    /// User Configuration Settings
+    SidConfig m_cfg;
 
-    bool load(SidTune *tune);
+    /// Error message
+    const char *m_errorString;
 
-    uint_least32_t play(short *buffer, uint_least32_t samples);
+    volatile state_t m_isPlaying;
 
-    bool isPlaying() const { return m_isPlaying != STOPPED; }
+    sidrandom m_rand;
 
-    void stop();
-
-    uint_least32_t time() const { return m_c64.getTime(); }
-
-    uint_least32_t timeMs() const { return m_c64.getTimeMs(); }
-
-    void debug(const bool enable, FILE *out) { m_c64.debug(enable, out); }
-
-    void mute(unsigned int sidNum, unsigned int voice, bool enable);
-
-    const char *error() const { return m_errorString; }
-
-    void setRoms(const uint8_t* kernal, const uint8_t* basic, const uint8_t* character);
-
-    uint_least16_t getCia1TimerA() const { return m_c64.getCia1TimerA(); }
+    /// PAL/NTSC switch value
+    uint8_t videoSwitch;
 };
 
 }

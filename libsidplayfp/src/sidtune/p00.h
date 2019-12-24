@@ -30,25 +30,24 @@ struct X00Header;
 
 class p00 final : public SidTuneBase
 {
-protected:
-    p00() {}
-
-private:
-    void load(const char* format, const X00Header* pHeader);
-
 public:
     /**
      * @return pointer to a SidTune or 0 if not a PC64 file
      * @throw loadError if PC64 file is corrupt
      */
-    static SidTuneBase* load(const char *fileName, buffer_t& dataBuf);
+    static SidTuneBase* load(const char* fileName, buffer_t& dataBuf);
 
-    virtual ~p00() {}
+    ~p00() override = default;
+
+    // prevent copying
+    p00(const p00&) = delete;
+    p00& operator=(const p00&) = delete;
+
+protected:
+    p00() = default;
 
 private:
-    // prevent copying
-    p00(const p00&);
-    p00& operator=(p00&);
+    void load(const char* format, const X00Header* pHeader);
 };
 
 }

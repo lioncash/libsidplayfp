@@ -39,43 +39,12 @@ class sidemu;
  */
 class sidbuilder
 {
-protected:
-    using emuset_t = std::set<libsidplayfp::sidemu*>;
-
-private:
-    const char * const m_name;
-
-protected:
-    std::string m_errorBuffer;
-
-    emuset_t sidobjs;
-
-    bool m_status;
-
-protected:
-    /**
-     * Utility class for setting emu parameters in builders.
-     */
-    template<class Temu, typename Tparam>
-    class applyParameter
-    {
-    protected:
-        Tparam m_param;
-        void (Temu::*m_method)(Tparam);
-
-    public:
-        applyParameter(void (Temu::*method)(Tparam), Tparam param) :
-            m_param(param),
-            m_method(method) {}
-        void operator() (libsidplayfp::sidemu *e) { (static_cast<Temu*>(e)->*m_method)(m_param); }
-    };
-
 public:
-    explicit sidbuilder(const char * const name) :
-        m_name(name),
+    explicit sidbuilder(const char* const name) :
         m_errorBuffer("N/A"),
-        m_status(true) {}
-    virtual ~sidbuilder() {}
+        m_status(true),
+        m_name(name) {}
+    virtual ~sidbuilder() = default;
 
     /**
      * The number of used devices.
@@ -107,14 +76,14 @@ public:
      * @param digiboost whether to enable digiboost for 8580
      * @return pointer to the locked sid emu
      */
-    libsidplayfp::sidemu *lock(libsidplayfp::EventScheduler *scheduler, SidConfig::sid_model_t model, bool digiboost);
+    libsidplayfp::sidemu* lock(libsidplayfp::EventScheduler* scheduler, SidConfig::sid_model_t model, bool digiboost);
 
     /**
      * Release this SID.
      *
      * @param device the sid emu to unlock
      */
-    void unlock(libsidplayfp::sidemu *device);
+    void unlock(libsidplayfp::sidemu* device);
 
     /**
      * Remove all SID emulations.
@@ -126,14 +95,14 @@ public:
      *
      * @return the name
      */
-    const char *name() const { return m_name; }
+    const char* name() const { return m_name; }
 
     /**
      * Error message.
      *
      * @return string error message.
      */
-    const char *error() const { return m_errorBuffer.c_str(); }
+    const char* error() const { return m_errorBuffer.c_str(); }
 
     /**
      * Determine current state of object.
@@ -147,7 +116,7 @@ public:
      *
      * @return credits
      */
-    virtual const char *credits() const = 0;
+    virtual const char* credits() const = 0;
 
     /**
      * Toggle sid filter emulation.
@@ -155,6 +124,35 @@ public:
      * @param enable true = enable, false = disable
      */
     virtual void filter(bool enable) = 0;
+
+protected:
+    using emuset_t = std::set<libsidplayfp::sidemu*>;
+
+    /**
+     * Utility class for setting emu parameters in builders.
+     */
+    template <class Temu, typename Tparam>
+    class applyParameter
+    {
+    public:
+        applyParameter(void (Temu::* method)(Tparam), Tparam param) :
+            m_param(param),
+            m_method(method) {}
+        void operator() (libsidplayfp::sidemu* e) { (static_cast<Temu*>(e)->*m_method)(m_param); }
+
+    protected:
+        Tparam m_param;
+        void (Temu::* m_method)(Tparam);
+    };
+
+    std::string m_errorBuffer;
+
+    emuset_t sidobjs;
+
+    bool m_status;
+
+private:
+    const char * const m_name;
 };
 
 #endif // SIDBUILDER_H

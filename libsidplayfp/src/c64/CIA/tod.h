@@ -38,6 +38,47 @@ class MOS6526;
  */
 class Tod : private Event
 {
+public:
+    explicit Tod(EventScheduler& scheduler, MOS6526& parent, uint8_t regs[0x10]) :
+        Event("CIA Time of Day"),
+        eventScheduler(scheduler),
+        parent(parent),
+        cra(regs[0x0e]),
+        crb(regs[0x0f]),
+        period(~0), // Dummy
+        todtickcounter(0)
+    {}
+
+    /**
+     * Reset TOD.
+     */
+    void reset();
+
+    /**
+     * Read TOD register.
+     *
+     * @param reg
+     *            register register to read
+     */
+    uint8_t read(uint_least8_t reg);
+
+    /**
+     * Write TOD register.
+     *
+     * @param reg
+     *            register to write
+     * @param data
+     *            value to write
+     */
+    void write(uint_least8_t reg, uint8_t data);
+
+    /**
+     * Set TOD period.
+     *
+     * @param clock
+     */
+    void setPeriod(event_clock_t clock) { period = clock * (1 << 7); }
+
 private:
     enum
     {
@@ -47,7 +88,12 @@ private:
         HOURS   = 3
     };
 
-private:
+    inline void checkAlarm();
+
+    inline void updateCounters();
+
+    void event() override;
+
     /// Event scheduler.
     EventScheduler &eventScheduler;
 
@@ -68,54 +114,6 @@ private:
     uint8_t clock[4];
     uint8_t latch[4];
     uint8_t alarm[4];
-
-private:
-    inline void checkAlarm();
-
-    inline void updateCounters();
-
-    void event();
-
-public:
-    explicit Tod(EventScheduler &scheduler, MOS6526 &parent, uint8_t regs[0x10]) :
-        Event("CIA Time of Day"),
-        eventScheduler(scheduler),
-        parent(parent),
-        cra(regs[0x0e]),
-        crb(regs[0x0f]),
-        period(~0), // Dummy
-        todtickcounter(0)
-    {}
-
-    /**
-     * Reset TOD.
-     */
-    void reset();
-
-    /**
-     * Read TOD register.
-     *
-     * @param addr
-     *            register register to read
-     */
-    uint8_t read(uint_least8_t reg);
-
-    /**
-     * Write TOD register.
-     *
-     * @param addr
-     *            register to write
-     * @param data
-     *            value to write
-     */
-    void write(uint_least8_t reg, uint8_t data);
-
-    /**
-     * Set TOD period.
-     *
-     * @param clock
-     */
-    void setPeriod(event_clock_t clock) { period = clock * (1 << 7); }
 };
 
 }

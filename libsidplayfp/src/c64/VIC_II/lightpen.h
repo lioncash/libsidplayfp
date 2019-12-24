@@ -35,22 +35,6 @@ namespace libsidplayfp
  */
 class Lightpen
 {
-private:
-    /// Last VIC raster line
-    unsigned int lastLine;
-
-    /// VIC cycles per line
-    unsigned int cyclesPerLine;
-
-    /// X coordinate
-    unsigned int lpx;
-
-    /// Y coordinate
-    unsigned int lpy;
-
-    /// Has light pen IRQ been triggered in this frame already?
-    bool isTriggered;
-
 public:
     /**
      * Set VIC screen size.
@@ -138,6 +122,22 @@ public:
      * Untrigger lightpen from CIA.
      */
     void untrigger() { isTriggered = false; }
+
+private:
+    /// Last VIC raster line
+    unsigned int lastLine;
+
+    /// VIC cycles per line
+    unsigned int cyclesPerLine;
+
+    /// X coordinate
+    unsigned int lpx;
+
+    /// Y coordinate
+    unsigned int lpy;
+
+    /// Has light pen IRQ been triggered in this frame already?
+    bool isTriggered;
 };
 
 }

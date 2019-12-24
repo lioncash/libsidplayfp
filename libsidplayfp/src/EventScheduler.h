@@ -57,35 +57,6 @@ enum event_phase_t
  */
 class EventScheduler
 {
-private:
-    /// The first event of the chain.
-    Event *firstEvent;
-
-    /// EventScheduler's current clock.
-    event_clock_t currentTime;
-
-private:
-    /**
-     * Scan the event queue and schedule event for execution.
-     *
-     * @param event The event to add
-     */
-    void schedule(Event &event)
-    {
-        // find the right spot where to tuck this new event
-        Event **scan = &firstEvent;
-        for (;;)
-        {
-            if (*scan == nullptr || (*scan)->triggerTime > event.triggerTime)
-            {
-                 event.next = *scan;
-                 *scan = &event;
-                 break;
-             }
-             scan = &((*scan)->next);
-         }
-    }
-
 public:
     EventScheduler() :
         firstEvent(nullptr),
@@ -179,6 +150,34 @@ public:
      * @return The current phase
      */
     event_phase_t phase() const { return static_cast<event_phase_t>(currentTime & 1); }
+
+private:
+    /**
+     * Scan the event queue and schedule event for execution.
+     *
+     * @param event The event to add
+     */
+    void schedule(Event& event)
+    {
+        // find the right spot where to tuck this new event
+        Event** scan = &firstEvent;
+        while (true)
+        {
+            if (*scan == nullptr || (*scan)->triggerTime > event.triggerTime)
+            {
+                event.next = *scan;
+                *scan = &event;
+                break;
+            }
+            scan = &((*scan)->next);
+        }
+    }
+
+    /// The first event of the chain.
+    Event* firstEvent;
+
+    /// EventScheduler's current clock.
+    event_clock_t currentTime;
 };
 
 }

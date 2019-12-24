@@ -77,7 +77,53 @@ class MOS6510
 public:
     class haltInstruction {};
 
+    /// Status register interrupt bit.
+    static const int SR_INTERRUPT = 2;
+
+#ifdef PC64_TESTSUITE
+    virtual void loadFile(const char* file) = 0;
+#endif
+
+    void reset();
+
+    static const char* credits();
+
+    void debug(bool enable, FILE* out);
+    void setRDY(bool newRDY);
+
+    // Non-standard functions
+    void triggerRST();
+    void triggerNMI();
+    void triggerIRQ();
+    void clearIRQ();
+
+protected:
+    explicit MOS6510(EventScheduler& scheduler);
+    ~MOS6510() {}
+
+    /**
+     * Get data from system environment.
+     *
+     * @param address
+     * @return data byte CPU requested
+     */
+    virtual uint8_t cpuRead(uint_least16_t addr) = 0;
+
+    /**
+     * Write data to system environment.
+     *
+     * @param address
+     * @param data
+     */
+    virtual void cpuWrite(uint_least16_t addr, uint8_t data) = 0;
+
 private:
+    struct ProcessorCycle
+    {
+        void (MOS6510::*func)() = nullptr;
+        bool nosteal = false;
+    };
+
     /**
      * IRQ/NMI magic limit values.
      * Need to be larger than about 0x103 << 3,
@@ -87,83 +133,6 @@ private:
 
     /// Stack page location
     static const uint8_t SP_PAGE = 0x01;
-
-public:
-    /// Status register interrupt bit.
-    static const int SR_INTERRUPT = 2;
-
-private:
-    struct ProcessorCycle
-    {
-        void (MOS6510::*func)() = nullptr;
-        bool nosteal = false;
-    };
-
-private:
-    /// Event scheduler
-    EventScheduler &eventScheduler;
-
-    /// Current instruction and subcycle within instruction
-    int cycleCount;
-
-    /// When IRQ was triggered. -MAX means "during some previous instruction", MAX means "no IRQ"
-    int interruptCycle;
-
-    /// IRQ asserted on CPU
-    bool irqAssertedOnPin;
-
-    /// NMI requested?
-    bool nmiFlag;
-
-    /// RST requested?
-    bool rstFlag;
-
-    /// RDY pin state (stop CPU on read)
-    bool rdy;
-
-    /// Address Low summer carry
-    bool adl_carry;
-
-    bool d1x1;
-
-#ifdef CORRECT_SH_INSTRUCTIONS
-    /// The RDY pin state during last throw away read.
-    bool rdyOnThrowAwayRead;
-#endif
-
-    /// Status register
-    Flags flags;
-
-    // Data regarding current instruction
-    uint_least16_t Register_ProgramCounter;
-    uint_least16_t Cycle_EffectiveAddress;
-    uint_least16_t Cycle_Pointer;
-
-    uint8_t Cycle_Data;
-    uint8_t Register_StackPointer;
-    uint8_t Register_Accumulator;
-    uint8_t Register_X;
-    uint8_t Register_Y;
-
-#ifdef DEBUG
-    // Debug info
-    int_least32_t instrStartPC;
-    uint_least16_t instrOperand;
-
-    FILE *m_fdbg;
-
-    bool dodump;
-#endif
-
-    /// Table of CPU opcode implementations
-    ProcessorCycle instrTable[0x101 << 3];
-
-private:
-    /// Represents an instruction subcycle that writes
-    EventCallback<MOS6510> m_nosteal;
-
-    /// Represents an instruction subcycle that reads
-    EventCallback<MOS6510> m_steal;
 
     void eventWithoutSteals();
     void eventWithSteals();
@@ -299,47 +268,73 @@ private:
     inline void doADC();
     inline void doSBC();
 
-    inline bool checkInterrupts() const { return rstFlag || nmiFlag || (irqAssertedOnPin && !flags.getI()); }
+    bool checkInterrupts() const { return rstFlag || nmiFlag || (irqAssertedOnPin && !flags.getI()); }
 
     inline void buildInstructionTable();
 
-protected:
-    explicit MOS6510(EventScheduler &scheduler);
-    ~MOS6510() {}
+    /// Event scheduler
+    EventScheduler &eventScheduler;
 
-    /**
-     * Get data from system environment.
-     *
-     * @param address
-     * @return data byte CPU requested
-     */
-    virtual uint8_t cpuRead(uint_least16_t addr) =0;
+    /// Current instruction and subcycle within instruction
+    int cycleCount;
 
-    /**
-     * Write data to system environment.
-     *
-     * @param address
-     * @param data
-     */
-    virtual void cpuWrite(uint_least16_t addr, uint8_t data) =0;
+    /// When IRQ was triggered. -MAX means "during some previous instruction", MAX means "no IRQ"
+    int interruptCycle;
 
-public:
-#ifdef PC64_TESTSUITE
-    virtual void loadFile(const char *file) =0;
+    /// IRQ asserted on CPU
+    bool irqAssertedOnPin;
+
+    /// NMI requested?
+    bool nmiFlag;
+
+    /// RST requested?
+    bool rstFlag;
+
+    /// RDY pin state (stop CPU on read)
+    bool rdy;
+
+    /// Address Low summer carry
+    bool adl_carry;
+
+    bool d1x1;
+
+#ifdef CORRECT_SH_INSTRUCTIONS
+    /// The RDY pin state during last throw away read.
+    bool rdyOnThrowAwayRead;
 #endif
 
-    void reset();
+    /// Status register
+    Flags flags;
 
-    static const char *credits();
+    // Data regarding current instruction
+    uint_least16_t Register_ProgramCounter;
+    uint_least16_t Cycle_EffectiveAddress;
+    uint_least16_t Cycle_Pointer;
 
-    void debug(bool enable, FILE *out);
-    void setRDY(bool newRDY);
+    uint8_t Cycle_Data;
+    uint8_t Register_StackPointer;
+    uint8_t Register_Accumulator;
+    uint8_t Register_X;
+    uint8_t Register_Y;
 
-    // Non-standard functions
-    void triggerRST();
-    void triggerNMI();
-    void triggerIRQ();
-    void clearIRQ();
+#ifdef DEBUG
+    // Debug info
+    int_least32_t instrStartPC;
+    uint_least16_t instrOperand;
+
+    FILE *m_fdbg;
+
+    bool dodump;
+#endif
+
+    /// Table of CPU opcode implementations
+    ProcessorCycle instrTable[0x101 << 3];
+
+    /// Represents an instruction subcycle that writes
+    EventCallback<MOS6510> m_nosteal;
+
+    /// Represents an instruction subcycle that reads
+    EventCallback<MOS6510> m_steal;
 };
 
 }

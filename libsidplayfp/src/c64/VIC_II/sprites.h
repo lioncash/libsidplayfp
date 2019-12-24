@@ -37,14 +37,6 @@ namespace libsidplayfp
  */
 class Sprites
 {
-private:
-    const uint8_t &enable, &y_expansion;
-
-    uint8_t exp_flop;
-    uint8_t dma;
-    uint8_t mc_base[SPRITES];
-    uint8_t mc[SPRITES];
-
 public:
     explicit Sprites(uint8_t regs[0x40]) :
         enable(regs[0x15]),
@@ -164,10 +156,18 @@ public:
      *
      * @param val bitmask for selected sprites
      */
-    inline bool isDma(unsigned int val) const
+    bool isDma(unsigned int val) const
     {
         return dma & val;
     }
+
+private:
+    const uint8_t &enable, &y_expansion;
+
+    uint8_t exp_flop;
+    uint8_t dma;
+    uint8_t mc_base[SPRITES];
+    uint8_t mc[SPRITES];
 };
 
 }

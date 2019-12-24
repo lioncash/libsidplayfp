@@ -32,27 +32,6 @@ class sidmemory;
 
 class psiddrv
 {
-private:
-    const SidTuneInfo *m_tuneInfo;
-    const char *m_errorString;
-
-    uint8_t *reloc_driver;
-    int      reloc_size;
-
-    uint_least16_t m_driverAddr;
-    uint_least16_t m_driverLength;
-
-    uint_least16_t m_powerOnDelay;
-
-private:
-    /**
-     * Get required I/O map to reach address
-     *
-     * @param addr a 16-bit effective address
-     * @return a default bank-select value for $01
-     */
-    uint8_t iomap(uint_least16_t addr) const;
-
 public:
     explicit psiddrv(const SidTuneInfo* tuneInfo) :
         m_tuneInfo(tuneInfo),
@@ -90,6 +69,26 @@ public:
 
     uint_least16_t driverAddr() const { return m_driverAddr; }
     uint_least16_t driverLength() const { return m_driverLength; }
+
+private:
+    /**
+     * Get required I/O map to reach address
+     *
+     * @param addr a 16-bit effective address
+     * @return a default bank-select value for $01
+     */
+    uint8_t iomap(uint_least16_t addr) const;
+
+    const SidTuneInfo *m_tuneInfo;
+    const char *m_errorString;
+
+    uint8_t *reloc_driver;
+    int      reloc_size;
+
+    uint_least16_t m_driverAddr;
+    uint_least16_t m_driverLength;
+
+    uint_least16_t m_powerOnDelay;
 };
 
 }

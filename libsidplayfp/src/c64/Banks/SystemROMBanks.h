@@ -38,9 +38,21 @@ namespace libsidplayfp
 template <int N>
 class romBank : public Bank
 {
-protected:
-    /// The ROM array
-    uint8_t rom[N];
+public:
+    /**
+     * Copy content from source buffer.
+     */
+    void set(const uint8_t* source) { if (source != nullptr) memcpy(rom, source, N); }
+
+    /**
+     * Writing to ROM is a no-op.
+     */
+    void poke(uint_least16_t, uint8_t) override {}
+
+    /**
+     * Read from ROM.
+     */
+    uint8_t peek(uint_least16_t address) override { return rom[address & (N - 1)]; }
 
 protected:
     /**
@@ -58,21 +70,8 @@ protected:
      */
     void* getPtr(uint_least16_t address) const { return (void*)&rom[address & (N-1)]; }
 
-public:
-    /**
-     * Copy content from source buffer.
-     */
-    void set(const uint8_t* source) { if (source != nullptr) memcpy(rom, source, N); }
-
-    /**
-     * Writing to ROM is a no-op.
-     */
-    void poke(uint_least16_t, uint8_t) override {}
-
-    /**
-     * Read from ROM.
-     */
-    uint8_t peek(uint_least16_t address) override { return rom[address & (N-1)]; }
+    /// The ROM array
+    uint8_t rom[N];
 };
 
 /**
@@ -82,10 +81,6 @@ public:
  */
 class KernalRomBank final : public romBank<0x2000>
 {
-private:
-    uint8_t resetVectorLo;  // 0xfffc
-    uint8_t resetVectorHi;  // 0xfffd
-
 public:
     void set(const uint8_t* kernal)
     {
@@ -137,6 +132,10 @@ public:
         setVal(0xfffc, endian_16lo8(addr));
         setVal(0xfffd, endian_16hi8(addr));
     }
+
+private:
+    uint8_t resetVectorLo = 0;  // 0xfffc
+    uint8_t resetVectorHi = 0;  // 0xfffd
 };
 
 /**
@@ -146,10 +145,6 @@ public:
  */
 class BasicRomBank final : public romBank<0x2000>
 {
-private:
-    uint8_t trap[3];
-    uint8_t subTune[11];
-
 public:
     void set(const uint8_t* basic)
     {
@@ -195,6 +190,10 @@ public:
         setVal(0xbf5c, 0xb1);
         setVal(0xbf5d, 0xa7);
     }
+
+private:
+    uint8_t trap[3];
+    uint8_t subTune[11];
 };
 
 /**

@@ -38,51 +38,6 @@ namespace libsidplayfp
 class SidTuneInfoImpl final : public SidTuneInfo
 {
 public:
-    const char* m_formatString;
-
-    unsigned int m_songs;
-    unsigned int m_startSong;
-    unsigned int m_currentSong;
-
-    int m_songSpeed;
-
-    clock_t m_clockSpeed;
-
-    compatibility_t m_compatibility;
-
-    uint_least32_t m_dataFileLen;
-
-    uint_least32_t m_c64dataLen;
-
-    uint_least16_t m_loadAddr;
-    uint_least16_t m_initAddr;
-    uint_least16_t m_playAddr;
-
-    uint_least8_t m_relocStartPage;
-
-    uint_least8_t m_relocPages;
-
-    std::string m_path;
-
-    std::string m_dataFileName;
-
-    std::string m_infoFileName;
-
-    std::vector<model_t> m_sidModels;
-
-    std::vector<uint_least16_t> m_sidChipAddresses;
-
-    std::vector<std::string> m_infoString;
-
-    std::vector<std::string> m_commentString;
-
-    bool m_fixLoad;
-
-private:    // prevent copying
-    SidTuneInfoImpl(const SidTuneInfoImpl&);
-    SidTuneInfoImpl& operator=(SidTuneInfoImpl&);
-
-public:
     SidTuneInfoImpl() :
         m_formatString("N/A"),
         m_songs(0),
@@ -103,6 +58,9 @@ public:
         m_sidModels.push_back(SIDMODEL_UNKNOWN);
         m_sidChipAddresses.push_back(0xd400);
     }
+
+    SidTuneInfoImpl(const SidTuneInfoImpl&) = delete;
+    SidTuneInfoImpl& operator=(const SidTuneInfoImpl&) = delete;
 
     uint_least16_t getLoadAddr() const override { return m_loadAddr; }
 
@@ -157,6 +115,46 @@ public:
     const char* getDataFileName() const override { return m_dataFileName.c_str(); }
 
     const char* getInfoFileName() const override { return !m_infoFileName.empty() ? m_infoFileName.c_str() : nullptr; }
+
+    const char* m_formatString;
+
+    unsigned int m_songs;
+    unsigned int m_startSong;
+    unsigned int m_currentSong;
+
+    int m_songSpeed;
+
+    clock_t m_clockSpeed;
+
+    compatibility_t m_compatibility;
+
+    uint_least32_t m_dataFileLen;
+
+    uint_least32_t m_c64dataLen;
+
+    uint_least16_t m_loadAddr;
+    uint_least16_t m_initAddr;
+    uint_least16_t m_playAddr;
+
+    uint_least8_t m_relocStartPage;
+
+    uint_least8_t m_relocPages;
+
+    std::string m_path;
+
+    std::string m_dataFileName;
+
+    std::string m_infoFileName;
+
+    std::vector<model_t> m_sidModels;
+
+    std::vector<uint_least16_t> m_sidChipAddresses;
+
+    std::vector<std::string> m_infoString;
+
+    std::vector<std::string> m_commentString;
+
+    bool m_fixLoad;
 };
 
 }

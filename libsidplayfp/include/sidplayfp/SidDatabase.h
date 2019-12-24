@@ -41,11 +41,6 @@ class iniParser;
  */
 class SID_EXTERN SidDatabase
 {
-private:
-    std::unique_ptr<libsidplayfp::iniParser> m_parser;
-
-    const char *errorString;
-
 public:
     SidDatabase();
     ~SidDatabase();
@@ -103,6 +98,11 @@ public:
      * Get descriptive error message.
      */
     const char *error() const { return errorString; }
+
+private:
+    std::unique_ptr<libsidplayfp::iniParser> m_parser;
+
+    const char* errorString;
 };
 
 #endif // SIDDATABASE_H

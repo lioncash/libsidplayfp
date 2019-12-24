@@ -44,19 +44,6 @@ class SID_EXTERN SidTune
 public:
     static const int MD5_LENGTH = 32;
 
-private:
-    /// Filename extensions to append for various file types.
-    static const char** fileNameExtensions;
-
-private:  // -------------------------------------------------------------
-    std::unique_ptr<libsidplayfp::SidTuneBase> tune;
-
-    const char* m_statusString;
-
-    bool m_status;
-
-public:  // ----------------------------------------------------------------
-
     /**
      * Load a sidtune from a file.
      *
@@ -73,8 +60,8 @@ public:  // ----------------------------------------------------------------
      * @param fileNameExt
      * @param separatorIsSlash
      */
-    explicit SidTune(const char* fileName, const char **fileNameExt = nullptr,
-                     bool separatorIsSlash = false);
+    explicit SidTune(const char* fileName, const char** fileNameExt = nullptr,
+        bool separatorIsSlash = false);
 
     /**
      * Load a single-file sidtune from a memory buffer.
@@ -84,9 +71,12 @@ public:  // ----------------------------------------------------------------
      * @param sidtuneLength length of the buffer
      */
     explicit SidTune(const uint_least8_t* oneFileFormatSidtune,
-                     uint_least32_t sidtuneLength);
+        uint_least32_t sidtuneLength);
 
     ~SidTune();
+
+    SidTune(const SidTune&) = delete;
+    SidTune& operator=(const SidTune&) = delete;
 
     /**
      * The SidTune class does not copy the list of file name extensions,
@@ -96,7 +86,7 @@ public:  // ----------------------------------------------------------------
      *
      * @param fileNameExt
      */
-    void setFileNameExtensions(const char **fileNameExt);
+    void setFileNameExtensions(const char** fileNameExt);
 
     /**
      * Load a sidtune into an existing object from a file.
@@ -163,7 +153,7 @@ public:  // ----------------------------------------------------------------
      *
      * @return a pointer to the buffer containing the md5 string, 0 if no tune is loaded.
      */
-    const char *createMD5(char *md5 = nullptr);
+    const char* createMD5(char* md5 = nullptr);
 
     /**
      * Calculates the MD5 hash of the tune, new method, introduced in HVSC#68.
@@ -172,13 +162,19 @@ public:  // ----------------------------------------------------------------
      *
      * @return a pointer to the buffer containing the md5 string, 0 if no tune is loaded.
      */
-    const char *createMD5New(char *md5 = nullptr);
+    const char* createMD5New(char* md5 = nullptr);
 
     const uint_least8_t* c64Data() const;
 
-private:    // prevent copying
-    SidTune(const SidTune&);
-    SidTune& operator=(SidTune&);
+private:
+    /// Filename extensions to append for various file types.
+    static const char** fileNameExtensions;
+
+    std::unique_ptr<libsidplayfp::SidTuneBase> tune;
+
+    const char* m_statusString;
+
+    bool m_status;
 };
 
 #endif  /* SIDTUNE_H */

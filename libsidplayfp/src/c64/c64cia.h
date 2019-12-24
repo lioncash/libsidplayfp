@@ -43,23 +43,8 @@ namespace libsidplayfp
  */
 class c64cia1 final : public MOS6526, public Bank
 {
-private:
-    c64env &m_env;
-    uint_least16_t last_ta;
-
-protected:
-    void interrupt(bool state) override
-    {
-        m_env.interruptIRQ(state);
-    }
-
-    void portB() override
-    {
-        m_env.lightpen((prb | ~ddrb) & 0x10);
-    }
-
 public:
-    explicit c64cia1(c64env &env) :
+    explicit c64cia1(c64env& env) :
         MOS6526(env.scheduler()),
         m_env(env) {}
 
@@ -87,6 +72,21 @@ public:
     }
 
     uint_least16_t getTimerA() const { return last_ta; }
+
+protected:
+    void interrupt(bool state) override
+    {
+        m_env.interruptIRQ(state);
+    }
+
+    void portB() override
+    {
+        m_env.lightpen((prb | ~ddrb) & 0x10);
+    }
+	
+private:
+    c64env &m_env;
+    uint_least16_t last_ta;
 };
 
 /**
@@ -98,18 +98,8 @@ public:
  */
 class c64cia2 : public MOS6526, public Bank
 {
-private:
-    c64env &m_env;
-
-protected:
-    void interrupt(bool state) override
-    {
-        if (state)
-            m_env.interruptNMI();
-    }
-
 public:
-    c64cia2(c64env &env) :
+    explicit c64cia2(c64env& env) :
         MOS6526(env.scheduler()),
         m_env(env) {}
 
@@ -122,6 +112,16 @@ public:
     {
         return read(endian_16lo8(address));
     }
+
+protected:
+    void interrupt(bool state) override
+    {
+        if (state)
+            m_env.interruptNMI();
+    }
+
+private:
+    c64env &m_env;
 };
 
 }

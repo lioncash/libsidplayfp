@@ -44,9 +44,6 @@ class Player;
  */
 class SID_EXTERN sidplayfp
 {
-private:
-    libsidplayfp::Player &sidplayer;
-
 public:
     sidplayfp();
     ~sidplayfp();
@@ -162,6 +159,9 @@ public:
      * Get the CIA 1 Timer A programmed value.
      */
     uint_least16_t getCia1TimerA() const;
+
+private:
+    libsidplayfp::Player& sidplayer;
 };
 
 #endif // SIDPLAYFP_H

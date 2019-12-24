@@ -39,111 +39,6 @@ class MOS6526;
  */
 class Timer : private Event
 {
-protected:
-    static const int_least32_t CIAT_CR_START   = 0x01;
-    static const int_least32_t CIAT_STEP       = 0x04;
-    static const int_least32_t CIAT_CR_ONESHOT = 0x08;
-    static const int_least32_t CIAT_CR_FLOAD   = 0x10;
-    static const int_least32_t CIAT_PHI2IN     = 0x20;
-    static const int_least32_t CIAT_CR_MASK    = CIAT_CR_START | CIAT_CR_ONESHOT | CIAT_CR_FLOAD | CIAT_PHI2IN;
-
-    static const int_least32_t CIAT_COUNT2     = 0x100;
-    static const int_least32_t CIAT_COUNT3     = 0x200;
-
-    static const int_least32_t CIAT_ONESHOT0   = 0x08 << 8;
-    static const int_least32_t CIAT_ONESHOT    = 0x08 << 16;
-    static const int_least32_t CIAT_LOAD1      = 0x10 << 8;
-    static const int_least32_t CIAT_LOAD       = 0x10 << 16;
-
-    static const int_least32_t CIAT_OUT        = 0x80000000;
-
-private:
-    EventCallback<Timer> m_cycleSkippingEvent;
-
-    /// Event context.
-    EventScheduler &eventScheduler;
-
-    /**
-     * This is a tri-state:
-     *
-     * - when -1: cia is completely stopped
-     * - when 0: cia 1-clock events are ticking.
-     * - otherwise: cycle skip event is ticking, and the value is the first
-     *   phi1 clock of skipping.
-     */
-    event_clock_t ciaEventPauseTime;
-
-    /// PB6/PB7 Flipflop to signal underflows.
-    bool pbToggle;
-
-    /// Current timer value.
-    uint_least16_t timer;
-
-    /// Timer start value (Latch).
-    uint_least16_t latch;
-
-    /// Copy of regs[CRA/B]
-    uint8_t lastControlValue;
-
-protected:
-    /// Pointer to the MOS6526 which this Timer belongs to.
-    MOS6526 &parent;
-
-    /// CRA/CRB control register / state.
-    int_least32_t state;
-
-private:
-    /**
-     * Perform scheduled cycle skipping, and resume.
-     */
-    void cycleSkippingEvent();
-
-    /**
-     * Execute one CIA state transition.
-     */
-    void clock();
-
-    /**
-     * Reschedule CIA event at the earliest interesting time.
-     * If CIA timer is stopped or is programmed to just count down,
-     * the events are paused.
-     */
-    inline void reschedule();
-
-    /**
-     * Timer ticking event.
-     */
-    void event() override;
-
-    /**
-     * Signal timer underflow.
-     */
-    virtual void underFlow() =0;
-
-    /**
-     * Handle the serial port.
-     */
-    virtual void serialPort() {}
-
-protected:
-    /**
-     * Create a new timer.
-     *
-     * @param name component name
-     * @param context event context
-     * @param parent the MOS6526 which this Timer belongs to
-     */
-    explicit Timer(const char* name, EventScheduler &scheduler, MOS6526 &parent) :
-        Event(name),
-        m_cycleSkippingEvent("Skip CIA clock decrement cycles", *this, &Timer::cycleSkippingEvent),
-        eventScheduler(scheduler),
-        pbToggle(false),
-        timer(0),
-        latch(0),
-        lastControlValue(0),
-        parent(parent),
-        state(0) {}
-
 public:
     /**
      * Set CRA/CRB control register.
@@ -193,21 +88,21 @@ public:
      * @param state
      *            PB6/PB7 flipflop state
      */
-    inline void setPbToggle(bool state) { pbToggle = state; }
+    void setPbToggle(bool state) { pbToggle = state; }
 
     /**
      * Get current state value.
      *
      * @return current state value
      */
-    inline int_least32_t getState() const { return state; }
+    int_least32_t getState() const { return state; }
 
     /**
      * Get current timer value.
      *
      * @return current timer value
      */
-    inline uint_least16_t getTimer() const { return timer; }
+    uint_least16_t getTimer() const { return timer; }
 
     /**
      * Get PB6/PB7 Flipflop state.
@@ -215,7 +110,110 @@ public:
      * @param reg value of the control register
      * @return PB6/PB7 flipflop state
      */
-    inline bool getPb(uint8_t reg) const { return (reg & 0x04) ? pbToggle : (state & CIAT_OUT); }
+    bool getPb(uint8_t reg) const { return (reg & 0x04) ? pbToggle : (state & CIAT_OUT); }
+
+
+protected:
+    /**
+     * Create a new timer.
+     *
+     * @param name component name
+     * @param scheduler event scheduler
+     * @param parent the MOS6526 which this Timer belongs to
+     */
+    explicit Timer(const char* name, EventScheduler& scheduler, MOS6526& parent) :
+        Event(name),
+        parent(parent),
+        state(0),
+        m_cycleSkippingEvent("Skip CIA clock decrement cycles", *this, &Timer::cycleSkippingEvent),
+        eventScheduler(scheduler),
+        pbToggle(false),
+        timer(0),
+        latch(0),
+        lastControlValue(0) {}
+
+    static const int_least32_t CIAT_CR_START = 0x01;
+    static const int_least32_t CIAT_STEP = 0x04;
+    static const int_least32_t CIAT_CR_ONESHOT = 0x08;
+    static const int_least32_t CIAT_CR_FLOAD = 0x10;
+    static const int_least32_t CIAT_PHI2IN = 0x20;
+    static const int_least32_t CIAT_CR_MASK = CIAT_CR_START | CIAT_CR_ONESHOT | CIAT_CR_FLOAD | CIAT_PHI2IN;
+
+    static const int_least32_t CIAT_COUNT2 = 0x100;
+    static const int_least32_t CIAT_COUNT3 = 0x200;
+
+    static const int_least32_t CIAT_ONESHOT0 = 0x08 << 8;
+    static const int_least32_t CIAT_ONESHOT = 0x08 << 16;
+    static const int_least32_t CIAT_LOAD1 = 0x10 << 8;
+    static const int_least32_t CIAT_LOAD = 0x10 << 16;
+
+    static const int_least32_t CIAT_OUT = 0x80000000;
+
+    /// Pointer to the MOS6526 which this Timer belongs to.
+    MOS6526 &parent;
+
+    /// CRA/CRB control register / state.
+    int_least32_t state;
+
+private:
+    /**
+     * Perform scheduled cycle skipping, and resume.
+     */
+    void cycleSkippingEvent();
+
+    /**
+     * Execute one CIA state transition.
+     */
+    void clock();
+
+    /**
+     * Reschedule CIA event at the earliest interesting time.
+     * If CIA timer is stopped or is programmed to just count down,
+     * the events are paused.
+     */
+    inline void reschedule();
+
+    /**
+     * Timer ticking event.
+     */
+    void event() override;
+
+    /**
+     * Signal timer underflow.
+     */
+    virtual void underFlow() = 0;
+
+    /**
+     * Handle the serial port.
+     */
+    virtual void serialPort() {}
+
+    EventCallback<Timer> m_cycleSkippingEvent;
+
+    /// Event context.
+    EventScheduler& eventScheduler;
+
+    /**
+     * This is a tri-state:
+     *
+     * - when -1: cia is completely stopped
+     * - when 0: cia 1-clock events are ticking.
+     * - otherwise: cycle skip event is ticking, and the value is the first
+     *   phi1 clock of skipping.
+     */
+    event_clock_t ciaEventPauseTime;
+
+    /// PB6/PB7 Flipflop to signal underflows.
+    bool pbToggle;
+
+    /// Current timer value.
+    uint_least16_t timer;
+
+    /// Timer start value (Latch).
+    uint_least16_t latch;
+
+    /// Copy of regs[CRA/B]
+    uint8_t lastControlValue;
 };
 
 void Timer::reschedule()
