@@ -23,6 +23,7 @@
 #ifndef SINCRESAMPLER_H
 #define SINCRESAMPLER_H
 
+#include <array>
 #include "resample/Resampler.h"
 
 #include "../array.h"
@@ -80,12 +81,12 @@ private:
     int fir(int subcycle);
 
     /// Size of the ring buffer, must be a power of 2
-    static const int RINGSIZE = 2048;
+    static constexpr int RINGSIZE = 2048;
 
     /// Table of the fir filter coefficients
     matrix_t* firTable;
 
-    int sampleIndex;
+    int sampleIndex = 0;
 
     /// Filter resolution
     int firRES;
@@ -95,11 +96,11 @@ private:
 
     const int cyclesPerSample;
 
-    int sampleOffset;
+    int sampleOffset = 0;
 
-    int outputValue;
+    int outputValue = 0;
 
-    short sample[RINGSIZE * 2];
+    std::array<short, RINGSIZE * 2> sample;
 };
 
 } // namespace reSIDfp

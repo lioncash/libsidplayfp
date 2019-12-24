@@ -24,7 +24,6 @@
 
 #include <cassert>
 #include <cmath>
-#include <cstring>
 #include <limits>
 #include <map>
 #include <sstream>
@@ -41,15 +40,17 @@
 
 namespace reSIDfp
 {
+namespace
+{
 using fir_cache_t = std::map<std::string, matrix_t>;
 
 /// Cache for the expensive FIR table computation results.
 fir_cache_t FIR_CACHE;
 
 /// Maximum error acceptable in I0 is 1e-6, or ~96 dB.
-const double I0E = 1e-6;
+constexpr double I0E = 1e-6;
 
-const int BITS = 16;
+constexpr int BITS = 16;
 
 /**
  * Compute the 0th order modified Bessel function of the first kind.
@@ -61,17 +62,17 @@ const int BITS = 16;
  */
 double I0(double x)
 {
-    double sum = 1.;
-    double u = 1.;
-    double n = 1.;
-    const double halfx = x / 2.;
+    double sum = 1.0;
+    double u = 1.0;
+    double n = 1.0;
+    const double halfx = x / 2.0;
 
     do
     {
         const double temp = halfx / n;
         u *= temp * temp;
         sum += u;
-        n += 1.;
+        n += 1.0;
     }
     while (u >= I0E * sum);
 
@@ -117,6 +118,13 @@ int convolve(const short* a, const short* b, int bLength)
     return (out + (1 << 14)) >> 15;
 }
 
+template<typename I, typename O>
+O clip(I input)
+{
+    return static_cast<O>(std::clamp(input, I(std::numeric_limits<O>::min()), I(std::numeric_limits<O>::max())));
+}
+} // Anonymous namespace
+
 int SincResampler::fir(int subcycle)
 {
     // Find the first of the nearest fir tables close to the phase
@@ -126,7 +134,7 @@ int SincResampler::fir(int subcycle)
     // Find firN most recent samples, plus one extra in case the FIR wraps.
     int sampleStart = sampleIndex - firN + RINGSIZE - 1;
 
-    const int v1 = convolve(sample + sampleStart, (*firTable)[firTableFirst], firN);
+    const int v1 = convolve(sample.data() + sampleStart, (*firTable)[firTableFirst], firN);
 
     // Use next FIR table, wrap around to first FIR table using
     // previous sample.
@@ -136,7 +144,7 @@ int SincResampler::fir(int subcycle)
         ++sampleStart;
     }
 
-    const int v2 = convolve(sample + sampleStart, (*firTable)[firTableFirst], firN);
+    const int v2 = convolve(sample.data() + sampleStart, (*firTable)[firTableFirst], firN);
 
     // Linear interpolation between the sinc tables yields good
     // approximation for the exact value.
@@ -144,16 +152,13 @@ int SincResampler::fir(int subcycle)
 }
 
 SincResampler::SincResampler(double clockFrequency, double samplingFrequency, double highestAccurateFrequency) :
-    sampleIndex(0),
-    cyclesPerSample(static_cast<int>(clockFrequency / samplingFrequency * 1024.)),
-    sampleOffset(0),
-    outputValue(0)
+    cyclesPerSample(static_cast<int>(clockFrequency / samplingFrequency * 1024.0))
 {
     // 16 bits -> -96dB stopband attenuation.
-    const double A = -20. * log10(1.0 / (1 << BITS));
+    const double A = -20.0 * std::log10(1.0 / (1 << BITS));
     // A fraction of the bandwidth is allocated to the transition band, which we double
     // because we design the filter to transition halfway at nyquist.
-    const double dw = (1. - 2.*highestAccurateFrequency / samplingFrequency) * M_PI * 2.;
+    const double dw = (1.0 - 2.0 * highestAccurateFrequency / samplingFrequency) * M_PI * 2.0;
 
     // For calculation of beta and N see the reference for the kaiserord
     // function in the MATLAB Signal Processing Toolbox:
@@ -189,15 +194,15 @@ SincResampler::SincResampler(double clockFrequency, double samplingFrequency, do
 
     // Create the map key
     std::ostringstream o;
-    o << firN << "," << firRES << "," << cyclesPerSampleD;
+    o << firN << ',' << firRES << ',' << cyclesPerSampleD;
     const std::string firKey = o.str();
-    fir_cache_t::iterator lb = FIR_CACHE.lower_bound(firKey);
+    auto lb = FIR_CACHE.lower_bound(firKey);
 
     // The FIR computation is expensive and we set sampling parameters often, but
     // from a very small set of choices. Thus, caching is used to speed initialization.
     if (lb != FIR_CACHE.end() && !(FIR_CACHE.key_comp()(firKey, lb->first)))
     {
-        firTable = &(lb->second);
+        firTable = &lb->second;
     }
     else
     {
@@ -213,30 +218,22 @@ SincResampler::SincResampler(double clockFrequency, double samplingFrequency, do
 
         for (int i = 0; i < firRES; i++)
         {
-            const double jPhase = (double) i / firRES + firN / 2;
+            const double jPhase = static_cast<double>(i) / firRES + firN / 2;
 
             for (int j = 0; j < firN; j++)
             {
                 const double x = j - jPhase;
 
                 const double xt = x / (firN / 2);
-                const double kaiserXt = fabs(xt) < 1. ? I0(beta * sqrt(1. - xt * xt)) / I0beta : 0.;
+                const double kaiserXt = fabs(xt) < 1.0 ? I0(beta * std::sqrt(1.0 - xt * xt)) / I0beta : 0.0;
 
                 const double wt = wc * x / cyclesPerSampleD;
-                const double sincWt = fabs(wt) >= 1e-8 ? sin(wt) / wt : 1.;
+                const double sincWt = fabs(wt) >= 1e-8 ? sin(wt) / wt : 1.0;
 
                 (*firTable)[i][j] = static_cast<short>(scale * sincWt * kaiserXt);
             }
         }
     }
-}
-
-template<typename I, typename O>
-inline O clip(I input)
-{
-    if (input < std::numeric_limits<O>::min()) input = std::numeric_limits<O>::min();
-    if (input > std::numeric_limits<O>::max()) input = std::numeric_limits<O>::max();
-    return static_cast<O>(input);
 }
 
 bool SincResampler::input(int input)
@@ -267,7 +264,7 @@ bool SincResampler::input(int input)
 
 void SincResampler::reset()
 {
-    memset(sample, 0, sizeof(sample));
+    sample.fill(0);
     sampleOffset = 0;
 }
 
