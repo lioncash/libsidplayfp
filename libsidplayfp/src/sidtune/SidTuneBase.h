@@ -24,6 +24,7 @@
 #define SIDTUNEBASE_H
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -180,7 +181,7 @@ protected:
     /**
      * Check if compatibility constraints are fulfilled.
      */
-    bool checkCompatibility();
+    bool checkCompatibility() const;
 
     /**
      * Check for valid relocation information.
@@ -238,7 +239,7 @@ private:
     /**
      * Try to retrieve single-file sidtune from specified buffer.
      */
-    static SidTuneBase* getFromBuffer(const uint_least8_t* const buffer, uint_least32_t bufferLen);
+    static SidTuneBase* getFromBuffer(const uint_least8_t* buffer, std::size_t bufferLen);
 
     /**
      * Get new file name with specified extension.

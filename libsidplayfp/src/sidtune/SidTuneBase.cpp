@@ -181,15 +181,15 @@ void SidTuneBase::loadFile(const char* fileName, buffer_t& bufferRef)
         throw loadError(ERR_CANT_OPEN_FILE);
     }
 
-    inFile.seekg(0, inFile.end);
-    const int fileLen = inFile.tellg();
+    inFile.seekg(0, std::ios::end);
+    const auto fileLen = inFile.tellg();
 
     if (fileLen <= 0)
     {
         throw loadError(ERR_EMPTY);
     }
 
-    inFile.seekg(0, inFile.beg);
+    inFile.seekg(0, std::ios::beg);
 
     buffer_t fileBuf;
     fileBuf.reserve(fileLen);
@@ -198,7 +198,7 @@ void SidTuneBase::loadFile(const char* fileName, buffer_t& bufferRef)
     {
         fileBuf.assign(std::istreambuf_iterator<char>(inFile), std::istreambuf_iterator<char>());
     }
-    catch (std::exception &ex)
+    catch (const std::exception &ex)
     {
         throw loadError(ex.what());
     }
@@ -240,7 +240,7 @@ SidTuneBase* SidTuneBase::getFromStdIn()
 
 #endif
 
-SidTuneBase* SidTuneBase::getFromBuffer(const uint_least8_t* const buffer, uint_least32_t bufferLen)
+SidTuneBase* SidTuneBase::getFromBuffer(const uint_least8_t* const buffer, std::size_t bufferLen)
 {
     if (buffer == nullptr || bufferLen == 0)
     {
@@ -307,8 +307,8 @@ void SidTuneBase::acceptSidTune(const char* dataFileName, const char* infoFileNa
         info->m_startSong = 1;
     }
 
-    info->m_dataFileLen = buf.size();
-    info->m_c64dataLen = buf.size() - fileOffset;
+    info->m_dataFileLen = static_cast<std::uint32_t>(buf.size());
+    info->m_c64dataLen = static_cast<std::uint32_t>(buf.size() - fileOffset);
 
     // Calculate any remaining addresses and then
     // confirm all the file details are correct
@@ -524,7 +524,7 @@ void SidTuneBase::resolveAddrs(const uint_least8_t *c64data)
     }
 }
 
-bool SidTuneBase::checkCompatibility()
+bool SidTuneBase::checkCompatibility() const
 {
     if (info->m_compatibility == SidTuneInfo::COMPATIBILITY_R64)
     {
