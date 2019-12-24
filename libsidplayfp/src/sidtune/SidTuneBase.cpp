@@ -43,7 +43,6 @@
 
 namespace libsidplayfp
 {
-
 // Error and status message strings.
 const char ERR_EMPTY[]               = "SIDTUNE ERROR: No data to load";
 const char ERR_UNRECOGNIZED_FORMAT[] = "SIDTUNE ERROR: Could not determine file format";
@@ -62,8 +61,7 @@ const char SidTuneBase::ERR_INVALID[]   = "SIDTUNE ERROR: File contains invalid 
 /**
  * Petscii to Ascii conversion table (0x01 = no output).
  */
-const char CHR_tab[256] =
-{
+constexpr std::array<char, 256> CHR_tab{
   0x00,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x0d,0x01,0x01,
   0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
   0x20,0x21,0x01,0x23,0x24,0x25,0x26,0x27,0x28,0x29,0x2a,0x2b,0x2c,0x2d,0x2e,0x2f,
@@ -85,13 +83,13 @@ const char CHR_tab[256] =
 };
 
 /// The Commodore 64 memory size
-const uint_least32_t MAX_MEMORY = 65536;
+constexpr uint_least32_t MAX_MEMORY = 65536;
 
 /// C64KB + LOAD + PSID
-const uint_least32_t MAX_FILELEN = MAX_MEMORY + 2 + 0x7C;
+constexpr uint_least32_t MAX_FILELEN = MAX_MEMORY + 2 + 0x7C;
 
 /// Minimum load address for real c64 only tunes
-const uint_least16_t SIDTUNE_R64_MIN_LOAD_ADDR = 0x07e8;
+constexpr uint_least16_t SIDTUNE_R64_MIN_LOAD_ADDR = 0x07e8;
 
 SidTuneBase* SidTuneBase::load(const char* fileName, const char **fileNameExt,
                  bool separatorIsSlash)
