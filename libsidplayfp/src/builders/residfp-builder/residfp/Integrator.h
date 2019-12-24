@@ -23,6 +23,9 @@
 #ifndef INTEGRATOR_H
 #define INTEGRATOR_H
 
+#include <cstdint>
+#include "FilterModelConfig.h"
+
 namespace reSIDfp
 {
 
@@ -148,30 +151,29 @@ namespace reSIDfp
 class Integrator
 {
 private:
-    const unsigned short* vcr_kVg;
-    const unsigned short* vcr_n_Ids_term;
-    const unsigned short* opamp_rev;
+    const FilterModelConfig::OpAmpTable& vcr_kVg;
+    const FilterModelConfig::OpAmpTable& vcr_n_Ids_term;
+    const FilterModelConfig::OpAmpTable& opamp_rev;
 
-    unsigned int Vddt_Vw_2;
-    int vx;
-    int vc;
+    std::uint32_t Vddt_Vw_2 = 0;
+    int vx = 0;
+    int vc = 0;
 
-    const unsigned short kVddt;
-    const unsigned short n_snake;
+    const std::uint16_t kVddt;
+    const std::uint16_t n_snake;
 
 public:
-    Integrator(const unsigned short* vcr_kVg, const unsigned short* vcr_n_Ids_term,
-               const unsigned short* opamp_rev, unsigned short kVddt, unsigned short n_snake) :
+    Integrator(const FilterModelConfig::OpAmpTable& vcr_kVg,
+               const FilterModelConfig::OpAmpTable& vcr_n_Ids_term,
+               const FilterModelConfig::OpAmpTable& opamp_rev,
+               std::uint16_t kVddt, std::uint16_t n_snake) :
         vcr_kVg(vcr_kVg),
         vcr_n_Ids_term(vcr_n_Ids_term),
         opamp_rev(opamp_rev),
-        Vddt_Vw_2(0),
-        vx(0),
-        vc(0),
         kVddt(kVddt),
         n_snake(n_snake) {}
 
-    void setVw(unsigned short Vw) { Vddt_Vw_2 = (kVddt - Vw) * (kVddt - Vw) >> 1; }
+    void setVw(std::uint16_t Vw) { Vddt_Vw_2 = (kVddt - Vw) * (kVddt - Vw) >> 1; }
 
     int solve(int vi);
 };

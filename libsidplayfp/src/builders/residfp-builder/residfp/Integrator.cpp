@@ -32,11 +32,11 @@ int Integrator::solve(int vi)
     assert(vi < kVddt);
 
     // "Snake" voltages for triode mode calculation.
-    const unsigned int Vgst = kVddt - vx;
-    const unsigned int Vgdt = kVddt - vi;
+    const std::uint32_t Vgst = kVddt - vx;
+    const std::uint32_t Vgdt = kVddt - vi;
 
-    const unsigned int Vgst_2 = Vgst * Vgst;
-    const unsigned int Vgdt_2 = Vgdt * Vgdt;
+    const std::uint32_t Vgst_2 = Vgst * Vgst;
+    const std::uint32_t Vgdt_2 = Vgdt * Vgdt;
 
     // "Snake" current, scaled by (1/m)*2^13*m*2^16*m*2^16*2^-15 = m*2^30
     const int n_I_snake = n_snake * (static_cast<int>(Vgst_2 - Vgdt_2) >> 15);

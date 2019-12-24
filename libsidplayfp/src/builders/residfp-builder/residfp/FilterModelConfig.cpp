@@ -271,8 +271,7 @@ std::unique_ptr<Integrator> FilterModelConfig::buildIntegrator()
     assert(tmp > -0.5 && tmp < 65535.5);
     const auto n_snake = static_cast<unsigned short>(tmp + 0.5);
 
-    return std::make_unique<Integrator>(vcr_kVg.data(), vcr_n_Ids_term.data(),
-                                        opamp_rev.data(), nkVddt, n_snake);
+    return std::make_unique<Integrator>(vcr_kVg, vcr_n_Ids_term, opamp_rev, nkVddt, n_snake);
 }
 
 } // namespace reSIDfp

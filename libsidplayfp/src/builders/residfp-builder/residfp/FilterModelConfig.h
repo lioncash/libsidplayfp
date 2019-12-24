@@ -43,6 +43,7 @@ public:
     using DACPtr = std::unique_ptr<const std::uint16_t[]>;
     using GainTable = std::array<std::unique_ptr<std::uint16_t[]>, 16>;
     using MixerTable = std::array<std::unique_ptr<std::uint16_t[]>, 8>;
+    using OpAmpTable = std::array<std::uint16_t, 1 << 16>;
     using SummerTable = std::array<std::unique_ptr<std::uint16_t[]>, 5>;
 
     static FilterModelConfig* getInstance();
@@ -142,12 +143,12 @@ private:
 
     /// VCR - 6581 only.
     //@{
-    std::array<unsigned short, 1 << 16> vcr_kVg;
-    std::array<unsigned short, 1 << 16> vcr_n_Ids_term;
+    OpAmpTable vcr_kVg;
+    OpAmpTable vcr_n_Ids_term;
     //@}
 
     /// Reverse op-amp transfer function.
-    std::array<unsigned short, 1 << 16> opamp_rev;
+    OpAmpTable opamp_rev;
 };
 
 } // namespace reSIDfp
