@@ -27,7 +27,6 @@
 
 #include "Filter.h"
 #include "FilterModelConfig.h"
-#include "siddefs-fp.h"
 
 namespace reSIDfp
 {
@@ -318,21 +317,20 @@ class Integrator;
  */
 class Filter6581 final : public Filter
 {
-private:
-    FilterModelConfig::DACPtr f0_dac;
+public:
+    Filter6581();
+    ~Filter6581() override;
 
-    const FilterModelConfig::MixerTable& mixer;
-    const FilterModelConfig::SummerTable& summer;
-    const FilterModelConfig::GainTable& gain;
+    int clock(int voice1, int voice2, int voice3) override;
 
-    const int voiceScaleS14;
-    const int voiceDC;
+    void input(int sample) override { ve = (sample * voiceScaleS14 * 3 >> 10) + mixer[0][0]; }
 
-    /// VCR + associated capacitor connected to highpass output.
-    std::unique_ptr<Integrator> const hpIntegrator;
-
-    /// VCR + associated capacitor connected to bandpass output.
-    std::unique_ptr<Integrator> const bpIntegrator;
+    /**
+     * Set filter curve type based on single parameter.
+     *
+     * @param curvePosition 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
+     */
+    void setFilterCurve(double curvePosition);
 
 protected:
     /**
@@ -349,20 +347,21 @@ protected:
 
     void updatedMixing() override;
 
-public:
-    Filter6581();
-    ~Filter6581();
+private:
+    FilterModelConfig::DACPtr f0_dac;
 
-    int clock(int voice1, int voice2, int voice3) override;
+    const FilterModelConfig::MixerTable& mixer;
+    const FilterModelConfig::SummerTable& summer;
+    const FilterModelConfig::GainTable& gain;
 
-    void input(int sample) override { ve = (sample * voiceScaleS14 * 3 >> 10) + mixer[0][0]; }
+    const int voiceScaleS14;
+    const int voiceDC;
 
-    /**
-     * Set filter curve type based on single parameter.
-     *
-     * @param curvePosition 0 .. 1, where 0 sets center frequency high ("light") and 1 sets it low ("dark"), default is 0.5
-     */
-    void setFilterCurve(double curvePosition);
+    /// VCR + associated capacitor connected to highpass output.
+    std::unique_ptr<Integrator> const hpIntegrator;
+
+    /// VCR + associated capacitor connected to bandpass output.
+    std::unique_ptr<Integrator> const bpIntegrator;
 };
 
 } // namespace reSIDfp
