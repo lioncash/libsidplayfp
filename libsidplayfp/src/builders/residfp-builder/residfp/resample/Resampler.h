@@ -22,6 +22,9 @@
 #ifndef RESAMPLER_H
 #define RESAMPLER_H
 
+#include <algorithm>
+#include <climits>
+
 namespace reSIDfp
 {
 
@@ -49,13 +52,10 @@ public:
      */
     short getOutput() const
     {
-        int value = output();
+        const int value = output();
 
         // Clip signed integer value into the [-32768,32767] range.
-        if (value < -32768) value = -32768;
-        if (value > 32767) value = 32767;
-
-        return value;
+        return static_cast<short>(std::clamp(value, SHRT_MIN, SHRT_MAX));
     }
 
     virtual void reset() = 0;
