@@ -31,74 +31,6 @@ namespace reSIDfp
  */
 class Filter
 {
-protected:
-    /// Current volume amplifier setting.
-    const unsigned short* currentGain = nullptr;
-
-    /// Current filter/voice mixer setting.
-    const unsigned short* currentMixer = nullptr;
-
-    /// Filter input summer setting.
-    const unsigned short* currentSummer = nullptr;
-
-    /// Filter resonance value.
-    const unsigned short* currentResonance = nullptr;
-
-    /// Filter highpass state.
-    int Vhp = 0;
-
-    /// Filter bandpass state.
-    int Vbp = 0;
-
-    /// Filter lowpass state.
-    int Vlp = 0;
-
-    /// Filter external input.
-    int ve = 0;
-
-    /// Filter cutoff frequency.
-    unsigned int fc = 0;
-
-    /// Routing to filter or outside filter
-    bool filt1 = false;
-    bool filt2 = false;
-    bool filt3 = false;
-    bool filtE = false;
-
-    /// Switch voice 3 off.
-    bool voice3off = false;
-
-    /// Highpass, bandpass, and lowpass filter modes.
-    bool hp = false;
-    bool bp = false;
-    bool lp = false;
-
-    /// Current volume.
-    unsigned char vol = 0;
-
-private:
-    /// Filter enabled.
-    bool enabled = true;
-
-    /// Selects which inputs to route through filter.
-    unsigned char filt = 0;
-
-protected:
-    /**
-     * Set filter cutoff frequency.
-     */
-    virtual void updatedCenterFrequency() = 0;
-
-    /**
-     * Set filter resonance.
-     */
-    virtual void updateResonance(unsigned char res) = 0;
-
-    /**
-     * Mixing configuration modified (offsets change)
-     */
-    virtual void updatedMixing() = 0;
-
 public:
     Filter() = default;
     virtual ~Filter() = default;
@@ -154,6 +86,74 @@ public:
     void writeMODE_VOL(unsigned char mode_vol);
 
     virtual void input(int input) = 0;
+
+protected:
+    /**
+     * Set filter cutoff frequency.
+     */
+    virtual void updatedCenterFrequency() = 0;
+
+    /**
+     * Set filter resonance.
+     */
+    virtual void updateResonance(unsigned char res) = 0;
+
+    /**
+     * Mixing configuration modified (offsets change)
+     */
+    virtual void updatedMixing() = 0;
+
+protected:
+    /// Current volume amplifier setting.
+    const unsigned short* currentGain = nullptr;
+
+    /// Current filter/voice mixer setting.
+    const unsigned short* currentMixer = nullptr;
+
+    /// Filter input summer setting.
+    const unsigned short* currentSummer = nullptr;
+
+    /// Filter resonance value.
+    const unsigned short* currentResonance = nullptr;
+
+    /// Filter highpass state.
+    int Vhp = 0;
+
+    /// Filter bandpass state.
+    int Vbp = 0;
+
+    /// Filter lowpass state.
+    int Vlp = 0;
+
+    /// Filter external input.
+    int ve = 0;
+
+    /// Filter cutoff frequency.
+    unsigned int fc = 0;
+
+    /// Routing to filter or outside filter
+    bool filt1 = false;
+    bool filt2 = false;
+    bool filt3 = false;
+    bool filtE = false;
+
+    /// Switch voice 3 off.
+    bool voice3off = false;
+
+    /// Highpass, bandpass, and lowpass filter modes.
+    bool hp = false;
+    bool bp = false;
+    bool lp = false;
+
+    /// Current volume.
+    unsigned char vol = 0;
+
+private:
+    /// Filter enabled.
+    bool enabled = true;
+
+    /// Selects which inputs to route through filter.
+    unsigned char filt = 0;
 };
 
 } // namespace reSIDfp
