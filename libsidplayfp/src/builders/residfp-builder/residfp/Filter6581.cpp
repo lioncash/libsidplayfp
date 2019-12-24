@@ -41,14 +41,11 @@ Filter6581::Filter6581() :
     input(0);
 }
 
-Filter6581::~Filter6581()
-{
-    delete [] f0_dac;
-}
+Filter6581::~Filter6581() = default;
 
 void Filter6581::updatedCenterFrequency()
 {
-    const unsigned short Vw = f0_dac[fc];
+    const std::uint16_t Vw = f0_dac[fc];
     hpIntegrator->setVw(Vw);
     bpIntegrator->setVw(Vw);
 }
@@ -105,7 +102,6 @@ int Filter6581::clock(int voice1, int voice2, int voice3)
 
 void Filter6581::setFilterCurve(double curvePosition)
 {
-    delete [] f0_dac;
     f0_dac = FilterModelConfig::getInstance()->getDAC(curvePosition);
     updatedCenterFrequency();
 }

@@ -239,19 +239,19 @@ FilterModelConfig::FilterModelConfig() : dac(DAC_BITS)
 
 FilterModelConfig::~FilterModelConfig() = default;
 
-unsigned short* FilterModelConfig::getDAC(double adjustment) const
+FilterModelConfig::DACPtr FilterModelConfig::getDAC(double adjustment) const
 {
     const double dac_zero = getDacZero(adjustment);
 
     constexpr std::size_t dac_size = 1U << DAC_BITS;
-    auto* f0_dac = new unsigned short[dac_size];
+    auto f0_dac = std::make_unique<std::uint16_t[]>(dac_size);
 
     for (std::size_t i = 0; i < dac_size; i++)
     {
-        const double fcd = dac.getOutput(static_cast<unsigned int>(i));
+        const double fcd = dac.getOutput(static_cast<std::uint32_t>(i));
         const double tmp = N16 * (dac_zero + fcd * dac_scale / dac_size - vmin);
         assert(tmp > -0.5 && tmp < 65535.5);
-        f0_dac[i] = static_cast<unsigned short>(tmp + 0.5);
+        f0_dac[i] = static_cast<std::uint16_t>(tmp + 0.5);
     }
 
     return f0_dac;

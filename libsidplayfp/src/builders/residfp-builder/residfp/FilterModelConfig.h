@@ -40,6 +40,7 @@ class Integrator;
 class FilterModelConfig
 {
 public:
+    using DACPtr = std::unique_ptr<const std::uint16_t[]>;
     using GainTable = std::array<std::unique_ptr<std::uint16_t[]>, 16>;
     using MixerTable = std::array<std::unique_ptr<std::uint16_t[]>, 8>;
     using SummerTable = std::array<std::unique_ptr<std::uint16_t[]>, 5>;
@@ -73,13 +74,12 @@ public:
 
     /**
      * Construct an 11 bit cutoff frequency DAC output voltage table.
-     * Ownership is transferred to the requester which becomes responsible
-     * of freeing the object when done.
      *
      * @param adjustment
-     * @return the DAC table
+     *
+     * @return A smart pointer that points to the DAC output voltage table.
      */
-    unsigned short* getDAC(double adjustment) const;
+    DACPtr getDAC(double adjustment) const;
 
     /**
      * Construct an integrator solver.

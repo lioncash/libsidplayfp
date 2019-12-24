@@ -319,7 +319,7 @@ class Integrator;
 class Filter6581 final : public Filter
 {
 private:
-    const unsigned short* f0_dac;
+    FilterModelConfig::DACPtr f0_dac;
 
     const FilterModelConfig::MixerTable& mixer;
     const FilterModelConfig::SummerTable& summer;
