@@ -34,7 +34,7 @@ namespace reSIDfp
  * When no bit are selected a resistance with half
  * W/L ratio is selected.
  */
-const double DAC_WL0 = 0.00615;
+constexpr double DAC_WL0 = 0.00615;
 
 Filter8580::Filter8580() :
     mixer(FilterModelConfig8580::getInstance()->getMixer()),
@@ -43,7 +43,6 @@ Filter8580::Filter8580() :
     gain_vol(FilterModelConfig8580::getInstance()->getGainVol()),
     voiceScaleS14(FilterModelConfig8580::getInstance()->getVoiceScaleS14()),
     voiceDC(FilterModelConfig8580::getInstance()->getVoiceDC()),
-    cp(0.5),
     hpIntegrator(FilterModelConfig8580::getInstance()->buildIntegrator()),
     bpIntegrator(FilterModelConfig8580::getInstance()->buildIntegrator())
 {
@@ -51,7 +50,7 @@ Filter8580::Filter8580() :
     input(0);
 }
 
-Filter8580::~Filter8580() {}
+Filter8580::~Filter8580() = default;
 
 int Filter8580::clock(int voice1, int voice2, int voice3)
 {
@@ -106,7 +105,7 @@ void Filter8580::updatedCenterFrequency()
 
 void Filter8580::updatedMixing()
 {
-    currentGain = gain_vol[vol];
+    currentGain = gain_vol[vol].get();
 
     unsigned int ni = 0;
     unsigned int no = 0;
@@ -119,13 +118,13 @@ void Filter8580::updatedMixing()
 
     (filtE ? ni : no)++;
 
-    currentSummer = summer[ni];
+    currentSummer = summer[ni].get();
 
     if (lp) no++;
     if (bp) no++;
     if (hp) no++;
 
-    currentMixer = mixer[no];
+    currentMixer = mixer[no].get();
 }
 
 void Filter8580::setFilterCurve(double curvePosition)

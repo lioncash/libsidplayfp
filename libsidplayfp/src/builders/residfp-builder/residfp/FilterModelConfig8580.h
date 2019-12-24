@@ -23,6 +23,7 @@
 #ifndef FILTERMODELCONFIG8580_H
 #define FILTERMODELCONFIG8580_H
 
+#include <array>
 #include <memory>
 
 namespace reSIDfp
@@ -36,25 +37,38 @@ class Integrator8580;
 class FilterModelConfig8580
 {
 public:
+    using GainTable = std::array<std::unique_ptr<std::uint16_t[]>, 16>;
+    using MixerTable = std::array<std::unique_ptr<std::uint16_t[]>, 8>;
+    using OpAmpTable = std::array<std::uint16_t, 1 << 16>;
+    using SummerTable = std::array<std::unique_ptr<std::uint16_t[]>, 5>;
+
     static FilterModelConfig8580* getInstance();
 
     /**
      * The digital range of one voice is 20 bits; create a scaling term
      * for multiplication which fits in 11 bits.
      */
-    int getVoiceScaleS14() const { return static_cast<int>((norm * ((1 << 14) - 1)) * voice_voltage_range); }
+    int getVoiceScaleS14() const
+    {
+        constexpr double voice_voltage_range = 0.4; // FIXME: Measure
+        return static_cast<int>((norm * ((1 << 14) - 1)) * voice_voltage_range);
+    }
 
     /**
      * The "zero" output level of the voices.
      */
-    int getVoiceDC() const { return static_cast<int>(N16 * (voice_DC_voltage - vmin)); }
+    int getVoiceDC() const
+    {
+        constexpr double voice_DC_voltage = 4.80;   // FIXME: Was 4.76
+        return static_cast<int>(N16 * (voice_DC_voltage - vmin));
+    }
 
-    unsigned short** getGainVol() { return gain_vol; }
-    unsigned short** getGainRes() { return gain_res; }
+    const GainTable& getGainVol() const { return gain_vol; }
+    const GainTable& getGainRes() const { return gain_res; }
 
-    unsigned short** getSummer() { return summer; }
+    const SummerTable& getSummer() const { return summer; }
 
-    unsigned short** getMixer() { return mixer; }
+    const MixerTable& getMixer() const { return mixer; }
 
     /**
      * Construct an integrator solver.
@@ -72,39 +86,42 @@ private:
     // This allows access to the private constructor
     friend std::unique_ptr<FilterModelConfig8580>::deleter_type;
 
-    const double voice_voltage_range;
-    const double voice_DC_voltage;
-
     /// Capacitor value.
-    const double C;
+    static constexpr double C = 22e-9;
 
     /// Transistor parameters.
     //@{
-    const double Vdd;
-    const double Vth;           ///< Threshold voltage
-    const double Ut;            ///< Thermal voltage: Ut = k*T/q = 8.61734315e-5*T ~ 26mV
-    const double k;             ///< Gate coupling coefficient: K = Cox/(Cox+Cdep) ~ 0.7
-    const double uCox;          ///< u*Cox
-    const double kVddt;         ///< k * (Vdd - Vth)
+    static constexpr double Vdd = 9.09;
+    static constexpr double Vth = 0.80;              ///< Threshold voltage
+    static constexpr double Ut = 26.0e-3;            ///< Thermal voltage: Ut = k*T/q = 8.61734315e-5*T ~ 26mV
+
+    // FIXME: This is just a hack, k must be less than one, likely around 0.7
+    static constexpr double k = 1.3;                 ///< Gate coupling coefficient: K = Cox/(Cox+Cdep) ~ 0.7
+
+    // FIXME: Measure
+    static constexpr double uCox = 55e-6;            ///< u*Cox
+    static constexpr double kVddt = k * (Vdd - Vth); ///< k * (Vdd - Vth)
     //@}
 
     // Derived stuff
-    const double vmin, vmax;
-    const double denorm, norm;
+    static constexpr double vmin = 1.30;                       // First X value in the op amp table.
+    static constexpr double vmax = kVddt < 8.91 ? 8.91: kVddt; // 8.91 -> First Y value in the op amp table.
+    static constexpr double denorm = vmax - vmin;
+    static constexpr double norm = 1.0 / denorm;
 
     /// Fixed point scaling for 16 bit op-amp output.
-    const double N16;
+    static constexpr double N16 = norm * ((1 << 16) - 1);
 
     /// Lookup tables for gain and summer op-amps in output stage / filter.
     //@{
-    unsigned short* mixer[8];
-    unsigned short* summer[5];
-    unsigned short* gain_vol[16];
-    unsigned short* gain_res[16];
+    MixerTable mixer;
+    SummerTable summer;
+    GainTable gain_vol;
+    GainTable gain_res;
     //@}
 
     /// Reverse op-amp transfer function.
-    unsigned short opamp_rev[1 << 16];
+    OpAmpTable opamp_rev;
 };
 
 } // namespace reSIDfp

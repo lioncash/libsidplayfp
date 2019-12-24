@@ -26,9 +26,8 @@
 #include <memory>
 
 #include "Filter.h"
-//#include "FilterModelConfig8580.h"
+#include "FilterModelConfig8580.h"
 #include "Integrator8580.h"
-#include "siddefs-fp.h"
 
 namespace reSIDfp
 {
@@ -308,20 +307,20 @@ protected:
      *
      * @param res the new resonance value
      */
-    void updateResonance(unsigned char res) override { currentResonance = gain_res[res]; }
+    void updateResonance(unsigned char res) override { currentResonance = gain_res[res].get(); }
 
     void updatedMixing() override;
 
 private:
-    unsigned short** mixer;
-    unsigned short** summer;
-    unsigned short** gain_res;
-    unsigned short** gain_vol;
+    const FilterModelConfig8580::MixerTable& mixer;
+    const FilterModelConfig8580::SummerTable& summer;
+    const FilterModelConfig8580::GainTable& gain_res;
+    const FilterModelConfig8580::GainTable& gain_vol;
 
     const int voiceScaleS14;
     const int voiceDC;
 
-    double cp;
+    double cp = 0.5;
 
     /// VCR + associated capacitor connected to highpass output.
     std::unique_ptr<Integrator8580> const hpIntegrator;
