@@ -46,7 +46,7 @@ void Timer::syncWithCpu()
         // the CIA state if the first sleep clock was still in the future.
         if (elapsed >= 0)
         {
-            timer -= elapsed;
+            timer -= static_cast<std::uint16_t>(elapsed);
             clock();
         }
     }
@@ -73,7 +73,7 @@ void Timer::cycleSkippingEvent()
 {
     const event_clock_t elapsed = eventScheduler.getTime(EventPhase::ClockPHI1) - ciaEventPauseTime;
     ciaEventPauseTime = 0;
-    timer -= elapsed;
+    timer -= static_cast<std::uint16_t>(elapsed);
     event();
 }
 
