@@ -130,10 +130,7 @@ class InterruptSource6526 final : public InterruptSource
 {
 public:
     explicit InterruptSource6526(EventScheduler& scheduler, MOS6526& parent) :
-        InterruptSource(scheduler, parent),
-        last_clear(0),
-        scheduled(false),
-        tbBug(false)
+        InterruptSource(scheduler, parent)
     {}
 
     void trigger(uint8_t interruptMask) override;
@@ -161,13 +158,13 @@ private:
     }
 
     /// Clock when clear was called last
-    event_clock_t last_clear;
+    event_clock_t last_clear{};
 
     /// Have we already scheduled CIA->CPU interrupt transition?
-    bool scheduled;
+    bool scheduled = false;
 
     /// Timer B bug
-    bool tbBug;
+    bool tbBug = false;
 };
 
 /**
