@@ -414,7 +414,7 @@ SidTuneBase* SidTuneBase::getFromFiles(const char* fileName, const char **fileNa
         }
     }
     if (s == nullptr) s = p00::load(fileName, fileBuf1);
-    if (s == nullptr) s.reset(prg::load(fileName, fileBuf1));
+    if (s == nullptr) s = prg::load(fileName, fileBuf1);
     if (s == nullptr) throw loadError(ERR_UNRECOGNIZED_FORMAT);
 
     s->acceptSidTune(fileName, nullptr, fileBuf1, separatorIsSlash);
