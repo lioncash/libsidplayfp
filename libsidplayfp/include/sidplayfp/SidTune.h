@@ -42,7 +42,7 @@ class SidTuneBase;
 class SID_EXTERN SidTune
 {
 public:
-    static const int MD5_LENGTH = 32;
+    static constexpr int MD5_LENGTH = 32;
 
     /**
      * Load a sidtune from a file.
@@ -174,7 +174,7 @@ private:
 
     const char* m_statusString;
 
-    bool m_status;
+    bool m_status = false;
 };
 
 #endif  /* SIDTUNE_H */
