@@ -53,7 +53,7 @@ public:
     /**
      * Get status register value.
      */
-    uint8_t get()
+    uint8_t get() const
     {
         uint8_t sr = 0;
 
