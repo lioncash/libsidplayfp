@@ -89,10 +89,10 @@ public:
      * - Delays <= MAX produce constant results
      * - Delays >  MAX produce random results
      */
-    static const uint_least16_t MAX_POWER_ON_DELAY = 0x1FFF;
-    static const uint_least16_t DEFAULT_POWER_ON_DELAY = MAX_POWER_ON_DELAY + 1;
+    static constexpr uint_least16_t MAX_POWER_ON_DELAY = 0x1FFF;
+    static constexpr uint_least16_t DEFAULT_POWER_ON_DELAY = MAX_POWER_ON_DELAY + 1;
 
-    static const uint_least32_t DEFAULT_SAMPLING_FREQ  = 44100;
+    static constexpr uint_least32_t DEFAULT_SAMPLING_FREQ  = 44100;
 
     /**
      * Intended c64 model when unknown or forced.
@@ -102,62 +102,62 @@ public:
      * - DREAN
      * - PAL_M
      */
-    c64_model_t defaultC64Model;
+    c64_model_t defaultC64Model = c64_model_t::PAL;
 
     /**
      * Force the model to #defaultC64Model ignoring tune's clock setting.
      */
-    bool forceC64Model;
+    bool forceC64Model = false;
 
     /**
      * Intended sid model when unknown or forced.
      * - MOS6581
      * - MOS8580
      */
-    sid_model_t defaultSidModel;
+    sid_model_t defaultSidModel = sid_model_t::MOS6581;
 
     /**
      * Force the sid model to #defaultSidModel.
      */
-    bool forceSidModel;
+    bool forceSidModel = false;
 
     /**
      * Enable digiboost when 8580 SID model is used.
      */
-    bool digiBoost;
+    bool digiBoost = false;
 
     /**
      * Intended cia model.
      * - MOS6526
      * - MOS8521
      */
-    cia_model_t ciaModel;
+    cia_model_t ciaModel = cia_model_t::MOS6526;
 
     /**
      * Playbak mode.
      * - MONO
      * - STEREO
      */
-    playback_t playback;
+    playback_t playback = playback_t::MONO;
 
     /**
      * Sampling frequency.
      */
-    uint_least32_t frequency;
+    uint_least32_t frequency = DEFAULT_SAMPLING_FREQ;
 
     /**
      * Extra SID chips addresses.
      */
     //@{
-    uint_least16_t secondSidAddress;
-    uint_least16_t thirdSidAddress;
+    uint_least16_t secondSidAddress = 0;
+    uint_least16_t thirdSidAddress = 0;
     //@}
 
     /**
      * Pointer to selected emulation,
      * reSIDfp, reSID or hardSID.
      */
-    sidbuilder *sidEmulation;
+    sidbuilder *sidEmulation = nullptr;
 
     /**
      * Left channel volume.
@@ -172,20 +172,20 @@ public:
     /**
      * Power on delay cycles.
      */
-    uint_least16_t powerOnDelay;
+    uint_least16_t powerOnDelay = DEFAULT_POWER_ON_DELAY;
 
     /**
      * Sampling method.
      * - INTERPOLATE
      * - RESAMPLE_INTERPOLATE
      */
-    sampling_method_t samplingMethod;
+    sampling_method_t samplingMethod = sampling_method_t::RESAMPLE_INTERPOLATE;
 
     /**
      * Faster low-quality emulation,
      * available only for reSID.
      */
-    bool fastSampling;
+    bool fastSampling = false;
 };
 
 #endif // SIDCONFIG_H

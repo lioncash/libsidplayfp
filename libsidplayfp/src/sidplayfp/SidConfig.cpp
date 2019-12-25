@@ -25,22 +25,8 @@
 #include "mixer.h"
 
 SidConfig::SidConfig() :
-    defaultC64Model(PAL),
-    forceC64Model(false),
-    defaultSidModel(MOS6581),
-    forceSidModel(false),
-    digiBoost(false),
-    ciaModel(MOS6526),
-    playback(MONO),
-    frequency(DEFAULT_SAMPLING_FREQ),
-    secondSidAddress(0),
-    thirdSidAddress(0),
-    sidEmulation(nullptr),
     leftVolume(libsidplayfp::Mixer::VOLUME_MAX),
-    rightVolume(libsidplayfp::Mixer::VOLUME_MAX),
-    powerOnDelay(DEFAULT_POWER_ON_DELAY),
-    samplingMethod(RESAMPLE_INTERPOLATE),
-    fastSampling(false)
+    rightVolume(libsidplayfp::Mixer::VOLUME_MAX)
 {}
 
 bool SidConfig::compare(const SidConfig &config) const
