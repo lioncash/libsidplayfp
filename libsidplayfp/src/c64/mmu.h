@@ -65,13 +65,13 @@ public:
     void writeMemByte(uint_least16_t addr, uint8_t value) override { ramBank.poke(addr, value); }
     void writeMemWord(uint_least16_t addr, uint_least16_t value) override { endian_little16(ramBank.ram + addr, value); }
 
-    void fillRam(uint_least16_t start, uint8_t value, unsigned int size) override
+    void fillRam(uint_least16_t start, uint8_t value, std::size_t size) override
     {
-        memset(ramBank.ram + start, value, size);
+        std::memset(ramBank.ram + start, value, size);
     }
-    void fillRam(uint_least16_t start, const uint8_t* source, unsigned int size) override
+    void fillRam(uint_least16_t start, const uint8_t* source, std::size_t size) override
     {
-        memcpy(ramBank.ram + start, source, size);
+        std::memcpy(ramBank.ram + start, source, size);
     }
 
     // SID specific hacks

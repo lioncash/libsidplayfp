@@ -21,6 +21,7 @@
 #ifndef SIDMEMORY_H
 #define SIDMEMORY_H
 
+#include <cstddef>
 #include <cstdint>
 
 namespace libsidplayfp
@@ -70,7 +71,7 @@ public:
      * @param value the value to write
      * @param size the number of bytes to fill
      */
-    virtual void fillRam(uint_least16_t start, uint8_t value, unsigned int size) =0;
+    virtual void fillRam(uint_least16_t start, uint8_t value, std::size_t size) =0;
 
     /**
      * Copy a buffer into a ram area.
@@ -79,7 +80,7 @@ public:
      * @param source the source buffer
      * @param size the number of bytes to copy
      */
-    virtual void fillRam(uint_least16_t start, const uint8_t* source, unsigned int size) =0;
+    virtual void fillRam(uint_least16_t start, const uint8_t* source, std::size_t size) =0;
 
     /**
      * Change the RESET vector.
