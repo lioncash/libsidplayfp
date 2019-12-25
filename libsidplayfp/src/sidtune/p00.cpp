@@ -39,7 +39,7 @@ namespace
 constexpr std::uint32_t X00_ID_LEN = 8;
 constexpr std::uint32_t X00_NAME_LEN = 17;
 
-enum X00Format
+enum class X00Format
 {
     X00_DEL,
     X00_SEQ,
@@ -98,23 +98,23 @@ std::unique_ptr<SidTuneBase> p00::load(const char *fileName, const buffer_t& dat
     switch (toupper(ext[1]))
     {
     case 'D':
-        type   = X00_DEL;
+        type   = X00Format::X00_DEL;
         format = TXT_FORMAT_DEL;
         break;
     case 'S':
-        type   = X00_SEQ;
+        type   = X00Format::X00_SEQ;
         format = TXT_FORMAT_SEQ;
         break;
     case 'P':
-        type   = X00_PRG;
+        type   = X00Format::X00_PRG;
         format = TXT_FORMAT_PRG;
         break;
     case 'U':
-        type   = X00_USR;
+        type   = X00Format::X00_USR;
         format = TXT_FORMAT_USR;
         break;
     case 'R':
-        type   = X00_REL;
+        type   = X00Format::X00_REL;
         format = TXT_FORMAT_REL;
         break;
     default:
@@ -135,7 +135,7 @@ std::unique_ptr<SidTuneBase> p00::load(const char *fileName, const buffer_t& dat
         return nullptr;
 
     // File types current supported
-    if (type != X00_PRG)
+    if (type != X00Format::X00_PRG)
         throw loadError("Not a PRG inside X00");
 
     if (bufLen < sizeof(X00Header) + 2)
