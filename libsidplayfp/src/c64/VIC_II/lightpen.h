@@ -125,19 +125,19 @@ public:
 
 private:
     /// Last VIC raster line
-    unsigned int lastLine;
+    unsigned int lastLine = 0;
 
     /// VIC cycles per line
-    unsigned int cyclesPerLine;
+    unsigned int cyclesPerLine = 0;
 
     /// X coordinate
-    unsigned int lpx;
+    unsigned int lpx = 0;
 
     /// Y coordinate
-    unsigned int lpy;
+    unsigned int lpy = 0;
 
     /// Has light pen IRQ been triggered in this frame already?
-    bool isTriggered;
+    bool isTriggered = false;
 };
 
 }
