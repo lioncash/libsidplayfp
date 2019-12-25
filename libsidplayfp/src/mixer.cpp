@@ -128,7 +128,7 @@ void Mixer::doMix()
     std::for_each(m_chips.begin(), m_chips.end(), bufferPos(samplesLeft));
 }
 
-void Mixer::begin(short *buffer, uint_least32_t count)
+void Mixer::begin(short *buffer, std::size_t count)
 {
     m_sampleIndex  = 0;
     m_sampleCount  = count;

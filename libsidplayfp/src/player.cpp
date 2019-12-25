@@ -188,7 +188,7 @@ void Player::run(unsigned int events)
         m_c64.clock();
 }
 
-uint_least32_t Player::play(short *buffer, uint_least32_t count)
+std::size_t Player::play(short *buffer, std::size_t count)
 {
     // Make sure a tune is loaded
     if (m_tune == nullptr)
@@ -206,7 +206,7 @@ uint_least32_t Player::play(short *buffer, uint_least32_t count)
         {
             if (m_mixer.getSid(0) != nullptr)
             {
-                if (count && buffer != nullptr)
+                if (count != 0 && buffer != nullptr)
                 {
                     // Clock chips and mix into output buffer
                     while (m_isPlaying && m_mixer.notFinished())
@@ -474,7 +474,7 @@ void Player::sidRelease()
 {
     m_c64.clearSids();
 
-    for (unsigned int i = 0; ; i++)
+    for (std::size_t i = 0; ; i++)
     {
         sidemu *s = m_mixer.getSid(i);
         if (s == nullptr)
@@ -538,7 +538,7 @@ void Player::sidCreate(sidbuilder *builder, SidConfig::sid_model_t defaultModel,
 void Player::sidParams(double cpuFreq, int frequency,
                         SidConfig::sampling_method_t sampling, bool fastSampling)
 {
-    for (unsigned int i = 0; ; i++)
+    for (std::size_t i = 0; ; i++)
     {
         sidemu *s = m_mixer.getSid(i);
         if (s == nullptr)

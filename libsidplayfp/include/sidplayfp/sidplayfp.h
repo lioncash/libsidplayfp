@@ -23,6 +23,7 @@
 #ifndef SIDPLAYFP_H
 #define SIDPLAYFP_H
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 
@@ -104,7 +105,7 @@ public:
      * and #isPlaying() is true an error occurred, use #error() to get
      * a detailed message.
      */
-    uint_least32_t play(short *buffer, uint_least32_t count);
+    std::size_t play(short *buffer, std::size_t count);
 
     /**
      * Check if the engine is playing or stopped.

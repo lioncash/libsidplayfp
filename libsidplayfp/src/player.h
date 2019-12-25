@@ -24,6 +24,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 
@@ -65,7 +66,7 @@ public:
 
     bool load(SidTune* tune);
 
-    uint_least32_t play(short* buffer, uint_least32_t samples);
+    std::size_t play(short* buffer, std::size_t samples);
 
     bool isPlaying() const { return m_isPlaying != STOPPED; }
 

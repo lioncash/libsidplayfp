@@ -653,12 +653,12 @@ bool ConsolePlayer::play ()
         updateDisplay();
 
         // Fill buffer
-        short *buffer = m_driver.selected->buffer ();
-        const uint_least32_t length = m_driver.cfg.bufSize;
-        const uint_least32_t ret = m_engine.play (buffer, length);
+        short *buffer = m_driver.selected->buffer();
+        const std::size_t length = m_driver.cfg.bufSize;
+        const std::size_t ret = m_engine.play (buffer, length);
         if (ret < length)
         {
-            if (m_engine.isPlaying ())
+            if (m_engine.isPlaying())
             {
                 m_state = playerError;
             }

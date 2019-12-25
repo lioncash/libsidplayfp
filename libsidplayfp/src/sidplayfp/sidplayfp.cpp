@@ -56,7 +56,7 @@ void sidplayfp::stop()
     sidplayer.stop();
 }
 
-uint_least32_t sidplayfp::play(short *buffer, uint_least32_t count)
+std::size_t sidplayfp::play(short *buffer, std::size_t count)
 {
     return sidplayer.play(buffer, count);
 }

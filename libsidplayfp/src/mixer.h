@@ -24,6 +24,7 @@
 #ifndef MIXER_H
 #define MIXER_H
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
@@ -59,11 +60,7 @@ public:
     /**
      * Create a new mixer.
      */
-    Mixer() :
-        oldRandomValue(0),
-        m_fastForwardFactor(1),
-        m_sampleCount(0),
-        m_stereo(false)
+    Mixer()
     {
         m_mix.push_back(&Mixer::mono<1>);
     }
@@ -89,7 +86,7 @@ public:
      * @param buffer output buffer
      * @param count size of the buffer in samples
      */
-    void begin(short* buffer, uint_least32_t count);
+    void begin(short* buffer, std::size_t count);
 
     /**
      * Remove all SIDs from the mixer.
@@ -109,7 +106,7 @@ public:
      * @param i the number of the SID to get
      * @return a pointer to the requested sid emu or 0 if not found
      */
-    sidemu* getSid(unsigned int i) const { return (i < m_chips.size()) ? m_chips[i] : nullptr; }
+    sidemu* getSid(std::size_t i) const { return (i < m_chips.size()) ? m_chips[i] : nullptr; }
 
     /**
      * Set the fast forward ratio.
@@ -142,7 +139,7 @@ public:
     /**
      * Get the number of samples generated up to now.
      */
-    uint_least32_t samplesGenerated() const { return m_sampleIndex; }
+    std::size_t samplesGenerated() const { return m_sampleIndex; }
 
 private:
     using mixer_func_t = int_least32_t (Mixer::*)() const;
@@ -204,15 +201,15 @@ private:
 
     std::vector<mixer_func_t> m_mix;
 
-    int oldRandomValue;
-    int m_fastForwardFactor;
+    int oldRandomValue = 0;
+    int m_fastForwardFactor = 1;
 
     // Mixer settings
-    short         *m_sampleBuffer;
-    uint_least32_t m_sampleCount;
-    uint_least32_t m_sampleIndex;
+    short      *m_sampleBuffer = nullptr;
+    std::size_t m_sampleCount = 0;
+    std::size_t m_sampleIndex = 0;
 
-    bool m_stereo;
+    bool m_stereo = false;
 };
 
 }
