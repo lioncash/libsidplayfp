@@ -27,10 +27,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <vector>
 
-#include "sidplayfp/siddefs.h"
-#include "sidplayfp/SidConfig.h"
-#include "sidplayfp/SidTuneInfo.h"
+#include <sidplayfp/SidConfig.h>
 
 #include "mixer.h"
 #include "SidInfoImpl.h"
@@ -40,8 +39,6 @@
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
-
-#include <vector>
 
 class sidbuilder;
 class SidInfo;
@@ -142,7 +139,7 @@ private:
     Mixer m_mixer;
 
     /// Emulator info
-    SidTune *m_tune;
+    SidTune *m_tune = nullptr;
 
     /// User Configuration Settings
     SidInfoImpl m_info;
@@ -153,12 +150,12 @@ private:
     /// Error message
     const char *m_errorString;
 
-    volatile state_t m_isPlaying;
+    volatile state_t m_isPlaying = state_t::STOPPED;
 
     sidrandom m_rand;
 
     /// PAL/NTSC switch value
-    uint8_t videoSwitch;
+    uint8_t videoSwitch = 0;
 };
 
 }

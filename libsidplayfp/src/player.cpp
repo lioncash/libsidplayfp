@@ -20,11 +20,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 #include "player.h"
 
 #include <sidplayfp/sidbuilder.h>
 #include <sidplayfp/SidTune.h>
+#include <sidplayfp/SidTuneInfo.h>
 
 #include "psiddrv.h"
 #include "romCheck.h"
@@ -65,9 +65,7 @@ private:
 
 Player::Player() :
     // Set default settings for system
-    m_tune(nullptr),
     m_errorString(ERR_NA),
-    m_isPlaying(STOPPED),
     m_rand(static_cast<unsigned int>(::time(nullptr)))
 {
     m_c64.setRoms(nullptr, nullptr, nullptr);
