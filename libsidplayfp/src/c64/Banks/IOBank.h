@@ -22,6 +22,7 @@
 #ifndef IOBANK_H
 #define IOBANK_H
 
+#include <array>
 #include <cstdint>
 
 #include "Banks/Bank.h"
@@ -60,7 +61,7 @@ public:
     }
 
 private:
-    Bank* map[16];
+    std::array<Bank*, 16> map{};
 };
 
 }
