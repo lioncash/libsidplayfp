@@ -165,10 +165,9 @@ protected:
      * to load files. Error string is put into info.statusString, though.
      *
      * @param fileName
-     * @param bufferRef
      * @throw loadError
      */
-    static void loadFile(const char* fileName, buffer_t& bufferRef);
+    static buffer_t loadFile(const char* fileName);
 
     /**
      * Convert 32-bit PSID-style speed word to internal tables.

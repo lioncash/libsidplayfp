@@ -172,7 +172,7 @@ void SidTuneBase::placeSidTuneInC64mem(sidmemory& mem)
     mem.fillRam(info->m_loadAddr, &cache[fileOffset], info->m_c64dataLen);
 }
 
-void SidTuneBase::loadFile(const char* fileName, buffer_t& bufferRef)
+SidTuneBase::buffer_t SidTuneBase::loadFile(const char* fileName)
 {
     std::ifstream inFile(fileName, std::ifstream::binary);
 
@@ -208,9 +208,7 @@ void SidTuneBase::loadFile(const char* fileName, buffer_t& bufferRef)
         throw loadError(ERR_CANT_LOAD_FILE);
     }
 
-    inFile.close();
-
-    bufferRef.swap(fileBuf);
+    return fileBuf;
 }
 
 SidTuneBase::SidTuneBase() :
@@ -356,9 +354,7 @@ std::string SidTuneBase::createNewFileName(std::string_view sourceName, std::str
 
 std::unique_ptr<SidTuneBase> SidTuneBase::getFromFiles(const char* fileName, const char **fileNameExtensions, bool separatorIsSlash)
 {
-    buffer_t fileBuf1;
-
-    loadFile(fileName, fileBuf1);
+    buffer_t fileBuf1 = loadFile(fileName);
 
     // File loaded. Now check if it is in a valid single-file-format.
     std::unique_ptr<SidTuneBase> s = PSID::load(fileBuf1);
@@ -381,9 +377,8 @@ std::unique_ptr<SidTuneBase> SidTuneBase::getFromFiles(const char* fileName, con
                 {
                     try
                     {
-                        buffer_t fileBuf2;
+                        buffer_t fileBuf2 = loadFile(fileName2.c_str());
 
-                        loadFile(fileName2.c_str(), fileBuf2);
                         // Check if tunes in wrong order and therefore swap them here
                         if (stringutils::equal(fileNameExtensions[n], ".mus"))
                         {
