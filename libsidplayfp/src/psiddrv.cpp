@@ -36,21 +36,21 @@
 
 namespace libsidplayfp
 {
-
+namespace
+{
 // Error Strings
-const char ERR_PSIDDRV_NO_SPACE[]  = "ERROR: No space to install psid driver in C64 ram";
-const char ERR_PSIDDRV_RELOC[]     = "ERROR: Failed whilst relocating psid driver";
+constexpr char ERR_PSIDDRV_NO_SPACE[] = "ERROR: No space to install psid driver in C64 ram";
+constexpr char ERR_PSIDDRV_RELOC[]    = "ERROR: Failed whilst relocating psid driver";
 
 uint8_t psid_driver[] =
 {
 #  include "psiddrv.bin"
 };
 
-const uint8_t POWERON[] =
+constexpr uint8_t POWERON[] =
 {
 #  include "poweron.bin"
 };
-
 
 /**
  * Copy in power on settings. These were created by running
@@ -107,6 +107,7 @@ void copyPoweronPattern(sidmemory& mem)
         }
     }
 }
+} // Anonymous namespace
 
 uint8_t psiddrv::iomap(uint_least16_t addr) const
 {
