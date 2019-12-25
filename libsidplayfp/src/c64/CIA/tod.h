@@ -24,6 +24,7 @@
 #ifndef TOD_H
 #define TOD_H
 
+#include <array>
 #include <cstdint>
 
 #include "EventScheduler.h"
@@ -39,14 +40,12 @@ class MOS6526;
 class Tod : private Event
 {
 public:
-    explicit Tod(EventScheduler& scheduler, MOS6526& parent, uint8_t regs[0x10]) :
+    explicit Tod(EventScheduler& scheduler, MOS6526& parent, const std::array<std::uint8_t, 0x10>& regs) :
         Event("CIA Time of Day"),
         eventScheduler(scheduler),
         parent(parent),
         cra(regs[0x0e]),
-        crb(regs[0x0f]),
-        period(~0), // Dummy
-        todtickcounter(0)
+        crb(regs[0x0f])
     {}
 
     /**
@@ -100,20 +99,20 @@ private:
     /// Pointer to the MOS6526 which this Timer belongs to.
     MOS6526 &parent;
 
-    const uint8_t &cra;
-    const uint8_t &crb;
+    const std::uint8_t &cra;
+    const std::uint8_t &crb;
 
-    event_clock_t cycles;
-    event_clock_t period;
+    event_clock_t cycles = 0;
+    event_clock_t period = ~0; // Dummy value
 
-    unsigned int todtickcounter;
+    std::uint32_t todtickcounter = 0;
 
-    bool isLatched;
-    bool isStopped;
+    bool isLatched = false;
+    bool isStopped = false;
 
-    uint8_t clock[4];
-    uint8_t latch[4];
-    uint8_t alarm[4];
+    std::array<std::uint8_t, 4> clock{};
+    std::array<std::uint8_t, 4> latch{};
+    std::array<std::uint8_t, 4> alarm{};
 };
 
 }

@@ -24,6 +24,7 @@
 #ifndef MOS6526_H
 #define MOS6526_H
 
+#include <array>
 #include <memory>
 
 #include <cstdint>
@@ -257,7 +258,7 @@ protected:
     //@}
 
     /// These are all CIA registers.
-    uint8_t regs[0x10];
+    std::array<uint8_t, 0x10> regs{};
 
     /// Timers A and B.
     //@{

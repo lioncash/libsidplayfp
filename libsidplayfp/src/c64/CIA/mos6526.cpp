@@ -23,7 +23,6 @@
 
 #include "c64/CIA/mos6526.h"
 
-#include <cstring>
 #include <memory>
 
 #include "sidendian.h"
@@ -202,7 +201,7 @@ void MOS6526::handleSerialPort()
 
 void MOS6526::reset()
 {
-    memset(regs, 0, sizeof(regs));
+    regs.fill(0);
 
     serialPort.reset();
 

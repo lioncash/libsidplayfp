@@ -23,8 +23,6 @@
 
 #include "c64/CIA/tod.h"
 
-#include <cstring>
-
 #include "c64/CIA/mos6526.h"
 
 namespace libsidplayfp
@@ -35,10 +33,10 @@ void Tod::reset()
     cycles = 0;
     todtickcounter = 0;
 
-    memset(clock, 0, sizeof(clock));
+    clock.fill(0);
     clock[HOURS] = 1; // the most common value
-    memcpy(latch, clock, sizeof(latch));
-    memset(alarm, 0, sizeof(alarm));
+    latch = clock;
+    alarm.fill(0);
 
     isLatched = false;
     isStopped = true;
@@ -53,7 +51,7 @@ uint8_t Tod::read(uint_least8_t reg)
     // keeps ticking all the time.
     // Also note that this latching is different from the input one.
     if (!isLatched)
-        memcpy(latch, clock, sizeof(latch));
+        latch = clock;
 
     if (reg == TENTHS)
         isLatched = false;
@@ -230,7 +228,7 @@ void Tod::updateCounters()
 
 void Tod::checkAlarm()
 {
-    if (!memcmp(alarm, clock, sizeof(alarm)))
+    if (alarm == clock)
     {
         parent.todInterrupt();
     }
