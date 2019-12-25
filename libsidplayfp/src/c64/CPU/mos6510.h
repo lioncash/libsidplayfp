@@ -23,6 +23,7 @@
 #ifndef MOS6510_H
 #define MOS6510_H
 
+#include <array>
 #include <cstdint>
 #include <cstdio>
 
@@ -328,7 +329,7 @@ private:
 #endif
 
     /// Table of CPU opcode implementations
-    ProcessorCycle instrTable[0x101 << 3];
+    std::array<ProcessorCycle, 0x101 << 3> instrTable;
 
     /// Represents an instruction subcycle that writes
     EventCallback<MOS6510> m_nosteal;
