@@ -49,14 +49,7 @@
 class SidInfoImpl final : public SidInfo
 {
 public:
-    SidInfoImpl() :
-        m_name(PACKAGE_NAME),
-        m_version(PACKAGE_VERSION),
-        m_maxsids(libsidplayfp::Mixer::MAX_SIDS),
-        m_channels(1),
-        m_driverAddr(0),
-        m_driverLength(0),
-        m_powerOnDelay(0)
+    SidInfoImpl()
     {
         m_credits.emplace_back(PACKAGE_NAME " V" PACKAGE_VERSION " Engine:\n"
             "\tCopyright (C) 2000 Simon White\n"
@@ -74,7 +67,7 @@ public:
     std::size_t getNumberOfCredits() const override { return m_credits.size(); }
     const char* getCredits(std::size_t i) const override { return i < m_credits.size() ? m_credits[i].c_str() : ""; }
 
-    unsigned int getMaxsids() const override { return m_maxsids; }
+    unsigned int getMaxsids() const override { return libsidplayfp::Mixer::MAX_SIDS; }
 
     unsigned int getChannels() const override { return m_channels; }
 
@@ -89,8 +82,8 @@ public:
     const char* getBasicDesc() const override { return m_basicDesc.c_str(); }
     const char* getChargenDesc() const override { return m_chargenDesc.c_str(); }
 
-    const std::string m_name;
-    const std::string m_version;
+    const std::string m_name{PACKAGE_NAME};
+    const std::string m_version{PACKAGE_VERSION};
     std::vector<std::string> m_credits;
 
     std::string m_speedString;
@@ -99,14 +92,12 @@ public:
     std::string m_basicDesc;
     std::string m_chargenDesc;
 
-    const unsigned int m_maxsids;
+    unsigned int m_channels = 1;
 
-    unsigned int m_channels;
+    uint_least16_t m_driverAddr = 0;
+    uint_least16_t m_driverLength = 0;
 
-    uint_least16_t m_driverAddr;
-    uint_least16_t m_driverLength;
-
-    uint_least16_t m_powerOnDelay;
+    uint_least16_t m_powerOnDelay = 0;
 };
 
 #endif  /* SIDTUNEINFOIMPL_H */
