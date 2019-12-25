@@ -130,7 +130,7 @@ private:
     void sidParams(double cpuFreq, int frequency,
         SidConfig::SamplingMethod sampling, bool fastSampling);
 
-    inline void run(unsigned int events);
+    void run(unsigned int events);
 
     /// Commodore 64 emulator
     c64 m_c64;
