@@ -74,7 +74,7 @@ public:
 
     unsigned int getCurrentSong() const override { return m_currentSong; }
 
-    uint_least16_t getSidChipBase(unsigned int i) const override
+    uint_least16_t getSidChipBase(std::size_t i) const override
     {
         return i < m_sidChipAddresses.size() ? m_sidChipAddresses[i] : 0;
     }
@@ -87,7 +87,7 @@ public:
 
     uint_least8_t getRelocPages() const override { return m_relocPages; }
 
-    model_t getSidModel(unsigned int i) const override
+    model_t getSidModel(std::size_t i) const override
     {
         return i < m_sidModels.size() ? m_sidModels[i] : SIDMODEL_UNKNOWN;
     }

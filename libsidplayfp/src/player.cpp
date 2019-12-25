@@ -514,22 +514,22 @@ void Player::sidCreate(sidbuilder *builder, SidConfig::sid_model_t defaultModel,
             // model as the first SID.
             defaultModel = userModel;
 
-            const unsigned int extraSidChips = extraSidAddresses.size();
+            const std::size_t extraSidChips = extraSidAddresses.size();
 
-            for (unsigned int i = 0; i < extraSidChips; i++)
+            for (std::size_t i = 0; i < extraSidChips; i++)
             {
-                const SidConfig::sid_model_t userModel = getSidModel(tuneInfo->sidModel(i+1), defaultModel, forced);
+                const SidConfig::sid_model_t extraUserModel = getSidModel(tuneInfo->sidModel(i+1), defaultModel, forced);
 
-                sidemu *s = builder->lock(m_c64.getEventScheduler(), userModel, digiboost);
+                sidemu *emu = builder->lock(m_c64.getEventScheduler(), extraUserModel, digiboost);
                 if (!builder->getStatus())
                 {
                     throw configError(builder->error());
                 }
 
-                if (!m_c64.addExtraSid(s, extraSidAddresses[i]))
+                if (!m_c64.addExtraSid(emu, extraSidAddresses[i]))
                     throw configError(ERR_UNSUPPORTED_SID_ADDR);
 
-                m_mixer.addSid(s);
+                m_mixer.addSid(emu);
             }
         }
     }

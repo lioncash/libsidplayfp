@@ -34,7 +34,7 @@ unsigned int SidTuneInfo::startSong() const { return getStartSong(); }
 
 unsigned int SidTuneInfo::currentSong() const { return getCurrentSong(); }
 
-uint_least16_t SidTuneInfo::sidChipBase(unsigned int i) const { return getSidChipBase(i); }
+uint_least16_t SidTuneInfo::sidChipBase(std::size_t i) const { return getSidChipBase(i); }
 
 std::size_t SidTuneInfo::sidChips() const { return getSidChips(); }
 
@@ -44,7 +44,7 @@ uint_least8_t SidTuneInfo::relocStartPage() const { return getRelocStartPage(); 
 
 uint_least8_t SidTuneInfo::relocPages() const { return getRelocPages(); }
 
-SidTuneInfo::model_t SidTuneInfo::sidModel(unsigned int i) const { return getSidModel(i); }
+SidTuneInfo::model_t SidTuneInfo::sidModel(std::size_t i) const { return getSidModel(i); }
 
 SidTuneInfo::compatibility_t SidTuneInfo::compatibility() const { return getCompatibility(); }
 

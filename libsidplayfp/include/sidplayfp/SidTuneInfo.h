@@ -102,7 +102,7 @@ public:
      * - 0xD400 for the 1st SID
      * - 0 if the nth SID is not required
      */
-    uint_least16_t sidChipBase(unsigned int i) const;
+    uint_least16_t sidChipBase(std::size_t i) const;
 
     /**
      * The number of SID chips required by the tune.
@@ -128,7 +128,7 @@ public:
      * @name SID model
      * The SID chip model(s) requested by the sidtune.
      */
-    model_t sidModel(unsigned int i) const;
+    model_t sidModel(std::size_t i) const;
 
     /**
      * Compatibility requirements.
@@ -213,7 +213,7 @@ private:
 
     virtual unsigned int getCurrentSong() const =0;
 
-    virtual uint_least16_t getSidChipBase(unsigned int i) const =0;
+    virtual uint_least16_t getSidChipBase(std::size_t i) const =0;
 
     virtual std::size_t getSidChips() const =0;
 
@@ -223,7 +223,7 @@ private:
 
     virtual uint_least8_t getRelocPages() const =0;
 
-    virtual model_t getSidModel(unsigned int i) const =0;
+    virtual model_t getSidModel(std::size_t i) const =0;
 
     virtual compatibility_t getCompatibility() const =0;
 
