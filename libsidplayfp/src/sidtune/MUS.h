@@ -22,6 +22,7 @@
 #define MUS_H
 
 #include <cstdint>
+#include <memory>
 
 #include "sidtune/SidTuneBase.h"
 

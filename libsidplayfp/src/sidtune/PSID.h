@@ -21,6 +21,8 @@
 #ifndef PSID_H
 #define PSID_H
 
+#include <memory>
+
 #include <sidplayfp/SidTune.h>
 #include "sidtune/SidTuneBase.h"
 

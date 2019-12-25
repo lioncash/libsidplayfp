@@ -21,6 +21,7 @@
 #ifndef P00_H
 #define P00_H
 
+#include <memory>
 #include "sidtune/SidTuneBase.h"
 
 namespace libsidplayfp
