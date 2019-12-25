@@ -58,10 +58,10 @@ protected:
 
 private:
     /// The next event in sequence.
-    Event* next;
+    Event* next = nullptr;
 
     /// The clock this event fires.
-    event_clock_t triggerTime;
+    event_clock_t triggerTime{};
 
     /// Describe event for humans.
     const char* const m_name;
