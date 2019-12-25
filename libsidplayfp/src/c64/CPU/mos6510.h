@@ -108,7 +108,7 @@ protected:
      * @param address
      * @return data byte CPU requested
      */
-    virtual uint8_t cpuRead(uint_least16_t addr) = 0;
+    virtual uint8_t cpuRead(uint_least16_t address) = 0;
 
     /**
      * Write data to system environment.
@@ -116,7 +116,7 @@ protected:
      * @param address
      * @param data
      */
-    virtual void cpuWrite(uint_least16_t addr, uint8_t data) = 0;
+    virtual void cpuWrite(uint_least16_t address, uint8_t data) = 0;
 
 private:
     struct ProcessorCycle

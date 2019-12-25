@@ -1436,8 +1436,8 @@ void MOS6510::rra_instr()
 /**
  * Create new CPU emu.
  *
- * @param context
- *            The Event Context
+ * @param scheduler
+ *            The event scheduler
  */
 MOS6510::MOS6510(EventScheduler &scheduler) :
     eventScheduler(scheduler),
