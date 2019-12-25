@@ -113,7 +113,7 @@ private:
 /**
  * romCheck implementation specific for kernal ROM.
  */
-class kernalCheck : public romCheck
+class kernalCheck final : public romCheck
 {
 public:
     explicit kernalCheck(const uint8_t* kernal) :
@@ -151,7 +151,7 @@ public:
 /**
  * romCheck implementation specific for basic ROM.
  */
-class basicCheck : public romCheck
+class basicCheck final : public romCheck
 {
 public:
     explicit basicCheck(const uint8_t* basic) :
@@ -164,7 +164,7 @@ public:
 /**
  * romCheck implementation specific for character generator ROM.
  */
-class chargenCheck : public romCheck
+class chargenCheck final : public romCheck
 {
 public:
     explicit chargenCheck(const uint8_t* chargen) :
