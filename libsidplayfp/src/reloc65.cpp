@@ -24,8 +24,6 @@
 
 #include <cstring>
 
-#include <sidplayfp/siddefs.h>
-
 namespace
 {
 /// 16 bit header
