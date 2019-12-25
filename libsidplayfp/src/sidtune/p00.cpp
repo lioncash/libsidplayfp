@@ -81,7 +81,7 @@ struct X00Header
                                 // should be 0 for all other types
 };
 
-SidTuneBase* p00::load(const char *fileName, buffer_t& dataBuf)
+std::unique_ptr<SidTuneBase> p00::load(const char *fileName, const buffer_t& dataBuf)
 {
     const char *ext = SidTuneTools::fileExtOfPath(fileName);
 
@@ -144,7 +144,7 @@ SidTuneBase* p00::load(const char *fileName, buffer_t& dataBuf)
     std::unique_ptr<p00> tune(new p00());
     tune->load(format, &pHeader);
 
-    return tune.release();
+    return tune;
 }
 
 void p00::load(const char* format, const X00Header* pHeader)
