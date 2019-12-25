@@ -95,12 +95,12 @@ public:
     void setI(bool f) { I = f; }
 
 private:
-    bool C; ///< Carry
-    bool Z; ///< Zero
-    bool I; ///< Interrupt disabled
-    bool D; ///< Decimal
-    bool V; ///< Overflow
-    bool N; ///< Negative
+    bool C = false; ///< Carry
+    bool Z = false; ///< Zero
+    bool I = false; ///< Interrupt disabled
+    bool D = false; ///< Decimal
+    bool V = false; ///< Overflow
+    bool N = false; ///< Negative
 };
 
 }
