@@ -176,7 +176,7 @@ protected:
      * @param clock
      */
     void convertOldStyleSpeedToTables(uint_least32_t speed,
-        SidTuneInfo::clock_t clock = SidTuneInfo::CLOCK_PAL);
+                                      SidTuneInfo::clock_t clock = SidTuneInfo::CLOCK_PAL);
 
     /**
      * Check if compatibility constraints are fulfilled.
@@ -213,7 +213,7 @@ protected:
      * @throw loadError
      */
     virtual void acceptSidTune(const char* dataFileName, const char* infoFileName,
-        buffer_t& buf, bool isSlashedFileName);
+                               buffer_t& buf, bool isSlashedFileName);
 
     /**
      * Petscii to Ascii converter.
@@ -244,12 +244,12 @@ private:
     /**
      * Get new file name with specified extension.
      *
-     * @param destString destinaton string
+     * @param destString destination string
      * @param sourceName original file name
      * @param sourceExt new extension
      */
     static void createNewFileName(std::string& destString,
-                           const char* sourceName, const char* sourceExt);
+                                  const char* sourceName, const char* sourceExt);
 };
 
 }

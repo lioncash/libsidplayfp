@@ -270,7 +270,7 @@ std::unique_ptr<SidTuneBase> SidTuneBase::getFromBuffer(const uint_least8_t* con
 }
 
 void SidTuneBase::acceptSidTune(const char* dataFileName, const char* infoFileName,
-                            buffer_t& buf, bool isSlashedFileName)
+                                buffer_t& buf, bool isSlashedFileName)
 {
     // Make a copy of the data file name and path, if available.
     if (dataFileName != nullptr)
