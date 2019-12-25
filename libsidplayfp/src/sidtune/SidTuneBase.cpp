@@ -362,7 +362,7 @@ SidTuneBase* SidTuneBase::getFromFiles(const char* fileName, const char **fileNa
     loadFile(fileName, fileBuf1);
 
     // File loaded. Now check if it is in a valid single-file-format.
-    std::unique_ptr<SidTuneBase> s(PSID::load(fileBuf1));
+    std::unique_ptr<SidTuneBase> s = PSID::load(fileBuf1);
     if (s == nullptr)
     {
         // Try some native C64 file formats

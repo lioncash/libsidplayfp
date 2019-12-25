@@ -41,7 +41,7 @@ public:
      * @return pointer to a SidTune or 0 if not a PSID file
      * @throw loadError if PSID file is corrupt
      */
-    static SidTuneBase* load(buffer_t& dataBuf);
+    static std::unique_ptr<SidTuneBase> load(const buffer_t& dataBuf);
 
     const char* createMD5(char* md5) override;
 

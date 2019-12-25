@@ -144,7 +144,7 @@ struct psidHeader           // all values are big-endian
     uint8_t sidChipBase3;          // only version >= 4
 };
 
-SidTuneBase* PSID::load(buffer_t& dataBuf)
+std::unique_ptr<SidTuneBase> PSID::load(const buffer_t& dataBuf)
 {
     // File format check
     if (dataBuf.size() < 4)
@@ -165,7 +165,7 @@ SidTuneBase* PSID::load(buffer_t& dataBuf)
     std::unique_ptr<PSID> tune(new PSID());
     tune->tryLoad(pHeader);
 
-    return tune.release();
+    return tune;
 }
 
 void PSID::readHeader(const buffer_t &dataBuf, psidHeader &hdr)
