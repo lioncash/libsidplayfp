@@ -41,19 +41,17 @@ class Mixer
 {
 public:
     /// Maximum number of supported SIDs
-    static const unsigned int MAX_SIDS = 3;
+    static constexpr unsigned int MAX_SIDS = 3;
 
     /// Maximum allowed volume, must be a power of 2.
-    static const int_least32_t VOLUME_MAX = 1024;
+    static constexpr int_least32_t VOLUME_MAX = 1024;
 
-    static const int_least32_t SCALE_FACTOR = 1 << 16;
-#ifdef HAVE_CXX11
+    static constexpr int_least32_t SCALE_FACTOR = 1 << 16;
+
     static constexpr double SQRT_0_5 = 0.70710678118654746;
-#else
-#  define SQRT_0_5 0.70710678118654746
-#endif
-    static const int_least32_t C1 = static_cast<int_least32_t>(1.0 / (1.0 + SQRT_0_5) * SCALE_FACTOR);
-    static const int_least32_t C2 = static_cast<int_least32_t>(SQRT_0_5 / (1.0 + SQRT_0_5) * SCALE_FACTOR);
+
+    static constexpr int_least32_t C1 = static_cast<int_least32_t>(1.0 / (1.0 + SQRT_0_5) * SCALE_FACTOR);
+    static constexpr int_least32_t C2 = static_cast<int_least32_t>(SQRT_0_5 / (1.0 + SQRT_0_5) * SCALE_FACTOR);
 
 
 public:
