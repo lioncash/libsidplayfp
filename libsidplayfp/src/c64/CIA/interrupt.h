@@ -110,9 +110,7 @@ protected:
     explicit InterruptSource(EventScheduler& scheduler, MOS6526& parent) :
         Event("CIA Interrupt"),
         parent(parent),
-        eventScheduler(scheduler),
-        icr(0),
-        idr(0)
+        eventScheduler(scheduler)
     {}
 
     bool interruptMasked() const { return icr & idr; }
@@ -131,10 +129,10 @@ protected:
 
 private:
     /// Interrupt control register
-    uint8_t icr;
+    uint8_t icr = 0;
 
     /// Interrupt data register
-    uint8_t idr;
+    uint8_t idr = 0;
 };
 
 }
