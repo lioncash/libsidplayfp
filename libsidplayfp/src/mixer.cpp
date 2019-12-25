@@ -36,8 +36,8 @@ void clockChip(sidemu *s) { s->clock(); }
 class bufferPos
 {
 public:
-    bufferPos(int i) : pos(i) {}
-    void operator()(sidemu *s) { s->bufferpos(pos); }
+    explicit bufferPos(int position) : pos(position) {}
+    void operator()(sidemu *s) const { s->bufferpos(pos); }
 
 private:
     int pos;
@@ -46,8 +46,8 @@ private:
 class bufferMove
 {
 public:
-    bufferMove(int p, int s) : pos(p), samples(s) {}
-    void operator()(short *dest)
+    explicit bufferMove(int position, int numSamples) : pos(position), samples(numSamples) {}
+    void operator()(short *dest) const
     {
         const short* src = dest + pos;
         for (int j = 0; j < samples; j++)
