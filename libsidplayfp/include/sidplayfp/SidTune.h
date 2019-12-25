@@ -61,7 +61,7 @@ public:
      * @param separatorIsSlash
      */
     explicit SidTune(const char* fileName, const char** fileNameExt = nullptr,
-        bool separatorIsSlash = false);
+                     bool separatorIsSlash = false);
 
     /**
      * Load a single-file sidtune from a memory buffer.
@@ -71,7 +71,7 @@ public:
      * @param sidtuneLength length of the buffer
      */
     explicit SidTune(const uint_least8_t* oneFileFormatSidtune,
-        uint_least32_t sidtuneLength);
+                     uint_least32_t sidtuneLength);
 
     ~SidTune();
 
