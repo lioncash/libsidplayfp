@@ -42,8 +42,6 @@ class sidbuilder
 {
 public:
     explicit sidbuilder(const char* const name) :
-        m_errorBuffer("N/A"),
-        m_status(true),
         m_name(name) {}
     virtual ~sidbuilder() = default;
 
@@ -146,11 +144,11 @@ protected:
         void (Temu::* m_method)(Tparam);
     };
 
-    std::string m_errorBuffer;
+    std::string m_errorBuffer{"N/A"};
 
     emuset_t sidobjs;
 
-    bool m_status;
+    bool m_status = true;
 
 private:
     const char * const m_name;
