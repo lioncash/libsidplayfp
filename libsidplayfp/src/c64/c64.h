@@ -100,7 +100,7 @@ public:
 
     uint_least32_t getTimeMs() const
     {
-        return static_cast<uint_least32_t>((eventScheduler.getTime(EventPhase::ClockPHI1) * 1000) / cpuFrequency);
+        return static_cast<uint_least32_t>(double(eventScheduler.getTime(EventPhase::ClockPHI1) * 1000) / cpuFrequency);
     }
 
     /**
