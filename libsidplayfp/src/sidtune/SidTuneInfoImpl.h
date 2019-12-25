@@ -38,22 +38,7 @@ namespace libsidplayfp
 class SidTuneInfoImpl final : public SidTuneInfo
 {
 public:
-    SidTuneInfoImpl() :
-        m_formatString("N/A"),
-        m_songs(0),
-        m_startSong(0),
-        m_currentSong(0),
-        m_songSpeed(SPEED_VBI),
-        m_clockSpeed(CLOCK_UNKNOWN),
-        m_compatibility(COMPATIBILITY_C64),
-        m_dataFileLen(0),
-        m_c64dataLen(0),
-        m_loadAddr(0),
-        m_initAddr(0),
-        m_playAddr(0),
-        m_relocStartPage(0),
-        m_relocPages(0),
-        m_fixLoad(false)
+    SidTuneInfoImpl()
     {
         m_sidModels.push_back(SIDMODEL_UNKNOWN);
         m_sidChipAddresses.push_back(0xd400);
@@ -116,29 +101,29 @@ public:
 
     const char* getInfoFileName() const override { return !m_infoFileName.empty() ? m_infoFileName.c_str() : nullptr; }
 
-    const char* m_formatString;
+    const char* m_formatString = "N/A";
 
-    unsigned int m_songs;
-    unsigned int m_startSong;
-    unsigned int m_currentSong;
+    unsigned int m_songs = 0;
+    unsigned int m_startSong = 0;
+    unsigned int m_currentSong = 0;
 
-    int m_songSpeed;
+    int m_songSpeed = SPEED_VBI;
 
-    clock_t m_clockSpeed;
+    clock_t m_clockSpeed = clock_t::CLOCK_UNKNOWN;
 
-    compatibility_t m_compatibility;
+    compatibility_t m_compatibility = compatibility_t::COMPATIBILITY_C64;
 
-    uint_least32_t m_dataFileLen;
+    uint_least32_t m_dataFileLen = 0;
 
-    uint_least32_t m_c64dataLen;
+    uint_least32_t m_c64dataLen = 0;
 
-    uint_least16_t m_loadAddr;
-    uint_least16_t m_initAddr;
-    uint_least16_t m_playAddr;
+    uint_least16_t m_loadAddr = 0;
+    uint_least16_t m_initAddr = 0;
+    uint_least16_t m_playAddr = 0;
 
-    uint_least8_t m_relocStartPage;
+    uint_least8_t m_relocStartPage = 0;
 
-    uint_least8_t m_relocPages;
+    uint_least8_t m_relocPages = 0;
 
     std::string m_path;
 
@@ -154,7 +139,7 @@ public:
 
     std::vector<std::string> m_commentString;
 
-    bool m_fixLoad;
+    bool m_fixLoad = false;
 };
 
 }
