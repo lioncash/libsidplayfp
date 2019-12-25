@@ -32,8 +32,6 @@ namespace libsidplayfp
 {
 namespace
 {
-void clockChip(sidemu *s) { s->clock(); }
-
 class BufferPos
 {
 public:
@@ -62,7 +60,10 @@ private:
 
 void Mixer::clockChips()
 {
-    std::for_each(m_chips.begin(), m_chips.end(), clockChip);
+    for (sidemu* const chip : m_chips)
+    {
+        chip->clock();
+    }
 }
 
 void Mixer::resetBufs()
