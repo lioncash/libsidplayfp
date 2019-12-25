@@ -43,7 +43,7 @@ public:
     /// Library credits
     //@{
     std::size_t numberOfCredits() const;
-    const char *credits(unsigned int i) const;
+    const char *credits(std::size_t i) const;
     //@}
 
     /// Number of SIDs supported by this library
@@ -80,7 +80,7 @@ private:
     virtual const char *getVersion() const =0;
 
     virtual std::size_t getNumberOfCredits() const =0;
-    virtual const char *getCredits(unsigned int i) const =0;
+    virtual const char *getCredits(std::size_t i) const =0;
 
     virtual unsigned int getMaxsids() const =0;
 
