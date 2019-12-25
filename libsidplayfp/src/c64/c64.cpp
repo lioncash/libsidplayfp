@@ -23,12 +23,14 @@
 #include "c64/c64.h"
 
 #include <algorithm>
+#include <array>
 #include "c64/VIC_II/mos656x.h"
 
 namespace libsidplayfp
 {
-
-struct model_data_t
+namespace
+{
+struct ModelData
 {
     double colorBurst;         ///< Colorburst frequency in Herz
     double divider;            ///< Clock frequency divider
@@ -45,29 +47,36 @@ struct model_data_t
  * PAL-N - 3.58205625 MHz
  */
 
-const model_data_t modelData[] =
-{
+constexpr std::array<ModelData, 5> modelData{{
     {4433618.75,  18., 50., MOS656X::MOS6569},      // PAL-B
     {3579545.455, 14., 60., MOS656X::MOS6567R8},    // NTSC-M
     {3579545.455, 14., 60., MOS656X::MOS6567R56A},  // Old NTSC-M
     {3582056.25,  14., 50., MOS656X::MOS6572},      // PAL-N
     {3575611.49,  14., 50., MOS656X::MOS6573},      // PAL-M
-};
+}};
 
-double c64::getCpuFreq(model_t model)
+const ModelData& getModelDataFromModel(c64::Model model)
 {
+    return modelData[static_cast<std::size_t>(model)];
+}
+} // Anonymous namespace
+
+double c64::getCpuFreq(Model model)
+{
+    const auto& data = getModelDataFromModel(model);
+
     // The crystal clock that drives the VIC II chip is four times
     // the color burst frequency
-    const double crystalFreq = modelData[model].colorBurst * 4.;
+    const double crystalFreq = data.colorBurst * 4.0;
 
     // The VIC II produces the two-phase system clock
     // by running the input clock through a divider
-    return crystalFreq/modelData[model].divider;
+    return crystalFreq / data.divider;
 }
 
 c64::c64() :
     c64env(eventScheduler),
-    cpuFrequency(getCpuFreq(PAL_B)),
+    cpuFrequency(getCpuFreq(Model::PAL_B)),
     cpu(*this),
     cia1(*this),
     cia2(*this),
@@ -119,12 +128,13 @@ void c64::reset()
     oldBAState = true;
 }
 
-void c64::setModel(model_t model)
+void c64::setModel(Model model)
 {
+    const auto& data = getModelDataFromModel(model);
     cpuFrequency = getCpuFreq(model);
-    vic.chip(modelData[model].vicModel);
+    vic.chip(data.vicModel);
 
-    const unsigned int rate = cpuFrequency / modelData[model].powerFreq;
+    const auto rate = static_cast<std::uint32_t>(cpuFrequency / data.powerFreq);
     cia1.setDayOfTimeRate(rate);
     cia2.setDayOfTimeRate(rate);
 }

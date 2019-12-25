@@ -97,7 +97,7 @@ private:
      * @param defaultModel the default model
      * @param forced true if the default model should be forced in spite of tune model.
      */
-    c64::model_t c64model(SidConfig::C64Model defaultModel, bool forced);
+    c64::Model c64model(SidConfig::C64Model defaultModel, bool forced);
 
     /**
      * Initialize the emulation.

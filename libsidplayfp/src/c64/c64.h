@@ -78,13 +78,13 @@ public:
 class c64 final : private c64env
 {
 public:
-    enum model_t
+    enum class Model
     {
-        PAL_B = 0,    ///< PAL C64
-        NTSC_M,       ///< NTSC C64
-        OLD_NTSC_M,   ///< Old NTSC C64
-        PAL_N,        ///< C64 Drean
-        PAL_M,        ///< C64 Brasil
+        PAL_B,      ///< PAL C64
+        NTSC_M,     ///< NTSC C64
+        OLD_NTSC_M, ///< Old NTSC C64
+        PAL_N,      ///< C64 Drean
+        PAL_M,      ///< C64 Brasil
     };
 
     c64();
@@ -115,7 +115,7 @@ public:
     /**
      * Set the c64 model.
      */
-    void setModel(model_t model);
+    void setModel(Model model);
 
     /**
      * Set the cia model.
@@ -171,7 +171,7 @@ public:
     uint_least16_t getCia1TimerA() const { return cia1.getTimerA(); }
 
 private:
-    static double getCpuFreq(model_t model);
+    static double getCpuFreq(Model model);
 
     /**
      * Access memory as seen by CPU.

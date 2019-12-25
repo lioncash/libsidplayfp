@@ -359,7 +359,7 @@ bool Player::config(const SidConfig &cfg, bool force)
             sidCreate(cfg.sidEmulation, cfg.defaultSidModel, cfg.digiBoost, cfg.forceSidModel, addresses);
 
             // Determine clock speed
-            const c64::model_t model = c64model(cfg.defaultC64Model, cfg.forceC64Model);
+            const c64::Model model = c64model(cfg.defaultC64Model, cfg.forceC64Model);
 
             m_c64.setModel(model);
             m_c64.setCiaModel(cfg.ciaModel == SidConfig::CIAModel::MOS8521);
@@ -394,13 +394,13 @@ bool Player::config(const SidConfig &cfg, bool force)
 }
 
 // Clock speed changes due to loading a new song
-c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
+c64::Model Player::c64model(SidConfig::C64Model defaultModel, bool forced)
 {
     const SidTuneInfo* tuneInfo = m_tune->getInfo();
 
     SidTuneInfo::Clock clockSpeed = tuneInfo->clockSpeed();
 
-    c64::model_t model;
+    c64::Model model{};
 
     // Use preferred speed if forced or if song speed is unknown
     if (forced || clockSpeed == SidTuneInfo::Clock::Unknown || clockSpeed == SidTuneInfo::Clock::Any)
@@ -409,27 +409,27 @@ c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
         {
         case SidConfig::C64Model::PAL:
             clockSpeed = SidTuneInfo::Clock::PAL;
-            model = c64::PAL_B;
+            model = c64::Model::PAL_B;
             videoSwitch = 1;
             break;
         case SidConfig::C64Model::DREAN:
             clockSpeed = SidTuneInfo::Clock::PAL;
-            model = c64::PAL_N;
+            model = c64::Model::PAL_N;
             videoSwitch = 1; // TODO verify
             break;
         case SidConfig::C64Model::NTSC:
             clockSpeed = SidTuneInfo::Clock::NTSC;
-            model = c64::NTSC_M;
+            model = c64::Model::NTSC_M;
             videoSwitch = 0;
             break;
         case SidConfig::C64Model::OldNTSC:
             clockSpeed = SidTuneInfo::Clock::NTSC;
-            model = c64::OLD_NTSC_M;
+            model = c64::Model::OLD_NTSC_M;
             videoSwitch = 0;
             break;
         case SidConfig::C64Model::PAL_M:
             clockSpeed = SidTuneInfo::Clock::NTSC;
-            model = c64::PAL_M;
+            model = c64::Model::PAL_M;
             videoSwitch = 0; // TODO verify
             break;
         }
@@ -440,11 +440,11 @@ c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
         {
         default:
         case SidTuneInfo::Clock::PAL:
-            model = c64::PAL_B;
+            model = c64::Model::PAL_B;
             videoSwitch = 1;
             break;
         case SidTuneInfo::Clock::NTSC:
-            model = c64::NTSC_M;
+            model = c64::Model::NTSC_M;
             videoSwitch = 0;
             break;
         }
