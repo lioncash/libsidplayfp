@@ -33,20 +33,20 @@ namespace
 {
 void clockChip(sidemu *s) { s->clock(); }
 
-class bufferPos
+class BufferPos
 {
 public:
-    explicit bufferPos(int position) : pos(position) {}
+    explicit BufferPos(int position) : pos(position) {}
     void operator()(sidemu *s) const { s->bufferpos(pos); }
 
 private:
     int pos;
 };
 
-class bufferMove
+class BufferMove
 {
 public:
-    explicit bufferMove(int position, int numSamples) : pos(position), samples(numSamples) {}
+    explicit BufferMove(int position, int numSamples) : pos(position), samples(numSamples) {}
     void operator()(short *dest) const
     {
         const short* src = dest + pos;
@@ -69,7 +69,7 @@ void Mixer::clockChips()
 
 void Mixer::resetBufs()
 {
-    std::for_each(m_chips.begin(), m_chips.end(), bufferPos(0));
+    std::for_each(m_chips.begin(), m_chips.end(), BufferPos(0));
 }
 
 void Mixer::doMix()
@@ -126,8 +126,8 @@ void Mixer::doMix()
 
     // move the unhandled data to start of buffer, if any.
     const int samplesLeft = sampleCount - i;
-    std::for_each(m_buffers.begin(), m_buffers.end(), bufferMove(i, samplesLeft));
-    std::for_each(m_chips.begin(), m_chips.end(), bufferPos(samplesLeft));
+    std::for_each(m_buffers.begin(), m_buffers.end(), BufferMove(i, samplesLeft));
+    std::for_each(m_chips.begin(), m_chips.end(), BufferPos(samplesLeft));
 }
 
 void Mixer::begin(short *buffer, std::size_t count)
