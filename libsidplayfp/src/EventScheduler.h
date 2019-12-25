@@ -58,9 +58,7 @@ enum event_phase_t
 class EventScheduler
 {
 public:
-    EventScheduler() :
-        firstEvent(nullptr),
-        currentTime(0) {}
+    EventScheduler() = default;
 
     /**
      * Add event to pending queue.
@@ -174,10 +172,10 @@ private:
     }
 
     /// The first event of the chain.
-    Event* firstEvent;
+    Event* firstEvent = nullptr;
 
     /// EventScheduler's current clock.
-    event_clock_t currentTime;
+    event_clock_t currentTime{};
 };
 
 }
