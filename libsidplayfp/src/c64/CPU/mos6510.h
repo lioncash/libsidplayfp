@@ -276,55 +276,55 @@ private:
     EventScheduler &eventScheduler;
 
     /// Current instruction and subcycle within instruction
-    int cycleCount;
+    int cycleCount = 0;
 
     /// When IRQ was triggered. -MAX means "during some previous instruction", MAX means "no IRQ"
-    int interruptCycle;
+    int interruptCycle = 0;
 
     /// IRQ asserted on CPU
-    bool irqAssertedOnPin;
+    bool irqAssertedOnPin = false;
 
     /// NMI requested?
-    bool nmiFlag;
+    bool nmiFlag = false;
 
     /// RST requested?
-    bool rstFlag;
+    bool rstFlag = false;
 
     /// RDY pin state (stop CPU on read)
-    bool rdy;
+    bool rdy = false;
 
     /// Address Low summer carry
-    bool adl_carry;
+    bool adl_carry = false;
 
-    bool d1x1;
+    bool d1x1 = false;
 
 #ifdef CORRECT_SH_INSTRUCTIONS
     /// The RDY pin state during last throw away read.
-    bool rdyOnThrowAwayRead;
+    bool rdyOnThrowAwayRead = false;
 #endif
 
     /// Status register
     Flags flags;
 
     // Data regarding current instruction
-    uint_least16_t Register_ProgramCounter;
-    uint_least16_t Cycle_EffectiveAddress;
-    uint_least16_t Cycle_Pointer;
+    uint_least16_t Register_ProgramCounter = 0;
+    uint_least16_t Cycle_EffectiveAddress = 0;
+    uint_least16_t Cycle_Pointer = 0;
 
-    uint8_t Cycle_Data;
-    uint8_t Register_StackPointer;
-    uint8_t Register_Accumulator;
-    uint8_t Register_X;
-    uint8_t Register_Y;
+    uint8_t Cycle_Data = 0;
+    uint8_t Register_StackPointer = 0;
+    uint8_t Register_Accumulator = 0;
+    uint8_t Register_X = 0;
+    uint8_t Register_Y = 0;
 
 #ifdef DEBUG
     // Debug info
-    int_least32_t instrStartPC;
-    uint_least16_t instrOperand;
+    int_least32_t instrStartPC = 0;
+    uint_least16_t instrOperand = 0;
 
-    FILE *m_fdbg;
+    FILE *m_fdbg = nullptr;
 
-    bool dodump;
+    bool dodump = false;
 #endif
 
     /// Table of CPU opcode implementations

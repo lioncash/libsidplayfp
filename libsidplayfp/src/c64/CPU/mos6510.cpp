@@ -1448,17 +1448,6 @@ MOS6510::MOS6510(EventScheduler &scheduler) :
     m_steal("CPU-steal", *this, &MOS6510::eventWithSteals)
 {
     buildInstructionTable();
-
-    // Intialise Processor Registers
-    Register_Accumulator   = 0;
-    Register_X             = 0;
-    Register_Y             = 0;
-
-    Cycle_EffectiveAddress = 0;
-    Cycle_Data             = 0;
-#ifdef DEBUG
-    dodump = false;
-#endif
     Initialise();
 }
 
