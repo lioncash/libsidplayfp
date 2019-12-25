@@ -82,7 +82,7 @@ public:
      * @return the sid tune
      * @throw loadError
      */
-    static SidTuneBase* load(const char* fileName, const char** fileNameExt, bool separatorIsSlash);
+    static std::unique_ptr<SidTuneBase> load(const char* fileName, const char** fileNameExt, bool separatorIsSlash);
 
     /**
      * Load a single-file sidtune from a memory buffer.
@@ -93,7 +93,7 @@ public:
      * @return the sid tune
      * @throw loadError
      */
-    static SidTuneBase* read(const uint_least8_t * sourceBuffer, uint_least32_t bufferLen);
+    static std::unique_ptr<SidTuneBase> read(const uint_least8_t * sourceBuffer, uint_least32_t bufferLen);
 
     /**
      * Select sub-song (0 = default starting song)
@@ -232,14 +232,14 @@ protected:
 
 private:
 #if !defined(SIDTUNE_NO_STDIN_LOADER)
-    static SidTuneBase* getFromStdIn();
+    static std::unique_ptr<SidTuneBase> getFromStdIn();
 #endif
-    static SidTuneBase* getFromFiles(const char* name, const char **fileNameExtensions, bool separatorIsSlash);
+    static std::unique_ptr<SidTuneBase> getFromFiles(const char* name, const char **fileNameExtensions, bool separatorIsSlash);
 
     /**
      * Try to retrieve single-file sidtune from specified buffer.
      */
-    static SidTuneBase* getFromBuffer(const uint_least8_t* buffer, std::size_t bufferLen);
+    static std::unique_ptr<SidTuneBase> getFromBuffer(const uint_least8_t* buffer, std::size_t bufferLen);
 
     /**
      * Get new file name with specified extension.

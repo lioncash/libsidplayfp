@@ -91,8 +91,8 @@ constexpr uint_least32_t MAX_FILELEN = MAX_MEMORY + 2 + 0x7C;
 /// Minimum load address for real c64 only tunes
 constexpr uint_least16_t SIDTUNE_R64_MIN_LOAD_ADDR = 0x07e8;
 
-SidTuneBase* SidTuneBase::load(const char* fileName, const char **fileNameExt,
-                 bool separatorIsSlash)
+std::unique_ptr<SidTuneBase> SidTuneBase::load(const char* fileName, const char **fileNameExt,
+                                               bool separatorIsSlash)
 {
     if (fileName == nullptr)
         return nullptr;
@@ -105,7 +105,7 @@ SidTuneBase* SidTuneBase::load(const char* fileName, const char **fileNameExt,
     return getFromFiles(fileName, fileNameExt, separatorIsSlash);
 }
 
-SidTuneBase* SidTuneBase::read(const uint_least8_t* sourceBuffer, uint_least32_t bufferLen)
+std::unique_ptr<SidTuneBase> SidTuneBase::read(const uint_least8_t* sourceBuffer, uint_least32_t bufferLen)
 {
     return getFromBuffer(sourceBuffer, bufferLen);
 }
@@ -223,7 +223,7 @@ SidTuneBase::SidTuneBase() :
 
 #if !defined(SIDTUNE_NO_STDIN_LOADER)
 
-SidTuneBase* SidTuneBase::getFromStdIn()
+std::unique_ptr<SidTuneBase> SidTuneBase::getFromStdIn()
 {
     buffer_t fileBuf;
 
@@ -232,7 +232,7 @@ SidTuneBase* SidTuneBase::getFromStdIn()
     char datb;
     while (std::cin.get(datb) && fileBuf.size() < MAX_FILELEN)
     {
-        fileBuf.push_back((uint_least8_t)datb);
+        fileBuf.push_back(static_cast<uint_least8_t>(datb));
     }
 
     return getFromBuffer(&fileBuf.front(), fileBuf.size());
@@ -240,7 +240,7 @@ SidTuneBase* SidTuneBase::getFromStdIn()
 
 #endif
 
-SidTuneBase* SidTuneBase::getFromBuffer(const uint_least8_t* const buffer, std::size_t bufferLen)
+std::unique_ptr<SidTuneBase> SidTuneBase::getFromBuffer(const uint_least8_t* const buffer, std::size_t bufferLen)
 {
     if (buffer == nullptr || bufferLen == 0)
     {
@@ -255,7 +255,7 @@ SidTuneBase* SidTuneBase::getFromBuffer(const uint_least8_t* const buffer, std::
     buffer_t buf1(buffer, buffer + bufferLen);
 
     // Here test for the possible single file formats.
-    std::unique_ptr<SidTuneBase> s(PSID::load(buf1));
+    std::unique_ptr<SidTuneBase> s = PSID::load(buf1);
     if (s == nullptr)
     {
         s = MUS::load(buf1, true);
@@ -266,7 +266,7 @@ SidTuneBase* SidTuneBase::getFromBuffer(const uint_least8_t* const buffer, std::
     }
 
     s->acceptSidTune("-", "-", buf1, false);
-    return s.release();
+    return s;
 }
 
 void SidTuneBase::acceptSidTune(const char* dataFileName, const char* infoFileName,
@@ -355,7 +355,7 @@ void SidTuneBase::createNewFileName(std::string& destString,
 
 // Initializing the object based upon what we find in the specified file.
 
-SidTuneBase* SidTuneBase::getFromFiles(const char* fileName, const char **fileNameExtensions, bool separatorIsSlash)
+std::unique_ptr<SidTuneBase> SidTuneBase::getFromFiles(const char* fileName, const char **fileNameExtensions, bool separatorIsSlash)
 {
     buffer_t fileBuf1;
 
@@ -388,20 +388,20 @@ SidTuneBase* SidTuneBase::getFromFiles(const char* fileName, const char **fileNa
                         // Check if tunes in wrong order and therefore swap them here
                         if (stringutils::equal(fileNameExtensions[n], ".mus"))
                         {
-                            std::unique_ptr<SidTuneBase> s2(MUS::load(fileBuf2, fileBuf1, 0, true));
+                            std::unique_ptr<SidTuneBase> s2 = MUS::load(fileBuf2, fileBuf1, 0, true);
                             if (s2 != nullptr)
                             {
                                 s2->acceptSidTune(fileName2.c_str(), fileName, fileBuf2, separatorIsSlash);
-                                return s2.release();
+                                return s2;
                             }
                         }
                         else
                         {
-                            std::unique_ptr<SidTuneBase> s2(MUS::load(fileBuf1, fileBuf2, 0, true));
+                            std::unique_ptr<SidTuneBase> s2 = MUS::load(fileBuf1, fileBuf2, 0, true);
                             if (s2 != nullptr)
                             {
                                 s2->acceptSidTune(fileName, fileName2.c_str(), fileBuf1, separatorIsSlash);
-                                return s2.release();
+                                return s2;
                             }
                         }
                     // The first tune loaded ok, so ignore errors on the
@@ -418,7 +418,7 @@ SidTuneBase* SidTuneBase::getFromFiles(const char* fileName, const char **fileNa
     if (s == nullptr) throw loadError(ERR_UNRECOGNIZED_FORMAT);
 
     s->acceptSidTune(fileName, nullptr, fileBuf1, separatorIsSlash);
-    return s.release();
+    return s;
 }
 
 void SidTuneBase::convertOldStyleSpeedToTables(uint_least32_t speed, SidTuneInfo::clock_t clock)

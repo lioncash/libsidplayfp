@@ -69,7 +69,7 @@ void SidTune::load(const char* fileName, bool separatorIsSlash)
 {
     try
     {
-        tune.reset(SidTuneBase::load(fileName, fileNameExtensions, separatorIsSlash));
+        tune = SidTuneBase::load(fileName, fileNameExtensions, separatorIsSlash);
         m_status = true;
         m_statusString = MSG_NO_ERRORS;
     }
@@ -84,7 +84,7 @@ void SidTune::read(const uint_least8_t* sourceBuffer, uint_least32_t bufferLen)
 {
     try
     {
-        tune.reset(SidTuneBase::read(sourceBuffer, bufferLen));
+        tune = SidTuneBase::read(sourceBuffer, bufferLen);
         m_status = true;
         m_statusString = MSG_NO_ERRORS;
     }
