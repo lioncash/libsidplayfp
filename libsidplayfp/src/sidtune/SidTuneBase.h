@@ -28,6 +28,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <sidplayfp/siddefs.h>
@@ -244,12 +245,12 @@ private:
     /**
      * Get new file name with specified extension.
      *
-     * @param destString destination string
-     * @param sourceName original file name
-     * @param sourceExt new extension
+     * @param sourceName Original file name.
+     * @param sourceExt  New extension.
+     *
+     * @returns the new file name.
      */
-    static void createNewFileName(std::string& destString,
-                                  const char* sourceName, const char* sourceExt);
+    static std::string createNewFileName(std::string_view sourceName, std::string_view sourceExt);
 };
 
 }

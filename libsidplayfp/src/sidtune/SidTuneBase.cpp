@@ -344,13 +344,12 @@ void SidTuneBase::acceptSidTune(const char* dataFileName, const char* infoFileNa
     cache.swap(buf);
 }
 
-void SidTuneBase::createNewFileName(std::string& destString,
-                                const char* sourceName,
-                                const char* sourceExt)
+std::string SidTuneBase::createNewFileName(std::string_view sourceName, std::string_view sourceExt)
 {
-    destString.assign(sourceName);
+    std::string destString(sourceName);
     destString.erase(destString.find_last_of('.'));
     destString.append(sourceExt);
+    return destString;
 }
 
 // Initializing the object based upon what we find in the specified file.
@@ -374,7 +373,7 @@ std::unique_ptr<SidTuneBase> SidTuneBase::getFromFiles(const char* fileName, con
             int n = 0;
             while (fileNameExtensions[n] != nullptr)
             {
-                createNewFileName(fileName2, fileName, fileNameExtensions[n]);
+                fileName2 = createNewFileName(fileName, fileNameExtensions[n]);
                 // 1st data file was loaded into "fileBuf1",
                 // so we load the 2nd one into "fileBuf2".
                 // Do not load the first file again if names are equal.
