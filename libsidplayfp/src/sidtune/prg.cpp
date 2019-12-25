@@ -62,7 +62,7 @@ void prg::load()
     // Automatic settings
     info->m_songs         = 1;
     info->m_startSong     = 1;
-    info->m_compatibility = SidTuneInfo::COMPATIBILITY_BASIC;
+    info->m_compatibility = SidTuneInfo::Compatibility::BASIC;
 
     // Create the speed/clock setting table.
     convertOldStyleSpeedToTables(~0, info->m_clockSpeed);

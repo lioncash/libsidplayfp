@@ -201,13 +201,13 @@ void MUS::tryLoad(buffer_t& musBuf,
         info->m_startSong = 1;
 
         songSpeed[0]  = SidTuneInfo::SPEED_CIA_1A;
-        clockSpeed[0] = SidTuneInfo::CLOCK_ANY;
+        clockSpeed[0] = SidTuneInfo::Clock::Any;
     }
 
     // Check setting compatibility for MUS playback
-    if ((info->m_compatibility != SidTuneInfo::COMPATIBILITY_C64)
-        || (info->m_relocStartPage != 0)
-        || (info->m_relocPages != 0))
+    if (info->m_compatibility != SidTuneInfo::Compatibility::C64 ||
+        info->m_relocStartPage != 0 ||
+        info->m_relocPages != 0)
     {
         throw loadError(ERR_INVALID);
     }

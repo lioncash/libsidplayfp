@@ -350,37 +350,37 @@ c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
 {
     const SidTuneInfo* tuneInfo = m_tune->getInfo();
 
-    SidTuneInfo::clock_t clockSpeed = tuneInfo->clockSpeed();
+    SidTuneInfo::Clock clockSpeed = tuneInfo->clockSpeed();
 
     c64::model_t model;
 
     // Use preferred speed if forced or if song speed is unknown
-    if (forced || clockSpeed == SidTuneInfo::CLOCK_UNKNOWN || clockSpeed == SidTuneInfo::CLOCK_ANY)
+    if (forced || clockSpeed == SidTuneInfo::Clock::Unknown || clockSpeed == SidTuneInfo::Clock::Any)
     {
         switch (defaultModel)
         {
         case SidConfig::C64Model::PAL:
-            clockSpeed = SidTuneInfo::CLOCK_PAL;
+            clockSpeed = SidTuneInfo::Clock::PAL;
             model = c64::PAL_B;
             videoSwitch = 1;
             break;
         case SidConfig::C64Model::DREAN:
-            clockSpeed = SidTuneInfo::CLOCK_PAL;
+            clockSpeed = SidTuneInfo::Clock::PAL;
             model = c64::PAL_N;
             videoSwitch = 1; // TODO verify
             break;
         case SidConfig::C64Model::NTSC:
-            clockSpeed = SidTuneInfo::CLOCK_NTSC;
+            clockSpeed = SidTuneInfo::Clock::NTSC;
             model = c64::NTSC_M;
             videoSwitch = 0;
             break;
         case SidConfig::C64Model::OldNTSC:
-            clockSpeed = SidTuneInfo::CLOCK_NTSC;
+            clockSpeed = SidTuneInfo::Clock::NTSC;
             model = c64::OLD_NTSC_M;
             videoSwitch = 0;
             break;
         case SidConfig::C64Model::PAL_M:
-            clockSpeed = SidTuneInfo::CLOCK_NTSC;
+            clockSpeed = SidTuneInfo::Clock::NTSC;
             model = c64::PAL_M;
             videoSwitch = 0; // TODO verify
             break;
@@ -391,11 +391,11 @@ c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
         switch (clockSpeed)
         {
         default:
-        case SidTuneInfo::CLOCK_PAL:
+        case SidTuneInfo::Clock::PAL:
             model = c64::PAL_B;
             videoSwitch = 1;
             break;
-        case SidTuneInfo::CLOCK_NTSC:
+        case SidTuneInfo::Clock::NTSC:
             model = c64::NTSC_M;
             videoSwitch = 0;
             break;
@@ -404,18 +404,18 @@ c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
 
     switch (clockSpeed)
     {
-    case SidTuneInfo::CLOCK_PAL:
+    case SidTuneInfo::Clock::PAL:
         if (tuneInfo->songSpeed() == SidTuneInfo::SPEED_CIA_1A)
             m_info.m_speedString = TXT_PAL_CIA;
-        else if (tuneInfo->clockSpeed() == SidTuneInfo::CLOCK_NTSC)
+        else if (tuneInfo->clockSpeed() == SidTuneInfo::Clock::NTSC)
             m_info.m_speedString = TXT_PAL_VBI_FIXED;
         else
             m_info.m_speedString = TXT_PAL_VBI;
         break;
-    case SidTuneInfo::CLOCK_NTSC:
+    case SidTuneInfo::Clock::NTSC:
         if (tuneInfo->songSpeed() == SidTuneInfo::SPEED_CIA_1A)
             m_info.m_speedString = TXT_NTSC_CIA;
-        else if (tuneInfo->clockSpeed() == SidTuneInfo::CLOCK_PAL)
+        else if (tuneInfo->clockSpeed() == SidTuneInfo::Clock::PAL)
             m_info.m_speedString = TXT_NTSC_VBI_FIXED;
         else
             m_info.m_speedString = TXT_NTSC_VBI;
@@ -434,20 +434,20 @@ c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
  * @param defaultModel the default model
  * @param forced true if the default model shold be forced in spite of tune model
  */
-SidConfig::SIDModel getSidModel(SidTuneInfo::model_t sidModel, SidConfig::SIDModel defaultModel, bool forced)
+SidConfig::SIDModel getSidModel(SidTuneInfo::Model sidModel, SidConfig::SIDModel defaultModel, bool forced)
 {
-    SidTuneInfo::model_t tuneModel = sidModel;
+    SidTuneInfo::Model tuneModel = sidModel;
 
     // Use preferred speed if forced or if song speed is unknown
-    if (forced || tuneModel == SidTuneInfo::SIDMODEL_UNKNOWN || tuneModel == SidTuneInfo::SIDMODEL_ANY)
+    if (forced || tuneModel == SidTuneInfo::Model::Unknown || tuneModel == SidTuneInfo::Model::Any)
     {
         switch (defaultModel)
         {
         case SidConfig::SIDModel::MOS6581:
-            tuneModel = SidTuneInfo::SIDMODEL_6581;
+            tuneModel = SidTuneInfo::Model::SID6581;
             break;
         case SidConfig::SIDModel::MOS8580:
-            tuneModel = SidTuneInfo::SIDMODEL_8580;
+            tuneModel = SidTuneInfo::Model::SID8580;
             break;
         default:
             break;
@@ -459,10 +459,10 @@ SidConfig::SIDModel getSidModel(SidTuneInfo::model_t sidModel, SidConfig::SIDMod
     switch (tuneModel)
     {
     default:
-    case SidTuneInfo::SIDMODEL_6581:
+    case SidTuneInfo::Model::SID6581:
         newModel = SidConfig::SIDModel::MOS6581;
         break;
-    case SidTuneInfo::SIDMODEL_8580:
+    case SidTuneInfo::Model::SID8580:
         newModel = SidConfig::SIDModel::MOS8580;
         break;
     }

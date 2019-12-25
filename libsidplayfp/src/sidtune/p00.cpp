@@ -160,7 +160,7 @@ void p00::load(const char* format, const X00Header* pHeader)
     fileOffset            = X00_ID_LEN + X00_NAME_LEN + 1;
     info->m_songs         = 1;
     info->m_startSong     = 1;
-    info->m_compatibility = SidTuneInfo::COMPATIBILITY_BASIC;
+    info->m_compatibility = SidTuneInfo::Compatibility::BASIC;
 
     // Create the speed/clock setting table.
     convertOldStyleSpeedToTables(~0, info->m_clockSpeed);

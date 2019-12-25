@@ -133,10 +133,10 @@ unsigned int SidTuneBase::selectSong(unsigned int selectedSong)
     // Retrieve song speed definition.
     switch (info->m_compatibility)
     {
-    case SidTuneInfo::COMPATIBILITY_R64:
+    case SidTuneInfo::Compatibility::R64:
         info->m_songSpeed = SidTuneInfo::SPEED_CIA_1A;
         break;
-    case SidTuneInfo::COMPATIBILITY_PSID:
+    case SidTuneInfo::Compatibility::PSID:
         // This does not take into account the PlaySID bug upon evaluating the
         // SPEED field. It would most likely break compatibility to lots of
         // sidtunes, which have been converted from .SID format and vice versa.
@@ -415,7 +415,7 @@ std::unique_ptr<SidTuneBase> SidTuneBase::getFromFiles(const char* fileName, con
     return s;
 }
 
-void SidTuneBase::convertOldStyleSpeedToTables(uint_least32_t speed, SidTuneInfo::clock_t clock)
+void SidTuneBase::convertOldStyleSpeedToTables(uint_least32_t speed, SidTuneInfo::Clock clock)
 {
     // Create the speed/clock setting tables.
     //
@@ -505,7 +505,7 @@ void SidTuneBase::resolveAddrs(const uint_least8_t *c64data)
         info->m_c64dataLen -= 2;
     }
 
-    if (info->m_compatibility == SidTuneInfo::COMPATIBILITY_BASIC)
+    if (info->m_compatibility == SidTuneInfo::Compatibility::BASIC)
     {
         if (info->m_initAddr != 0)
         {
@@ -520,7 +520,7 @@ void SidTuneBase::resolveAddrs(const uint_least8_t *c64data)
 
 bool SidTuneBase::checkCompatibility() const
 {
-    if (info->m_compatibility == SidTuneInfo::COMPATIBILITY_R64)
+    if (info->m_compatibility == SidTuneInfo::Compatibility::R64)
     {
         // Check valid init address
         switch (info->m_initAddr >> 12)

@@ -176,7 +176,7 @@ protected:
      * @param clock
      */
     void convertOldStyleSpeedToTables(uint_least32_t speed,
-                                      SidTuneInfo::clock_t clock = SidTuneInfo::CLOCK_PAL);
+                                      SidTuneInfo::Clock clock = SidTuneInfo::Clock::PAL);
 
     /**
      * Check if compatibility constraints are fulfilled.
@@ -223,7 +223,7 @@ protected:
     std::unique_ptr<SidTuneInfoImpl> info;
 
     std::array<uint_least8_t, MAX_SONGS> songSpeed;
-    std::array<SidTuneInfo::clock_t, MAX_SONGS> clockSpeed;
+    std::array<SidTuneInfo::Clock, MAX_SONGS> clockSpeed;
 
     /// For files with header: offset to real data
     uint_least32_t fileOffset = 0;

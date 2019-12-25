@@ -44,9 +44,9 @@ uint_least8_t SidTuneInfo::relocStartPage() const { return getRelocStartPage(); 
 
 uint_least8_t SidTuneInfo::relocPages() const { return getRelocPages(); }
 
-SidTuneInfo::model_t SidTuneInfo::sidModel(std::size_t i) const { return getSidModel(i); }
+SidTuneInfo::Model SidTuneInfo::sidModel(std::size_t i) const { return getSidModel(i); }
 
-SidTuneInfo::compatibility_t SidTuneInfo::compatibility() const { return getCompatibility(); }
+SidTuneInfo::Compatibility SidTuneInfo::compatibility() const { return getCompatibility(); }
 
 std::size_t SidTuneInfo::numberOfInfoStrings() const { return getNumberOfInfoStrings(); }
 const char* SidTuneInfo::infoString(std::size_t i) const { return getInfoString(i); }
@@ -59,7 +59,7 @@ uint_least32_t SidTuneInfo::dataFileLen() const { return getDataFileLen(); }
 
 uint_least32_t SidTuneInfo::c64dataLen() const { return getC64dataLen(); }
 
-SidTuneInfo::clock_t SidTuneInfo::clockSpeed() const { return getClockSpeed(); }
+SidTuneInfo::Clock SidTuneInfo::clockSpeed() const { return getClockSpeed(); }
 
 const char* SidTuneInfo::formatString() const { return getFormatString(); }
 

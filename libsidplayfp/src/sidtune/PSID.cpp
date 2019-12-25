@@ -78,18 +78,18 @@ constexpr uint32_t RSID_ID = 0x52534944;
 /**
  * Decode SID model flags.
  */
-SidTuneInfo::model_t getSidModel(uint_least16_t modelFlag)
+SidTuneInfo::Model getSidModel(uint_least16_t modelFlag)
 {
     if ((modelFlag & PSID_SIDMODEL_ANY) == PSID_SIDMODEL_ANY)
-        return SidTuneInfo::SIDMODEL_ANY;
+        return SidTuneInfo::Model::Any;
 
     if (modelFlag & PSID_SIDMODEL_6581)
-        return SidTuneInfo::SIDMODEL_6581;
+        return SidTuneInfo::Model::SID6581;
 
     if (modelFlag & PSID_SIDMODEL_8580)
-        return SidTuneInfo::SIDMODEL_8580;
+        return SidTuneInfo::Model::SID8580;
 
-    return SidTuneInfo::SIDMODEL_UNKNOWN;
+    return SidTuneInfo::Model::Unknown;
 }
 
 /**
@@ -210,7 +210,7 @@ void PSID::readHeader(const buffer_t &dataBuf, psidHeader &hdr)
 
 void PSID::tryLoad(const psidHeader &pHeader)
 {
-    SidTuneInfo::compatibility_t compatibility = SidTuneInfo::COMPATIBILITY_C64;
+    auto compatibility = SidTuneInfo::Compatibility::C64;
 
     // Require a valid ID and version number.
     if (pHeader.id == PSID_ID)
@@ -218,7 +218,7 @@ void PSID::tryLoad(const psidHeader &pHeader)
        switch (pHeader.version)
        {
        case 1:
-           compatibility = SidTuneInfo::COMPATIBILITY_PSID;
+           compatibility = SidTuneInfo::Compatibility::PSID;
            break;
        case 2:
        case 3:
@@ -241,7 +241,7 @@ void PSID::tryLoad(const psidHeader &pHeader)
            throw loadError(TXT_UNKNOWN_RSID);
        }
        info->m_formatString = TXT_FORMAT_RSID;
-       compatibility = SidTuneInfo::COMPATIBILITY_R64;
+       compatibility = SidTuneInfo::Compatibility::R64;
     }
 
     fileOffset             = pHeader.data;
@@ -255,7 +255,7 @@ void PSID::tryLoad(const psidHeader &pHeader)
     info->m_relocStartPage = 0;
 
     uint_least32_t speed = pHeader.speed;
-    SidTuneInfo::clock_t clock = SidTuneInfo::CLOCK_UNKNOWN;
+    auto clock = SidTuneInfo::Clock::Unknown;
 
     bool musPlayer = false;
 
@@ -266,7 +266,7 @@ void PSID::tryLoad(const psidHeader &pHeader)
         // Check clock
         if (flags & PSID_MUS)
         {   // MUS tunes run at any speed
-            clock = SidTuneInfo::CLOCK_ANY;
+            clock = SidTuneInfo::Clock::Any;
             musPlayer = true;
         }
         else
@@ -274,13 +274,13 @@ void PSID::tryLoad(const psidHeader &pHeader)
             switch (flags & PSID_CLOCK)
             {
             case PSID_CLOCK_ANY:
-                clock = SidTuneInfo::CLOCK_ANY;
+                clock = SidTuneInfo::Clock::Any;
                 break;
             case PSID_CLOCK_PAL:
-                clock = SidTuneInfo::CLOCK_PAL;
+                clock = SidTuneInfo::Clock::PAL;
                 break;
             case PSID_CLOCK_NTSC:
-                clock = SidTuneInfo::CLOCK_NTSC;
+                clock = SidTuneInfo::Clock::NTSC;
                 break;
             default:
                 break;
@@ -291,13 +291,13 @@ void PSID::tryLoad(const psidHeader &pHeader)
         // file formats
         switch (compatibility)
         {
-        case SidTuneInfo::COMPATIBILITY_C64:
+        case SidTuneInfo::Compatibility::C64:
             if (flags & PSID_SPECIFIC)
-                info->m_compatibility = SidTuneInfo::COMPATIBILITY_PSID;
+                info->m_compatibility = SidTuneInfo::Compatibility::PSID;
             break;
-        case SidTuneInfo::COMPATIBILITY_R64:
+        case SidTuneInfo::Compatibility::R64:
             if (flags & PSID_BASIC)
-                info->m_compatibility = SidTuneInfo::COMPATIBILITY_BASIC;
+                info->m_compatibility = SidTuneInfo::Compatibility::BASIC;
             break;
         default:
             break;
@@ -334,7 +334,7 @@ void PSID::tryLoad(const psidHeader &pHeader)
 
     // Check reserved fields to force real c64 compliance
     // as required by the RSID specification
-    if (compatibility == SidTuneInfo::COMPATIBILITY_R64)
+    if (compatibility == SidTuneInfo::Compatibility::R64)
     {
         if ((info->m_loadAddr != 0)
             || (info->m_playAddr != 0)
@@ -400,7 +400,7 @@ const char *PSID::createMD5(char *md5)
         // clock speed change the MD5 fingerprint. That way the
         // fingerprint of a PAL-speed sidtune in PSID v1, v2, and
         // PSID v2NG format is the same.
-        if (info->m_clockSpeed == SidTuneInfo::CLOCK_NTSC)
+        if (info->m_clockSpeed == SidTuneInfo::Clock::NTSC)
         {
             const uint8_t ntsc_val = 2;
             myMD5.append(&ntsc_val, sizeof(ntsc_val));

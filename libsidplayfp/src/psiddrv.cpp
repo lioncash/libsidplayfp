@@ -111,9 +111,9 @@ void copyPoweronPattern(sidmemory& mem)
 uint8_t psiddrv::iomap(uint_least16_t addr) const
 {
     // Force Real C64 Compatibility
-    if (m_tuneInfo->compatibility() == SidTuneInfo::COMPATIBILITY_R64
-        || m_tuneInfo->compatibility() == SidTuneInfo::COMPATIBILITY_BASIC
-        || addr == 0)
+    if (m_tuneInfo->compatibility() == SidTuneInfo::Compatibility::R64 ||
+        m_tuneInfo->compatibility() == SidTuneInfo::Compatibility::BASIC ||
+        addr == 0)
     {
         // Special case, set to 0x37 by the psid driver
         return 0;
@@ -143,7 +143,7 @@ bool psiddrv::drvReloc()
     uint_least8_t relocStartPage = m_tuneInfo->relocStartPage();
     uint_least8_t relocPages = m_tuneInfo->relocPages();
 
-    if (m_tuneInfo->compatibility() == SidTuneInfo::COMPATIBILITY_BASIC)
+    if (m_tuneInfo->compatibility() == SidTuneInfo::Compatibility::BASIC)
     {
         // The psiddrv is only used for initialisation and to
         // autorun basic tunes as running the kernel falls
@@ -213,7 +213,7 @@ void psiddrv::install(sidmemory& mem, uint8_t video) const
 {
     mem.fillRam(0, static_cast<uint8_t>(0), 0x3ff);
 
-    if (m_tuneInfo->compatibility() >= SidTuneInfo::COMPATIBILITY_R64)
+    if (m_tuneInfo->compatibility() >= SidTuneInfo::Compatibility::R64)
     {
         copyPoweronPattern(mem);
     }
@@ -225,7 +225,7 @@ void psiddrv::install(sidmemory& mem, uint8_t video) const
 
     // If not a basic tune then the psiddrv must install
     // interrupt hooks and trap programs trying to restart basic
-    if (m_tuneInfo->compatibility() == SidTuneInfo::COMPATIBILITY_BASIC)
+    if (m_tuneInfo->compatibility() == SidTuneInfo::Compatibility::BASIC)
     {
         // Install hook to set subtune number for basic
         mem.setBasicSubtune((uint8_t)(m_tuneInfo->currentSong() - 1));
@@ -234,7 +234,7 @@ void psiddrv::install(sidmemory& mem, uint8_t video) const
     else
     {
         // Only install irq handle for RSID tunes
-        mem.fillRam(0x0314, &reloc_driver[2], m_tuneInfo->compatibility() == SidTuneInfo::COMPATIBILITY_R64 ? 2 : 6);
+        mem.fillRam(0x0314, &reloc_driver[2], m_tuneInfo->compatibility() == SidTuneInfo::Compatibility::R64 ? 2 : 6);
 
         // Experimental restart basic trap
         const uint_least16_t addr = endian_little16(&reloc_driver[8]);
@@ -256,7 +256,7 @@ void psiddrv::install(sidmemory& mem, uint8_t video) const
     pos++;
 
     // Set init address
-    mem.writeMemWord(pos, m_tuneInfo->compatibility() == SidTuneInfo::COMPATIBILITY_BASIC ?
+    mem.writeMemWord(pos, m_tuneInfo->compatibility() == SidTuneInfo::Compatibility::BASIC ?
                      0xbf55 : m_tuneInfo->initAddr());
     pos += 2;
 
@@ -283,13 +283,13 @@ void psiddrv::install(sidmemory& mem, uint8_t video) const
     uint8_t clockSpeed;
     switch (m_tuneInfo->clockSpeed())
     {
-    case SidTuneInfo::CLOCK_PAL:
+    case SidTuneInfo::Clock::PAL:
         clockSpeed = 1;
         break;
-    case SidTuneInfo::CLOCK_NTSC:
+    case SidTuneInfo::Clock::NTSC:
         clockSpeed = 0;
         break;
-    default: // UNKNOWN or ANY
+    default: // Unknown or Any
         clockSpeed = video;
         break;
     }
@@ -297,7 +297,7 @@ void psiddrv::install(sidmemory& mem, uint8_t video) const
     pos++;
 
     // Set default processor register flags on calling init
-    mem.writeMemByte(pos, m_tuneInfo->compatibility() >= SidTuneInfo::COMPATIBILITY_R64 ? 0 : 1 << MOS6510::SR_INTERRUPT);
+    mem.writeMemByte(pos, m_tuneInfo->compatibility() >= SidTuneInfo::Compatibility::R64 ? 0 : 1 << MOS6510::SR_INTERRUPT);
 }
 
 }

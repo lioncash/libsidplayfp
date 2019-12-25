@@ -40,7 +40,7 @@ class SidTuneInfoImpl final : public SidTuneInfo
 public:
     SidTuneInfoImpl()
     {
-        m_sidModels.push_back(SIDMODEL_UNKNOWN);
+        m_sidModels.push_back(Model::Unknown);
         m_sidChipAddresses.push_back(0xd400);
     }
 
@@ -72,12 +72,12 @@ public:
 
     uint_least8_t getRelocPages() const override { return m_relocPages; }
 
-    model_t getSidModel(std::size_t i) const override
+    Model getSidModel(std::size_t i) const override
     {
-        return i < m_sidModels.size() ? m_sidModels[i] : SIDMODEL_UNKNOWN;
+        return i < m_sidModels.size() ? m_sidModels[i] : Model::Unknown;
     }
 
-    compatibility_t getCompatibility() const override { return m_compatibility; }
+    Compatibility getCompatibility() const override { return m_compatibility; }
 
     std::size_t getNumberOfInfoStrings() const override { return m_infoString.size(); }
     const char* getInfoString(std::size_t i) const override { return i < getNumberOfInfoStrings() ? m_infoString[i].c_str() : ""; }
@@ -89,7 +89,7 @@ public:
 
     uint_least32_t getC64dataLen() const override { return m_c64dataLen; }
 
-    clock_t getClockSpeed() const override { return m_clockSpeed; }
+    Clock getClockSpeed() const override { return m_clockSpeed; }
 
     const char* getFormatString() const override { return m_formatString; }
 
@@ -109,9 +109,9 @@ public:
 
     int m_songSpeed = SPEED_VBI;
 
-    clock_t m_clockSpeed = clock_t::CLOCK_UNKNOWN;
+    Clock m_clockSpeed = Clock::Unknown;
 
-    compatibility_t m_compatibility = compatibility_t::COMPATIBILITY_C64;
+    Compatibility m_compatibility = Compatibility::C64;
 
     uint_least32_t m_dataFileLen = 0;
 
@@ -131,7 +131,7 @@ public:
 
     std::string m_infoFileName;
 
-    std::vector<model_t> m_sidModels;
+    std::vector<Model> m_sidModels;
 
     std::vector<uint_least16_t> m_sidChipAddresses;
 

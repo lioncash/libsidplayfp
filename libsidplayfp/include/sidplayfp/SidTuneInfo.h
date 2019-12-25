@@ -39,25 +39,25 @@
 class SID_EXTERN SidTuneInfo
 {
 public:
-    enum clock_t {
-        CLOCK_UNKNOWN,
-        CLOCK_PAL,
-        CLOCK_NTSC,
-        CLOCK_ANY
+    enum class Clock {
+        Unknown,
+        PAL,
+        NTSC,
+        Any,
     };
 
-    enum model_t {
-        SIDMODEL_UNKNOWN,
-        SIDMODEL_6581,
-        SIDMODEL_8580,
-        SIDMODEL_ANY
+    enum class Model {
+        Unknown,
+        SID6581,
+        SID8580,
+        Any,
     };
 
-    enum compatibility_t {
-        COMPATIBILITY_C64,   ///< File is C64 compatible
-        COMPATIBILITY_PSID,  ///< File is PSID specific
-        COMPATIBILITY_R64,   ///< File is Real C64 only
-        COMPATIBILITY_BASIC  ///< File requires C64 Basic
+    enum class Compatibility {
+        C64,   ///< File is C64 compatible
+        PSID,  ///< File is PSID specific
+        R64,   ///< File is Real C64 only
+        BASIC  ///< File requires C64 Basic
     };
 
     /// Vertical-Blanking-Interrupt
@@ -128,12 +128,12 @@ public:
      * @name SID model
      * The SID chip model(s) requested by the sidtune.
      */
-    model_t sidModel(std::size_t i) const;
+    Model sidModel(std::size_t i) const;
 
     /**
      * Compatibility requirements.
      */
-    compatibility_t compatibility() const;
+    Compatibility compatibility() const;
 
     /**
      * @name Tune infos
@@ -169,7 +169,7 @@ public:
     /**
      * The tune clock speed.
      */
-    clock_t clockSpeed() const;
+    Clock clockSpeed() const;
 
     /**
      * The name of the identified file format.
@@ -223,9 +223,9 @@ private:
 
     virtual uint_least8_t getRelocPages() const =0;
 
-    virtual model_t getSidModel(std::size_t i) const =0;
+    virtual Model getSidModel(std::size_t i) const =0;
 
-    virtual compatibility_t getCompatibility() const =0;
+    virtual Compatibility getCompatibility() const =0;
 
     virtual std::size_t getNumberOfInfoStrings() const =0;
     virtual const char* getInfoString(std::size_t i) const =0;
@@ -237,7 +237,7 @@ private:
 
     virtual uint_least32_t getC64dataLen() const =0;
 
-    virtual clock_t getClockSpeed() const =0;
+    virtual Clock getClockSpeed() const =0;
 
     virtual const char* getFormatString() const =0;
 

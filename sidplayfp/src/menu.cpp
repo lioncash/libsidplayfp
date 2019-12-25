@@ -43,18 +43,18 @@ using std::string;
 const char SID6581[] = "MOS6581";
 const char SID8580[] = "CSG8580";
 
-const char* getModel(SidTuneInfo::model_t model)
+const char* getModel(SidTuneInfo::Model model)
 {
     switch (model)
     {
     default:
-    case SidTuneInfo::SIDMODEL_UNKNOWN:
+    case SidTuneInfo::Model::Unknown:
         return "UNKNOWN";
-    case SidTuneInfo::SIDMODEL_6581:
+    case SidTuneInfo::Model::SID6581:
         return SID6581;
-    case SidTuneInfo::SIDMODEL_8580:
+    case SidTuneInfo::Model::SID8580:
         return SID8580;
-    case SidTuneInfo::SIDMODEL_ANY:
+    case SidTuneInfo::Model::Any:
         return "ANY";
     }
 }
@@ -71,25 +71,25 @@ const char* getModel(SidConfig::SIDModel model)
     }
 }
 
-const char* getClock(SidTuneInfo::clock_t clock)
+const char* getClock(SidTuneInfo::Clock clock)
 {
     switch (clock)
     {
     default:
-    case SidTuneInfo::CLOCK_UNKNOWN:
+    case SidTuneInfo::Clock::Unknown:
         return "UNKNOWN";
-    case SidTuneInfo::CLOCK_PAL:
+    case SidTuneInfo::Clock::PAL:
         return "PAL";
-    case SidTuneInfo::CLOCK_NTSC:
+    case SidTuneInfo::Clock::NTSC:
         return "NTSC";
-    case SidTuneInfo::CLOCK_ANY:
+    case SidTuneInfo::Clock::Any:
         return "ANY";
     }
 }
 
 
 // Display console menu
-void ConsolePlayer::menu ()
+void ConsolePlayer::menu()
 {
     if (m_quietLevel > 1)
         return;
