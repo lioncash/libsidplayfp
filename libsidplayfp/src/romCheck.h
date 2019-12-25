@@ -55,7 +55,7 @@ protected:
      * @param rom pointer to the ROM buffer
      * @param size size of the ROM buffer
      */
-    romCheck(const uint8_t* rom, int size) :
+    explicit romCheck(const uint8_t* rom, int size) :
         m_rom(rom),
         m_size(size) {}
 
