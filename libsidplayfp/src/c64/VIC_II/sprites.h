@@ -161,8 +161,8 @@ private:
     static constexpr std::size_t num_sprites = 8;
     const uint8_t &enable, &y_expansion;
 
-    uint8_t exp_flop;
-    uint8_t dma;
+    uint8_t exp_flop = 0;
+    uint8_t dma = 0;
     std::array<uint8_t, num_sprites> mc_base{};
     std::array<uint8_t, num_sprites> mc{};
 };
