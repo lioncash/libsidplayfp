@@ -82,7 +82,7 @@ public:
      *
      * @return true if different
      */
-    bool compare(const SidConfig& config);
+    bool compare(const SidConfig& config) const;
 
     /**
      * Maximum power on delay.
