@@ -29,7 +29,8 @@
 
 namespace libsidplayfp
 {
-
+namespace
+{
 void clockChip(sidemu *s) { s->clock(); }
 
 class bufferPos
@@ -59,6 +60,7 @@ private:
     int pos;
     int samples;
 };
+} // Anonymous namespace
 
 void Mixer::clockChips()
 {
