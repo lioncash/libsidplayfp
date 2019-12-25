@@ -23,6 +23,7 @@
 #ifndef MMU_H
 #define MMU_H
 
+#include <array>
 #include <cstdint>
 #include <cstring>
 
@@ -106,13 +107,15 @@ private:
     EventScheduler &eventScheduler;
 
     /// CPU port signals
-    bool loram, hiram, charen;
+    bool loram;
+    bool hiram;
+    bool charen;
 
     /// CPU read memory mapping in 4k chunks
-    Bank* cpuReadMap[16];
+    std::array<Bank*, 16> cpuReadMap;
 
     /// CPU write memory mapping in 4k chunks
-    Bank* cpuWriteMap[16];
+    std::array<Bank*, 16> cpuWriteMap;
 
     /// IO region handler
     IOBank* ioBank;

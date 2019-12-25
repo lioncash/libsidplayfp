@@ -38,14 +38,11 @@ MMU::MMU(EventScheduler &scheduler, IOBank* ioBank) :
     ioBank(ioBank),
     zeroRAMBank(*this, ramBank)
 {
+    cpuReadMap.fill(&ramBank);
     cpuReadMap[0] = &zeroRAMBank;
-    cpuWriteMap[0] = &zeroRAMBank;
 
-    for (int i = 1; i < 16; i++)
-    {
-        cpuReadMap[i] = &ramBank;
-        cpuWriteMap[i] = &ramBank;
-    }
+    cpuWriteMap.fill(&ramBank);
+    cpuWriteMap[0] = &zeroRAMBank;
 }
 
 void MMU::setCpuPort(uint8_t state)
