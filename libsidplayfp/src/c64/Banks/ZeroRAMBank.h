@@ -111,18 +111,18 @@ private:
      * even was aware of what happens.
      */
     //@{
-    static event_clock_t const C64_CPU6510_DATA_PORT_FALL_OFF_CYCLES = 350000;
-    static event_clock_t const C64_CPU8500_DATA_PORT_FALL_OFF_CYCLES = 1500000; // Curently unused
+    static constexpr event_clock_t C64_CPU6510_DATA_PORT_FALL_OFF_CYCLES = 350000;
+    static constexpr event_clock_t C64_CPU8500_DATA_PORT_FALL_OFF_CYCLES = 1500000; // Currently unused
     //@}
 
     /// Cycle that should invalidate the bit.
-    event_clock_t dataSetClk;
+    event_clock_t dataSetClk{};
 
     /// Indicates if the bit is in the process of falling off.
-    bool isFallingOff;
+    bool isFallingOff = false;
 
     /// Value of the bit.
-    uint8_t dataSet;
+    uint8_t dataSet = 0;
 };
 
 /**
@@ -277,15 +277,15 @@ private:
 
     /// Value written to processor port.
     //@{
-    uint8_t dir;
-    uint8_t data;
+    uint8_t dir = 0;
+    uint8_t data = 0;
     //@}
 
     /// Value read from processor port.
-    uint8_t dataRead;
+    uint8_t dataRead = 0;
 
     /// State of processor port pins.
-    uint8_t procPortPins;
+    uint8_t procPortPins = 0;
 };
 
 }
