@@ -39,7 +39,7 @@ constexpr unsigned int VICII_FETCH_CYCLE = 11;
 
 constexpr unsigned int VICII_SCREEN_TEXTCOLS = 40;
 
-const std::array<MOS656X::model_data_t, 5> MOS656X::modelData{{
+const std::array<MOS656X::ModelData, 5> MOS656X::modelData{{
     {262, 64, &MOS656X::clockOldNTSC},  // Old NTSC (MOS6567R56A)
     {263, 65, &MOS656X::clockNTSC},     // NTSC-M   (MOS6567R8)
     {312, 63, &MOS656X::clockPAL},      // PAL-B    (MOS6569R1, MOS6569R3)
@@ -65,7 +65,7 @@ MOS656X::MOS656X(EventScheduler &scheduler) :
     badLineStateChangeEvent("Update AEC signal", *this, &MOS656X::badLineStateChange),
     rasterYIRQEdgeDetectorEvent("RasterY changed", *this, &MOS656X::rasterYIRQEdgeDetector)
 {
-    chip(MOS6569);
+    chip(Model::MOS6569);
 }
 
 void MOS656X::reset()
@@ -91,11 +91,13 @@ void MOS656X::reset()
     eventScheduler.schedule(*this, 0, EventPhase::ClockPHI1);
 }
 
-void MOS656X::chip(model_t model)
+void MOS656X::chip(Model model)
 {
-    maxRasters    = modelData[model].rasterLines;
-    cyclesPerLine = modelData[model].cyclesPerLine;
-    clock         = modelData[model].clock;
+    const auto& data = modelData[static_cast<std::size_t>(model)];
+
+    maxRasters    = data.rasterLines;
+    cyclesPerLine = data.cyclesPerLine;
+    clock         = data.clock;
 
     lp.setScreenSize(maxRasters, cyclesPerLine);
 

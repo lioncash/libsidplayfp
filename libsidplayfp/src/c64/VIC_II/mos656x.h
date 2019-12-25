@@ -43,13 +43,13 @@ namespace libsidplayfp
 class MOS656X : private Event
 {
 public:
-    enum model_t
+    enum class Model
     {
-        MOS6567R56A = 0, ///< OLD NTSC CHIP
-        MOS6567R8,       ///< NTSC-M
-        MOS6569,         ///< PAL-B
-        MOS6572,         ///< PAL-N
-        MOS6573,         ///< PAL-M
+        MOS6567R56A, ///< OLD NTSC CHIP
+        MOS6567R8,   ///< NTSC-M
+        MOS6569,     ///< PAL-B
+        MOS6572,     ///< PAL-N
+        MOS6573,     ///< PAL-M
     };
 
     void event() override;
@@ -57,7 +57,7 @@ public:
     /**
      * Set chip model.
      */
-    void chip(model_t model);
+    void chip(Model model);
 
     /**
      * Trigger the lightpen. Sets the lightpen usage flag.
@@ -105,7 +105,7 @@ protected:
 private:
     using ClockFunc = event_clock_t (MOS656X::*)();
 
-    struct model_data_t
+    struct ModelData
     {
         unsigned int rasterLines;
         unsigned int cyclesPerLine;
@@ -270,7 +270,7 @@ private:
             setBA(false);
     }
 
-    static const std::array<model_data_t, 5> modelData;
+    static const std::array<ModelData, 5> modelData;
 
     /// raster IRQ flag
     static constexpr int IRQ_RASTER = 1 << 0;

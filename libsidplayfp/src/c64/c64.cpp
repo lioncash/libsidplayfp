@@ -32,10 +32,10 @@ namespace
 {
 struct ModelData
 {
-    double colorBurst;         ///< Colorburst frequency in Herz
-    double divider;            ///< Clock frequency divider
-    double powerFreq;          ///< Power line frequency in Herz
-    MOS656X::model_t vicModel; ///< Video chip model
+    double colorBurst;       ///< Colorburst frequency in Herz
+    double divider;          ///< Clock frequency divider
+    double powerFreq;        ///< Power line frequency in Herz
+    MOS656X::Model vicModel; ///< Video chip model
 };
 
 /*
@@ -48,11 +48,11 @@ struct ModelData
  */
 
 constexpr std::array<ModelData, 5> modelData{{
-    {4433618.75,  18., 50., MOS656X::MOS6569},      // PAL-B
-    {3579545.455, 14., 60., MOS656X::MOS6567R8},    // NTSC-M
-    {3579545.455, 14., 60., MOS656X::MOS6567R56A},  // Old NTSC-M
-    {3582056.25,  14., 50., MOS656X::MOS6572},      // PAL-N
-    {3575611.49,  14., 50., MOS656X::MOS6573},      // PAL-M
+    {4433618.75,  18., 50., MOS656X::Model::MOS6569},      // PAL-B
+    {3579545.455, 14., 60., MOS656X::Model::MOS6567R8},    // NTSC-M
+    {3579545.455, 14., 60., MOS656X::Model::MOS6567R56A},  // Old NTSC-M
+    {3582056.25,  14., 50., MOS656X::Model::MOS6572},      // PAL-N
+    {3575611.49,  14., 50., MOS656X::Model::MOS6573},      // PAL-M
 }};
 
 const ModelData& getModelDataFromModel(c64::Model model)
