@@ -124,13 +124,9 @@ protected:
     explicit Timer(const char* name, EventScheduler& scheduler, MOS6526& parent) :
         Event(name),
         parent(parent),
-        state(0),
         m_cycleSkippingEvent("Skip CIA clock decrement cycles", *this, &Timer::cycleSkippingEvent),
-        eventScheduler(scheduler),
-        pbToggle(false),
-        timer(0),
-        latch(0),
-        lastControlValue(0) {}
+        eventScheduler(scheduler)
+    {}
 
     static const int_least32_t CIAT_CR_START = 0x01;
     static const int_least32_t CIAT_STEP = 0x04;
@@ -153,7 +149,7 @@ protected:
     MOS6526 &parent;
 
     /// CRA/CRB control register / state.
-    int_least32_t state;
+    int_least32_t state = 0;
 
 private:
     /**
@@ -201,19 +197,19 @@ private:
      * - otherwise: cycle skip event is ticking, and the value is the first
      *   phi1 clock of skipping.
      */
-    event_clock_t ciaEventPauseTime;
+    event_clock_t ciaEventPauseTime{};
 
     /// PB6/PB7 Flipflop to signal underflows.
-    bool pbToggle;
+    bool pbToggle = false;
 
     /// Current timer value.
-    uint_least16_t timer;
+    uint_least16_t timer = 0;
 
     /// Timer start value (Latch).
-    uint_least16_t latch;
+    uint_least16_t latch = 0;
 
     /// Copy of regs[CRA/B]
-    uint8_t lastControlValue;
+    uint8_t lastControlValue = 0;
 };
 
 void Timer::reschedule()
