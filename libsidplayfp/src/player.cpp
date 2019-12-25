@@ -221,7 +221,7 @@ uint_least32_t Player::play(short *buffer, uint_least32_t count)
                 else
                 {
                     // Clock chips and discard buffers
-                    int size = m_c64.getMainCpuSpeed() / m_cfg.frequency;
+                    int size = static_cast<int>(m_c64.getMainCpuSpeed() / m_cfg.frequency);
                     while (m_isPlaying && --size)
                     {
                         run(sidemu::OUTPUTBUFFERSIZE);
@@ -234,7 +234,7 @@ uint_least32_t Player::play(short *buffer, uint_least32_t count)
             else
             {
                 // Clock the machine
-                int size = m_c64.getMainCpuSpeed() / m_cfg.frequency;
+                int size = static_cast<int>(m_c64.getMainCpuSpeed() / m_cfg.frequency);
                 while (m_isPlaying && --size)
                 {
                     run(sidemu::OUTPUTBUFFERSIZE);
@@ -544,7 +544,7 @@ void Player::sidParams(double cpuFreq, int frequency,
         if (s == nullptr)
             break;
 
-        s->sampling((float)cpuFreq, frequency, sampling, fastSampling);
+        s->sampling(static_cast<float>(cpuFreq), static_cast<float>(frequency), sampling, fastSampling);
     }
 }
 
