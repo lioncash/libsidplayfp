@@ -138,11 +138,11 @@ uint8_t psiddrv::iomap(uint_least16_t addr) const
 
 bool psiddrv::drvReloc()
 {
-    const int startlp = m_tuneInfo->loadAddr() >> 8;
-    const int endlp   = (m_tuneInfo->loadAddr() + (m_tuneInfo->c64dataLen() - 1)) >> 8;
+    const std::uint32_t startlp = m_tuneInfo->loadAddr() >> 8;
+    const std::uint32_t endlp   = (m_tuneInfo->loadAddr() + (m_tuneInfo->c64dataLen() - 1)) >> 8;
 
-    uint_least8_t relocStartPage = m_tuneInfo->relocStartPage();
-    uint_least8_t relocPages = m_tuneInfo->relocPages();
+    std::uint32_t relocStartPage = m_tuneInfo->relocStartPage();
+    std::uint32_t relocPages = m_tuneInfo->relocPages();
 
     if (m_tuneInfo->compatibility() == SidTuneInfo::Compatibility::BASIC)
     {
@@ -163,7 +163,7 @@ bool psiddrv::drvReloc()
         // find area where to dump the driver in.
         // It's only 1 block long, so any free block we can find
         // between $0400 and $d000 will do.
-        for (int i = 4; i < 0xd0; i ++)
+        for (std::uint32_t i = 4; i < 0xd0; i++)
         {
             if (i >= startlp && i <= endlp)
                 continue;
@@ -184,7 +184,7 @@ bool psiddrv::drvReloc()
     }
 
     // Place psid driver into ram
-    const uint_least16_t relocAddr = relocStartPage << 8;
+    const auto relocAddr = static_cast<std::uint16_t>(relocStartPage << 8);
 
     reloc_driver = psid_driver;
     reloc_size   = sizeof(psid_driver);
