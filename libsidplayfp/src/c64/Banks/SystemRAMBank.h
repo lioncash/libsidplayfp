@@ -22,6 +22,8 @@
 #ifndef SYSTEMRAMBANK_H
 #define SYSTEMRAMBANK_H
 
+#include <array>
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 
@@ -44,10 +46,10 @@ public:
      */
     void reset()
     {
-        memset(ram, 0, sizeof(ram));
-        for (int i = 0x40; i < 0x10000; i += 0x80)
+        ram.fill(0);
+        for (std::size_t i = 0x40; i < ram.size(); i += 0x80)
         {
-            memset(ram + i, 0xff, 0x40);
+            std::memset(ram.data() + i, 0xff, 0x40);
         }
     }
 
@@ -63,7 +65,7 @@ public:
 
 private:
     /// C64 RAM area
-    uint8_t ram[0x10000];
+    std::array<uint8_t, 0x10000> ram;
 };
 
 }

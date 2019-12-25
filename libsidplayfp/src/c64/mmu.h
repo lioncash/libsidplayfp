@@ -60,18 +60,18 @@ public:
 
     // RAM access methods
     uint8_t readMemByte(uint_least16_t addr) override { return ramBank.peek(addr); }
-    uint_least16_t readMemWord(uint_least16_t addr) override { return endian_little16(ramBank.ram + addr); }
+    uint_least16_t readMemWord(uint_least16_t addr) override { return endian_little16(&ramBank.ram[addr]); }
 
     void writeMemByte(uint_least16_t addr, uint8_t value) override { ramBank.poke(addr, value); }
-    void writeMemWord(uint_least16_t addr, uint_least16_t value) override { endian_little16(ramBank.ram + addr, value); }
+    void writeMemWord(uint_least16_t addr, uint_least16_t value) override { endian_little16(&ramBank.ram[addr], value); }
 
     void fillRam(uint_least16_t start, uint8_t value, std::size_t size) override
     {
-        std::memset(ramBank.ram + start, value, size);
+        std::memset(&ramBank.ram[start], value, size);
     }
     void fillRam(uint_least16_t start, const uint8_t* source, std::size_t size) override
     {
-        std::memcpy(ramBank.ram + start, source, size);
+        std::memcpy(&ramBank.ram[start], source, size);
     }
 
     // SID specific hacks
