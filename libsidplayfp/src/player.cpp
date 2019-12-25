@@ -160,7 +160,7 @@ bool Player::fastForward(unsigned int percent)
 
 void Player::initialise()
 {
-    m_isPlaying = STOPPED;
+    m_isPlaying = State::Stopped;
 
     m_c64.reset();
 
@@ -229,7 +229,7 @@ void Player::mute(unsigned int sidNum, unsigned int voice, bool enable)
  */
 void Player::run(unsigned int events)
 {
-    for (unsigned int i = 0; m_isPlaying && i < events; i++)
+    for (unsigned int i = 0; m_isPlaying != State::Stopped && i < events; i++)
         m_c64.clock();
 }
 
@@ -240,10 +240,10 @@ std::size_t Player::play(short *buffer, std::size_t count)
         return 0;
 
     // Start the player loop
-    if (m_isPlaying == STOPPED)
-        m_isPlaying = PLAYING;
+    if (m_isPlaying == State::Stopped)
+        m_isPlaying = State::Playing;
 
-    if (m_isPlaying == PLAYING)
+    if (m_isPlaying == State::Playing)
     {
         m_mixer.begin(buffer, count);
 
@@ -254,7 +254,7 @@ std::size_t Player::play(short *buffer, std::size_t count)
                 if (count != 0 && buffer != nullptr)
                 {
                     // Clock chips and mix into output buffer
-                    while (m_isPlaying && m_mixer.notFinished())
+                    while (m_isPlaying != State::Stopped && m_mixer.notFinished())
                     {
                         run(sidemu::OUTPUTBUFFERSIZE);
 
@@ -267,7 +267,7 @@ std::size_t Player::play(short *buffer, std::size_t count)
                 {
                     // Clock chips and discard buffers
                     int size = static_cast<int>(m_c64.getMainCpuSpeed() / m_cfg.frequency);
-                    while (m_isPlaying && --size)
+                    while (m_isPlaying != State::Stopped && --size)
                     {
                         run(sidemu::OUTPUTBUFFERSIZE);
 
@@ -280,7 +280,7 @@ std::size_t Player::play(short *buffer, std::size_t count)
             {
                 // Clock the machine
                 int size = static_cast<int>(m_c64.getMainCpuSpeed() / m_cfg.frequency);
-                while (m_isPlaying && --size)
+                while (m_isPlaying != State::Stopped && --size)
                 {
                     run(sidemu::OUTPUTBUFFERSIZE);
                 }
@@ -289,18 +289,21 @@ std::size_t Player::play(short *buffer, std::size_t count)
         catch (MOS6510::haltInstruction const &)
         {
             m_errorString = "Illegal instruction executed";
-            m_isPlaying = STOPPING;
+            m_isPlaying = State::Stopping;
         }
     }
 
-    if (m_isPlaying == STOPPING)
+    if (m_isPlaying == State::Stopping)
     {
         try
         {
             initialise();
         }
-        catch (configError const &) {}
-        m_isPlaying = STOPPED;
+        catch (const configError&)
+        {
+        }
+
+        m_isPlaying = State::Stopped;
     }
 
     return count;
@@ -308,9 +311,9 @@ std::size_t Player::play(short *buffer, std::size_t count)
 
 void Player::stop()
 {
-    if (m_tune != nullptr && m_isPlaying == PLAYING)
+    if (m_tune != nullptr && m_isPlaying == State::Playing)
     {
-        m_isPlaying = STOPPING;
+        m_isPlaying = State::Stopping;
     }
 }
 

@@ -65,7 +65,7 @@ public:
 
     std::size_t play(short* buffer, std::size_t samples);
 
-    bool isPlaying() const { return m_isPlaying != STOPPED; }
+    bool isPlaying() const { return m_isPlaying != State::Stopped; }
 
     void stop();
 
@@ -84,11 +84,11 @@ public:
     uint_least16_t getCia1TimerA() const { return m_c64.getCia1TimerA(); }
 
 private:
-    enum state_t
+    enum class State
     {
-        STOPPED,
-        PLAYING,
-        STOPPING
+        Stopped,
+        Playing,
+        Stopping,
     };
 
     /**
@@ -150,7 +150,7 @@ private:
     /// Error message
     const char *m_errorString;
 
-    volatile state_t m_isPlaying = state_t::STOPPED;
+    volatile State m_isPlaying = State::Stopped;
 
     sidrandom m_rand;
 
