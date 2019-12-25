@@ -25,64 +25,26 @@
 #  include "config.h"
 #endif
 
-#if defined(HAVE_STRCASECMP) || defined (HAVE_STRNCASECMP)
-#  include <strings.h>
-#endif
-
-#if defined(HAVE_STRICMP) || defined (HAVE_STRNICMP)
-#  include <string.h>
-#endif
-
 #include <algorithm>
+#include <cstddef>
 #include <cctype>
-#include <string>
+#include <string_view>
 
 namespace stringutils
 {
     /**
      * Compare two characters in a case insensitive way.
      */
-    inline bool casecompare(char c1, char c2) { return (tolower(c1) == tolower(c2)); }
+    inline bool casecompare(char c1, char c2) { return std::tolower(c1) == std::tolower(c2); }
 
     /**
      * Compare two strings in a case insensitive way. 
      *
      * @return true if strings are equal.
      */
-    inline bool equal(const std::string& s1, const std::string& s2)
+    inline bool equal(std::string_view s1, std::string_view s2)
     {
-        return s1.size() == s2.size()
-            && std::equal(s1.begin(), s1.end(), s2.begin(), casecompare);
-    }
-
-    /**
-     * Compare two strings in a case insensitive way.
-     *
-     * @return true if strings are equal.
-     */
-    inline bool equal(const char* s1, const char* s2)
-    {
-#if defined(HAVE_STRCASECMP)
-        return strcasecmp(s1, s2) == 0;
-#elif defined(HAVE_STRICMP)
-        return stricmp(s1, s2) == 0;
-#else
-        if (s1 == s2)
-            return true;
-
-        if (s1 == nullptr || s2 == nullptr)
-            return false;
-
-        while ((*s1 != '\0') || (*s2 != '\0'))
-        {
-            if (!casecompare(*s1, *s2))
-                return false;
-            ++s1;
-            ++s2;
-        }
-
-        return true;
-#endif
+        return s1.size() == s2.size() && std::equal(s1.cbegin(), s1.cend(), s2.cbegin(), casecompare);
     }
 
     /**
@@ -90,29 +52,9 @@ namespace stringutils
      *
      * @return true if strings are equal.
      */
-    inline bool equal(const char* s1, const char* s2, size_t n)
+    inline bool equal(std::string_view s1, std::string_view s2, std::size_t n)
     {
-#if defined(HAVE_STRNCASECMP)
-        return strncasecmp(s1, s2, n) == 0;
-#elif defined(HAVE_STRNICMP)
-        return strnicmp(s1, s2, n) == 0;
-#else
-        if (s1 == s2 || n == 0)
-            return true;
-
-        if (s1 == nullptr || s2 == nullptr)
-            return false;
-
-        while (n-- && ((*s1 != '\0') || (*s2 != '\0')))
-        {
-            if (!casecompare(*s1, *s2))
-                return false;
-            ++s1;
-            ++s2;
-        }
-
-        return true;
-#endif
+        return std::equal(s1.cbegin(), s1.cbegin() + n, s2.cbegin(), casecompare);
     }
 }
 

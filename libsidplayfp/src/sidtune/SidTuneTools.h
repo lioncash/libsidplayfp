@@ -22,6 +22,7 @@
 #define SIDTUNETOOLS_H
 
 #include <cstddef>
+#include <string_view>
 
 namespace libsidplayfp
 {
@@ -31,19 +32,19 @@ namespace SidTuneTools
     /**
      * Return pointer to file name position in complete path.
      */
-    size_t fileNameWithoutPath(const char* s);
+    std::size_t fileNameWithoutPath(std::string_view s);
 
     /**
      * Return pointer to file name position in complete path.
      * Special version: file separator = forward slash.
      */
-    size_t slashedFileNameWithoutPath(const char* s);
+    std::size_t slashedFileNameWithoutPath(std::string_view s);
 
     /**
      * Return pointer to file name extension in path.
      * Searching backwards until first dot is found.
      */
-    const char* fileExtOfPath(const char* s);
+    std::string_view fileExtOfPath(std::string_view s);
 }
 
 }

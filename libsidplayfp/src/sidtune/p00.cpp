@@ -83,19 +83,23 @@ struct X00Header
 
 std::unique_ptr<SidTuneBase> p00::load(const char *fileName, const buffer_t& dataBuf)
 {
-    const char *ext = SidTuneTools::fileExtOfPath(fileName);
+    const std::string_view ext = SidTuneTools::fileExtOfPath(fileName);
 
     // Combined extension & magic field identification
-    if (strlen(ext) != 4)
+    if (ext.size() != 4)
+    {
         return nullptr;
+    }
 
-    if (!isdigit(ext[2]) || !isdigit(ext[3]))
+    if (!std::isdigit(ext[2]) || !std::isdigit(ext[3]))
+    {
         return nullptr;
+    }
 
     const char *format = nullptr;
     X00Format type;
 
-    switch (toupper(ext[1]))
+    switch (std::toupper(ext[1]))
     {
     case 'D':
         type   = X00Format::X00_DEL;

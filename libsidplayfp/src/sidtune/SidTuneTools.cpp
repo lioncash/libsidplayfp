@@ -20,18 +20,17 @@
 
 #include "sidtune/SidTuneTools.h"
 
-#include <cstring>
 #include "sidtune/SidTuneCfg.h"
 
 namespace libsidplayfp
 {
 
 // Return pointer to file name position in complete path.
-size_t SidTuneTools::fileNameWithoutPath(const char* s)
+std::size_t SidTuneTools::fileNameWithoutPath(std::string_view s)
 {
-    size_t last_slash_pos = -1;
-    const size_t length = std::strlen(s);
-    for (size_t pos = 0; pos < length; pos++)
+    std::size_t last_slash_pos = std::string_view::npos;
+    const std::size_t length = s.length();
+    for (std::size_t pos = 0; pos < length; pos++)
     {
 #if defined(SID_FS_IS_COLON_AND_BACKSLASH_AND_SLASH)
         if (s[pos] == ':' || s[pos] == '\\'
@@ -54,15 +53,15 @@ size_t SidTuneTools::fileNameWithoutPath(const char* s)
     return last_slash_pos + 1;
 }
 
-// Return pointer to file name position in complete path.
+// Returns a view to the file name position in complete path.
 // Special version: file separator = forward slash.
-size_t SidTuneTools::slashedFileNameWithoutPath(const char* s)
+std::size_t SidTuneTools::slashedFileNameWithoutPath(std::string_view s)
 {
-    size_t last_slash_pos = -1;
-    const size_t length = std::strlen(s);
-    for (size_t pos = 0; pos < length; pos++)
+    std::size_t last_slash_pos = -1;
+    const std::size_t length = s.length();
+    for (std::size_t pos = 0; pos < length; pos++)
     {
-        if ( s[pos] == '/' )
+        if (s[pos] == '/')
         {
             last_slash_pos = pos;
         }
@@ -70,12 +69,12 @@ size_t SidTuneTools::slashedFileNameWithoutPath(const char* s)
     return last_slash_pos + 1;
 }
 
-// Return pointer to file name extension in path.
+// Returns a view to the file name extension in path.
 // The backwards-version.
-const char* SidTuneTools::fileExtOfPath(const char* s)
+std::string_view SidTuneTools::fileExtOfPath(std::string_view s)
 {
-    size_t last_dot_pos = std::strlen(s);  // assume no dot and append
-    for (size_t pos = last_dot_pos; pos > 0; pos--)
+    std::size_t last_dot_pos = s.length();  // assume no dot and append
+    for (std::size_t pos = last_dot_pos; pos > 0; pos--)
     {
         if (s[pos-1] == '.')
         {
