@@ -218,7 +218,7 @@ protected:
     /**
      * Petscii to Ascii converter.
      */
-    std::string petsciiToAscii(SmartPtr_sidtt<const uint8_t>& spPet);
+    static std::string petsciiToAscii(SmartPtr_sidtt<const uint8_t>& spPet);
 
     std::unique_ptr<SidTuneInfoImpl> info;
 
