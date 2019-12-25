@@ -34,8 +34,7 @@ class psiddrv
 {
 public:
     explicit psiddrv(const SidTuneInfo* tuneInfo) :
-        m_tuneInfo(tuneInfo),
-        m_powerOnDelay(0) {}
+        m_tuneInfo(tuneInfo) {}
 
     /**
      * Set the power on delay cycles.
@@ -80,15 +79,15 @@ private:
     uint8_t iomap(uint_least16_t addr) const;
 
     const SidTuneInfo *m_tuneInfo;
-    const char *m_errorString;
+    const char *m_errorString = "";
 
-    uint8_t *reloc_driver;
-    int      reloc_size;
+    uint8_t *reloc_driver = nullptr;
+    int      reloc_size = 0;
 
-    uint_least16_t m_driverAddr;
-    uint_least16_t m_driverLength;
+    uint_least16_t m_driverAddr = 0;
+    uint_least16_t m_driverLength = 0;
 
-    uint_least16_t m_powerOnDelay;
+    uint_least16_t m_powerOnDelay = 0;
 };
 
 }
