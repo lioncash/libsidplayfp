@@ -107,9 +107,9 @@ private:
     EventScheduler &eventScheduler;
 
     /// CPU port signals
-    bool loram;
-    bool hiram;
-    bool charen;
+    bool loram = false;
+    bool hiram = false;
+    bool charen = false;
 
     /// CPU read memory mapping in 4k chunks
     std::array<Bank*, 16> cpuReadMap;

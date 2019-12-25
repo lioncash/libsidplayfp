@@ -32,9 +32,6 @@ class Bank;
 
 MMU::MMU(EventScheduler &scheduler, IOBank* ioBank) :
     eventScheduler(scheduler),
-    loram(false),
-    hiram(false),
-    charen(false),
     ioBank(ioBank),
     zeroRAMBank(*this, ramBank)
 {
