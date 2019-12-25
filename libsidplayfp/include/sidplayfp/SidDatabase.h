@@ -23,6 +23,7 @@
 #ifndef SIDDATABASE_H
 #define SIDDATABASE_H
 
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 
@@ -65,7 +66,7 @@ public:
      * @param tune the SID tune
      * @return tune length in seconds, -1 in case of errors.
      */
-    int_least32_t length(SidTune &tune);
+    std::int32_t length(SidTune &tune);
 
     /**
      * Get the length of the selected subtune.
@@ -74,7 +75,7 @@ public:
      * @param song the subtune.
      * @return tune length in seconds, -1 in case of errors.
      */
-    int_least32_t length(const char *md5, unsigned int song);
+    std::int32_t length(const char *md5, std::size_t song);
 
     /**
      * Get the length of the current subtune.
@@ -83,7 +84,7 @@ public:
      * @param tune the SID tune
      * @return tune length in milliseconds, -1 in case of errors.
      */
-    int_least32_t lengthMs(SidTune &tune);
+    std::int32_t lengthMs(SidTune &tune);
 
     /**
      * Get the length of the selected subtune.
@@ -92,7 +93,7 @@ public:
      * @param song the subtune.
      * @return tune length in milliseconds, -1 in case of errors.
      */
-    int_least32_t lengthMs(const char *md5, unsigned int song);
+    std::int32_t lengthMs(const char *md5, std::size_t song);
 
     /**
      * Get descriptive error message.

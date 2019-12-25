@@ -563,9 +563,9 @@ bool ConsolePlayer::open (void)
     // so try the songlength database or keep the default
     if (!m_timer.valid)
     {
-        const int_least32_t length = newSonglengthDB ? m_database.lengthMs(m_tune) : (m_database.length(m_tune) * 1000);
+        const std::int32_t length = newSonglengthDB ? m_database.lengthMs(m_tune) : (m_database.length(m_tune) * 1000);
         if (length > 0)
-            m_timer.length = length;
+            m_timer.length = static_cast<std::uint32_t>(length);
     }
 
     // Set up the play timer

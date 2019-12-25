@@ -108,11 +108,11 @@ void SidDatabase::close()
     m_parser.reset();
 }
 
-int_least32_t SidDatabase::length(SidTune &tune)
+std::int32_t SidDatabase::length(SidTune &tune)
 {
-    const unsigned int song = tune.getInfo()->currentSong();
+    const std::size_t song = tune.getInfo()->currentSong();
 
-    if (!song)
+    if (song == 0)
     {
         errorString = ERR_NO_SELECTED_SONG;
         return -1;
@@ -123,11 +123,11 @@ int_least32_t SidDatabase::length(SidTune &tune)
     return lengthMs(md5, song) / 1000;
 }
 
-int_least32_t SidDatabase::lengthMs(SidTune &tune)
+std::int32_t SidDatabase::lengthMs(SidTune &tune)
 {
-    const unsigned int song = tune.getInfo()->currentSong();
+    const std::size_t song = tune.getInfo()->currentSong();
 
-    if (!song)
+    if (song == 0)
     {
         errorString = ERR_NO_SELECTED_SONG;
         return -1;
@@ -138,12 +138,12 @@ int_least32_t SidDatabase::lengthMs(SidTune &tune)
     return lengthMs(md5, song);
 }
 
-int_least32_t SidDatabase::length(const char *md5, unsigned int song)
+std::int32_t SidDatabase::length(const char *md5, std::size_t song)
 {
     return lengthMs(md5, song) / 1000;
 }
 
-int_least32_t SidDatabase::lengthMs(const char *md5, unsigned int song)
+std::int32_t SidDatabase::lengthMs(const char *md5, std::size_t song)
 {
     if (m_parser == nullptr)
     {
@@ -168,16 +168,16 @@ int_least32_t SidDatabase::lengthMs(const char *md5, unsigned int song)
     }
 
     const char *str = timeStamp;
-    int_least32_t time = 0;
+    std::int32_t time = 0;
 
-    for (unsigned int i = 0; i < song; i++)
+    for (std::size_t i = 0; i < song; i++)
     {
         // Validate Time
         try
         {
             str = parseTime(str, time);
         }
-        catch (parseError const &)
+        catch (const parseError&)
         {
             errorString = ERR_DATABASE_CORRUPT;
             return -1;
