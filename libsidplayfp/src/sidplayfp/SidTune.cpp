@@ -24,7 +24,9 @@
 
 using namespace libsidplayfp;
 
-const char MSG_NO_ERRORS[] = "No errors";
+namespace
+{
+constexpr char MSG_NO_ERRORS[] = "No errors";
 
 // Default sidtune file name extensions. This selection can be overriden
 // by specifying a custom list in the constructor.
@@ -44,6 +46,7 @@ const char* defaultFileNameExt[] =
     // End.
     nullptr
 };
+} // Anonymous namespace
 
 const char** SidTune::fileNameExtensions = defaultFileNameExt;
 
