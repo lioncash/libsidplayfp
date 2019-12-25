@@ -24,9 +24,9 @@
 #define GCRYPT_NO_MPI_MACROS
 #define GCRYPT_NO_DEPRECATED
 
-#include "iMd5.h"
+#include <cstddef>
 
-#include "sidcxx11.h"
+#include "utils/iMd5.h"
 
 #include <gcrypt.h>
 
@@ -58,7 +58,7 @@ public:
 
     ~md5Gcrypt() { gcry_md_close(hd); }
 
-    void append(const void* data, int nbytes) override { gcry_md_write(hd, data, nbytes); }
+    void append(const void* data, std::size_t nbytes) override { gcry_md_write(hd, data, nbytes); }
 
     void finish() override { gcry_md_final(hd); }
 

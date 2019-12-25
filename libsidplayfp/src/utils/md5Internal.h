@@ -31,7 +31,7 @@ namespace libsidplayfp
 class md5Internal final : public iMd5
 {
 public:
-    void append(const void* data, int nbytes) override { hd.append(data, nbytes); }
+    void append(const void* data, std::size_t nbytes) override { hd.append(data, nbytes); }
 
     void finish() override { hd.finish(); }
 

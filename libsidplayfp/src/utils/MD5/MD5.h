@@ -32,6 +32,7 @@
 #ifndef MD5_H
 #define MD5_H
 
+#include <cstddef>
 #include <cstdint>
 
 #include "MD5_Defs.h"
@@ -46,7 +47,7 @@ class MD5
     MD5();
 
     // Append a string to the message.
-    void append(const void* data, int nbytes);
+    void append(const void* data, std::size_t nbytes);
 
     // Finish the message.
     void finish();

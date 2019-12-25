@@ -21,6 +21,8 @@
 #ifndef IMD5_H
 #define IMD5_H
 
+#include <cstddef>
+
 namespace libsidplayfp
 {
 
@@ -28,7 +30,7 @@ class iMd5
 {
 public:
     virtual ~iMd5() = default;
-    virtual void append(const void* data, int nbytes) = 0;
+    virtual void append(const void* data, std::size_t nbytes) = 0;
     virtual void finish() = 0;
     virtual void reset() = 0;
     virtual const unsigned char* getDigest() = 0;

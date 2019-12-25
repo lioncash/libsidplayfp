@@ -296,28 +296,27 @@ MD5::process(const md5_byte_t data[64])
     abcd[3] += d;
 }
 
-void
-MD5::append(const void* data, int nbytes)
+void MD5::append(const void* data, std::size_t nbytes)
 {
-    const md5_byte_t* p = (const md5_byte_t*)data;
-    int left = nbytes;
-    int offset = (count[0]>>3) & 63;
-    md5_word_t nbits = (md5_word_t)(nbytes<<3);
-
-    if (nbytes <= 0)
+    if (nbytes == 0)
         return;
 
+    const auto* p = static_cast<const md5_byte_t*>(data);
+    std::size_t left = nbytes;
+    const std::size_t offset = (count[0] >> 3) & 63;
+    const auto nbits = static_cast<md5_word_t>(nbytes << 3);
+
     /* Update the message length. */
-    count[1] += nbytes >> 29;
+    count[1] += static_cast<md5_word_t>(nbytes >> 29);
     count[0] += nbits;
     if (count[0] < nbits)
         count[1]++;
 
     /* Process an initial partial block. */
-    if (offset)
+    if (offset != 0)
     {
-        int copy = (offset + nbytes > 64) ? (64 - offset) : nbytes;
-        memcpy(buf + offset, p, copy);
+        const std::size_t copy = (offset + nbytes > 64) ? (64 - offset) : nbytes;
+        std::memcpy(buf + offset, p, copy);
         if (offset + copy < 64)
             return;
         p += copy;
@@ -330,8 +329,8 @@ MD5::append(const void* data, int nbytes)
         process(p);
 
     /* Process a final partial block. */
-    if (left)
-        memcpy(buf, p, left);
+    if (left != 0)
+        std::memcpy(buf, p, left);
 }
 
 void

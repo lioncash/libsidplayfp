@@ -21,6 +21,7 @@
 #ifndef SIDMD5_H
 #define SIDMD5_H
 
+#include <cstddef>
 #include <iomanip>
 #include <memory>
 #include <sstream>
@@ -49,7 +50,7 @@ public:
     /**
      * Append a string to the message.
      */
-    void append(const void* data, int nbytes) { m_md5->append(data, nbytes); }
+    void append(const void* data, std::size_t nbytes) { m_md5->append(data, nbytes); }
 
     /**
      * Finish the message.
