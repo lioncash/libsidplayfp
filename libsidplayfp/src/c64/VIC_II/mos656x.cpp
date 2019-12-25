@@ -88,7 +88,7 @@ void MOS656X::reset()
     sprites.reset();
 
     eventScheduler.cancel(*this);
-    eventScheduler.schedule(*this, 0, EVENT_CLOCK_PHI1);
+    eventScheduler.schedule(*this, 0, EventPhase::ClockPHI1);
 }
 
 void MOS656X::chip(model_t model)
@@ -200,7 +200,7 @@ void MOS656X::write(uint_least8_t addr, uint8_t data)
                 }
 
                 if (isBadLine != oldBadLine)
-                    eventScheduler.schedule(badLineStateChangeEvent, 0, EVENT_CLOCK_PHI1);
+                    eventScheduler.schedule(badLineStateChangeEvent, 0, EventPhase::ClockPHI1);
             }
         }
     }
@@ -208,7 +208,7 @@ void MOS656X::write(uint_least8_t addr, uint8_t data)
 
     case 0x12: // Raster counter
         // check raster Y irq condition changes at the next PHI1
-        eventScheduler.schedule(rasterYIRQEdgeDetectorEvent, 0, EVENT_CLOCK_PHI1);
+        eventScheduler.schedule(rasterYIRQEdgeDetectorEvent, 0, EventPhase::ClockPHI1);
         break;
 
     case 0x17:
@@ -266,9 +266,11 @@ void MOS656X::event()
         delay = (this->*clock)();
     }
     else
+    {
         delay = 1;
+    }
 
-    eventScheduler.schedule(*this, delay - eventScheduler.phase(), EVENT_CLOCK_PHI1);
+    eventScheduler.schedule(*this, delay - event_clock_t(eventScheduler.phase()), EventPhase::ClockPHI1);
 }
 
 event_clock_t MOS656X::clockPAL()

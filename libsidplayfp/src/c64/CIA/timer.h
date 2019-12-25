@@ -244,7 +244,7 @@ void Timer::reschedule()
             // we executed this cycle, therefore the pauseTime is +1. If we are called
             // to execute on the very next clock, we need to get 0 because there's
             // another timer-- in it.
-            ciaEventPauseTime = eventScheduler.getTime(EVENT_CLOCK_PHI1) + 1;
+            ciaEventPauseTime = eventScheduler.getTime(EventPhase::ClockPHI1) + 1;
             // execute event slightly before the next underflow.
             eventScheduler.schedule(m_cycleSkippingEvent, timer - 1);
             return;

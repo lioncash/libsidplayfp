@@ -101,9 +101,9 @@ void ReSIDfp::write(uint_least8_t addr, uint8_t data)
 
 void ReSIDfp::clock()
 {
-    const event_clock_t cycles = eventScheduler->getTime(m_accessClk, EVENT_CLOCK_PHI1);
+    const event_clock_t cycles = eventScheduler->getTime(m_accessClk, EventPhase::ClockPHI1);
     m_accessClk += cycles;
-    m_bufferpos += m_sid.clock(cycles, m_buffer+m_bufferpos);
+    m_bufferpos += m_sid.clock(cycles, m_buffer + m_bufferpos);
 }
 
 void ReSIDfp::filter(bool enable)

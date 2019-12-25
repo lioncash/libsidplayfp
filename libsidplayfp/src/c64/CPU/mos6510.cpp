@@ -105,12 +105,12 @@ void MOS6510::setRDY(bool newRDY)
     if (rdy)
     {
         eventScheduler.cancel(m_steal);
-        eventScheduler.schedule(m_nosteal, 0, EVENT_CLOCK_PHI2);
+        eventScheduler.schedule(m_nosteal, 0, EventPhase::ClockPHI2);
     }
     else
     {
         eventScheduler.cancel(m_nosteal);
-        eventScheduler.schedule(m_steal, 0, EVENT_CLOCK_PHI2);
+        eventScheduler.schedule(m_steal, 0, EventPhase::ClockPHI2);
     }
 }
 
@@ -169,7 +169,7 @@ void MOS6510::triggerNMI()
     if (!rdy)
     {
         eventScheduler.cancel(m_steal);
-        eventScheduler.schedule(m_steal, 0, EVENT_CLOCK_PHI2);
+        eventScheduler.schedule(m_steal, 0, EventPhase::ClockPHI2);
     }
 }
 
@@ -185,7 +185,7 @@ void MOS6510::triggerIRQ()
     if (!rdy && interruptCycle == cycleCount)
     {
         eventScheduler.cancel(m_steal);
-        eventScheduler.schedule(m_steal, 0, EVENT_CLOCK_PHI2);
+        eventScheduler.schedule(m_steal, 0, EventPhase::ClockPHI2);
     }
 }
 
@@ -2125,7 +2125,7 @@ void MOS6510::Initialise()
     rdy = true;
     d1x1 = false;
 
-    eventScheduler.schedule(m_nosteal, 0, EVENT_CLOCK_PHI2);
+    eventScheduler.schedule(m_nosteal, 0, EventPhase::ClockPHI2);
 }
 
 /**

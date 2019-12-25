@@ -85,7 +85,7 @@ HardSID::~HardSID()
 
 event_clock_t HardSID::delay()
 {
-    event_clock_t cycles = eventScheduler->getTime(m_accessClk, EVENT_CLOCK_PHI1);
+    event_clock_t cycles = eventScheduler->getTime(m_accessClk, EventPhase::ClockPHI1);
     m_accessClk += cycles;
 
     while (cycles > 0xFFFF)
@@ -128,7 +128,7 @@ void HardSID::reset(uint8_t volume)
     hsid2.Sync((BYTE) m_instance);
 
     if (eventScheduler != nullptr)
-        eventScheduler->schedule(*this, HARDSID_DELAY_CYCLES, EVENT_CLOCK_PHI1);
+        eventScheduler->schedule(*this, HARDSID_DELAY_CYCLES, EventPhase::ClockPHI1);
 }
 
 void HardSID::voice(unsigned int num, bool mute)
@@ -149,7 +149,7 @@ bool HardSID::lock(EventScheduler *env)
     }
 
     sidemu::lock(env);
-    eventScheduler->schedule(*this, HARDSID_DELAY_CYCLES, EVENT_CLOCK_PHI1);
+    eventScheduler->schedule(*this, HARDSID_DELAY_CYCLES, EventPhase::ClockPHI1);
 
     return true;
 }
@@ -166,17 +166,17 @@ void HardSID::unlock()
 
 void HardSID::event()
 {
-    event_clock_t cycles = eventScheduler->getTime(m_accessClk, EVENT_CLOCK_PHI1);
+    event_clock_t cycles = eventScheduler->getTime(m_accessClk, EventPhase::ClockPHI1);
     if (cycles < HARDSID_DELAY_CYCLES)
     {
         eventScheduler->schedule(*this, HARDSID_DELAY_CYCLES - cycles,
-                  EVENT_CLOCK_PHI1);
+                                 EventPhase::ClockPHI1);
     }
     else
     {
         m_accessClk += cycles;
         hsid2.Delay((BYTE) m_instance, (WORD) cycles);
-        eventScheduler->schedule(*this, HARDSID_DELAY_CYCLES, EVENT_CLOCK_PHI1);
+        eventScheduler->schedule(*this, HARDSID_DELAY_CYCLES, EventPhase::ClockPHI1);
     }
 }
 

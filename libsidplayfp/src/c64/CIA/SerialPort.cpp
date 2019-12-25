@@ -44,7 +44,7 @@ void SerialPort::handle(uint8_t serialDataReg)
 {
     if (count && --count == 0)
     {
-        eventScheduler.schedule(*this, 1, EVENT_CLOCK_PHI1);
+        eventScheduler.schedule(*this, 1, EventPhase::ClockPHI1);
     }
 
     if (count == 0 && buffered)

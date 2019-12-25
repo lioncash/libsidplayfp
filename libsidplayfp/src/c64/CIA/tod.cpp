@@ -41,7 +41,7 @@ void Tod::reset()
     isLatched = false;
     isStopped = true;
 
-    eventScheduler.schedule(*this, 0, EVENT_CLOCK_PHI1);
+    eventScheduler.schedule(*this, 0, EventPhase::ClockPHI1);
 }
 
 uint8_t Tod::read(uint_least8_t reg)

@@ -98,7 +98,10 @@ public:
 
     uint_least32_t getTime() const { return getTimeMs() / 1000; }
 
-    uint_least32_t getTimeMs() const { return static_cast<uint_least32_t>((eventScheduler.getTime(EVENT_CLOCK_PHI1) * 1000) / cpuFrequency); }
+    uint_least32_t getTimeMs() const
+    {
+        return static_cast<uint_least32_t>((eventScheduler.getTime(EventPhase::ClockPHI1) * 1000) / cpuFrequency);
+    }
 
     /**
      * Clock the emulation.

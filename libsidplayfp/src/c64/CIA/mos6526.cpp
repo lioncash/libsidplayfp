@@ -100,7 +100,7 @@ void InterruptSource6526::trigger(uint8_t interruptMask)
     // timer b bug
     if (interruptMask == InterruptSource::INTERRUPT_UNDERFLOW_B)
     {
-        tbBug = (eventScheduler.getTime(EVENT_CLOCK_PHI2) == last_clear+1);
+        tbBug = (eventScheduler.getTime(EventPhase::ClockPHI2) == last_clear+1);
     }
 
     InterruptSource::trigger(interruptMask);
@@ -108,7 +108,7 @@ void InterruptSource6526::trigger(uint8_t interruptMask)
     if (!interruptMasked())
         return;
 
-    if (eventScheduler.getTime(EVENT_CLOCK_PHI2) == last_clear)
+    if (eventScheduler.getTime(EventPhase::ClockPHI2) == last_clear)
     {
         return;
     }
@@ -127,7 +127,7 @@ void InterruptSource6526::trigger(uint8_t interruptMask)
 
 uint8_t InterruptSource6526::clear()
 {
-    last_clear = eventScheduler.getTime(EVENT_CLOCK_PHI2);
+    last_clear = eventScheduler.getTime(EventPhase::ClockPHI2);
 
     if (scheduled)
     {
@@ -353,7 +353,7 @@ void MOS6526::underflowA()
     {
         if (timerB.started())
         {
-            eventScheduler.schedule(bTickEvent, 0, EVENT_CLOCK_PHI2);
+            eventScheduler.schedule(bTickEvent, 0, EventPhase::ClockPHI2);
         }
     }
 }

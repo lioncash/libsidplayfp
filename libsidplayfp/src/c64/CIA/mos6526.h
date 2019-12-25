@@ -152,7 +152,7 @@ private:
     {
         if (!scheduled)
         {
-            eventScheduler.schedule(*this, 1, EVENT_CLOCK_PHI1);
+            eventScheduler.schedule(*this, 1, EventPhase::ClockPHI1);
             scheduled = true;
         }
     }

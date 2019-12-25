@@ -100,7 +100,7 @@ public:
 private:
     void setCpuPort(uint8_t state) override;
     uint8_t getLastReadByte() const override { return 0; }
-    event_clock_t getPhi2Time() const override { return eventScheduler.getTime(EVENT_CLOCK_PHI2); }
+    event_clock_t getPhi2Time() const override { return eventScheduler.getTime(EventPhase::ClockPHI2); }
 
     void updateMappingPHI2();
 

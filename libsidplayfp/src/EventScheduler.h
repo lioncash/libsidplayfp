@@ -34,10 +34,10 @@ namespace libsidplayfp
  * and PHI2 to CPU activity. For any clock, PHI1s are before
  * PHI2s.
  */
-enum event_phase_t
+enum class EventPhase
 {
-    EVENT_CLOCK_PHI1 = 0,
-    EVENT_CLOCK_PHI2 = 1
+    ClockPHI1,
+    ClockPHI2,
 };
 
 
@@ -69,10 +69,10 @@ public:
      * @param cycles how many cycles from now to fire
      * @param phase the phase when to fire the event
      */
-    void schedule(Event &event, unsigned int cycles, event_phase_t phase)
+    void schedule(Event &event, unsigned int cycles, EventPhase phase)
     {
         // this strange formulation always selects the next available slot regardless of specified phase.
-        event.triggerTime = currentTime + ((currentTime & 1) ^ phase) + (cycles << 1);
+        event.triggerTime = currentTime + ((currentTime & 1) ^ event_clock_t(phase)) + (cycles << 1);
         schedule(event);
     }
 
@@ -125,9 +125,9 @@ public:
      * @param phase the phase
      * @return the time according to specified phase.
      */
-    event_clock_t getTime(event_phase_t phase) const
+    event_clock_t getTime(EventPhase phase) const
     {
-        return (currentTime + (phase ^ 1)) >> 1;
+        return (currentTime + (event_clock_t(phase) ^ 1)) >> 1;
     }
 
     /**
@@ -137,7 +137,7 @@ public:
      * @param phase the phase to comapre to
      * @return the time between specified clock and now
      */
-    event_clock_t getTime(event_clock_t clock, event_phase_t phase) const
+    event_clock_t getTime(event_clock_t clock, EventPhase phase) const
     {
         return getTime(phase) - clock;
     }
@@ -147,7 +147,7 @@ public:
      *
      * @return The current phase
      */
-    event_phase_t phase() const { return static_cast<event_phase_t>(currentTime & 1); }
+    EventPhase phase() const { return static_cast<EventPhase>(currentTime & 1); }
 
 private:
     /**
