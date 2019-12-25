@@ -47,7 +47,7 @@ public:
     void setNZ(uint8_t value)
     {
         Z = value == 0;
-        N = value & 0x80;
+        N = (value & 0x80) != 0;
     }
 
     /**
@@ -72,12 +72,12 @@ public:
      */
     void set(uint8_t sr)
     {
-        C = sr & 0x01;
-        Z = sr & 0x02;
-        I = sr & 0x04;
-        D = sr & 0x08;
-        V = sr & 0x40;
-        N = sr & 0x80;
+        C = (sr & 0x01) != 0;
+        Z = (sr & 0x02) != 0;
+        I = (sr & 0x04) != 0;
+        D = (sr & 0x08) != 0;
+        V = (sr & 0x40) != 0;
+        N = (sr & 0x80) != 0;
     }
 
     bool getN() const { return N; }
