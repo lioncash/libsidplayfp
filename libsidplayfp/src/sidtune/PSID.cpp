@@ -33,9 +33,83 @@
 
 namespace libsidplayfp
 {
+namespace
+{
+enum
+{
+    PSID_MUS       = 1 << 0,
+    PSID_SPECIFIC  = 1 << 1, // These two are mutally exclusive
+    PSID_BASIC     = 1 << 1,
+    PSID_CLOCK     = 3 << 2,
+    PSID_SIDMODEL  = 3 << 4
+};
 
-const int PSID_MAXSTRLEN = 32;
+enum
+{
+    PSID_CLOCK_UNKNOWN = 0,
+    PSID_CLOCK_PAL     = 1 << 2,
+    PSID_CLOCK_NTSC    = 1 << 3,
+    PSID_CLOCK_ANY     = PSID_CLOCK_PAL | PSID_CLOCK_NTSC
+};
 
+enum
+{
+    PSID_SIDMODEL_UNKNOWN = 0,
+    PSID_SIDMODEL_6581    = 1,
+    PSID_SIDMODEL_8580    = 2,
+    PSID_SIDMODEL_ANY     = PSID_SIDMODEL_6581 | PSID_SIDMODEL_8580
+};
+
+// Format strings
+constexpr char TXT_FORMAT_PSID[]  = "PlaySID one-file format (PSID)";
+constexpr char TXT_FORMAT_RSID[]  = "Real C64 one-file format (RSID)";
+constexpr char TXT_UNKNOWN_PSID[] = "Unsupported PSID version";
+constexpr char TXT_UNKNOWN_RSID[] = "Unsupported RSID version";
+
+constexpr int PSID_MAXSTRLEN = 32;
+
+constexpr int psid_headerSize = 118;
+constexpr int psidv2_headerSize = psid_headerSize + 6;
+
+// Magic fields
+constexpr uint32_t PSID_ID = 0x50534944;
+constexpr uint32_t RSID_ID = 0x52534944;
+
+/**
+ * Decode SID model flags.
+ */
+SidTuneInfo::model_t getSidModel(uint_least16_t modelFlag)
+{
+    if ((modelFlag & PSID_SIDMODEL_ANY) == PSID_SIDMODEL_ANY)
+        return SidTuneInfo::SIDMODEL_ANY;
+
+    if (modelFlag & PSID_SIDMODEL_6581)
+        return SidTuneInfo::SIDMODEL_6581;
+
+    if (modelFlag & PSID_SIDMODEL_8580)
+        return SidTuneInfo::SIDMODEL_8580;
+
+    return SidTuneInfo::SIDMODEL_UNKNOWN;
+}
+
+/**
+ * Check if extra SID addres is valid for PSID specs.
+ */
+bool validateAddress(uint_least8_t address)
+{
+    // Only even values are valid.
+    if (address & 1)
+        return false;
+
+    // Ranges $00-$41 ($D000-$D410) and $80-$DF ($D800-$DDF0) are invalid.
+    // Any invalid value means that no second SID is used, like $00.
+    if (address <= 0x41
+        || (address >= 0x80 && address <= 0xdf))
+        return false;
+
+    return true;
+}
+} // Anonymous namespace
 
 // Header has been extended for 'RSID' format
 // The following changes are present:
@@ -69,79 +143,6 @@ struct psidHeader           // all values are big-endian
     uint8_t sidChipBase2;          // only version >= 3
     uint8_t sidChipBase3;          // only version >= 4
 };
-
-enum
-{
-    PSID_MUS       = 1 << 0,
-    PSID_SPECIFIC  = 1 << 1, // These two are mutally exclusive
-    PSID_BASIC     = 1 << 1,
-    PSID_CLOCK     = 3 << 2,
-    PSID_SIDMODEL  = 3 << 4
-};
-
-enum
-{
-    PSID_CLOCK_UNKNOWN = 0,
-    PSID_CLOCK_PAL     = 1 << 2,
-    PSID_CLOCK_NTSC    = 1 << 3,
-    PSID_CLOCK_ANY     = PSID_CLOCK_PAL | PSID_CLOCK_NTSC
-};
-
-enum
-{
-    PSID_SIDMODEL_UNKNOWN = 0,
-    PSID_SIDMODEL_6581    = 1,
-    PSID_SIDMODEL_8580    = 2,
-    PSID_SIDMODEL_ANY     = PSID_SIDMODEL_6581 | PSID_SIDMODEL_8580
-};
-
-// Format strings
-const char TXT_FORMAT_PSID[]  = "PlaySID one-file format (PSID)";
-const char TXT_FORMAT_RSID[]  = "Real C64 one-file format (RSID)";
-const char TXT_UNKNOWN_PSID[] = "Unsupported PSID version";
-const char TXT_UNKNOWN_RSID[] = "Unsupported RSID version";
-
-const int psid_headerSize = 118;
-const int psidv2_headerSize = psid_headerSize + 6;
-
-// Magic fields
-const uint32_t PSID_ID = 0x50534944;
-const uint32_t RSID_ID = 0x52534944;
-
-/**
- * Decode SID model flags.
- */
-SidTuneInfo::model_t getSidModel(uint_least16_t modelFlag)
-{
-    if ((modelFlag & PSID_SIDMODEL_ANY) == PSID_SIDMODEL_ANY)
-        return SidTuneInfo::SIDMODEL_ANY;
-
-    if (modelFlag & PSID_SIDMODEL_6581)
-        return SidTuneInfo::SIDMODEL_6581;
-
-    if (modelFlag & PSID_SIDMODEL_8580)
-        return SidTuneInfo::SIDMODEL_8580;
-
-    return SidTuneInfo::SIDMODEL_UNKNOWN;
-}
-
-/**
- * Check if extra SID addres is valid for PSID specs.
- */
-bool validateAddress(uint_least8_t address)
-{
-    // Only even values are valid.
-    if (address & 1)
-        return false;
-
-    // Ranges $00-$41 ($D000-$D410) and $80-$DF ($D800-$DDF0) are invalid.
-    // Any invalid value means that no second SID is used, like $00.
-    if (address <= 0x41
-            || (address >= 0x80 && address <= 0xdf))
-        return false;
-
-    return true;
-}
 
 SidTuneBase* PSID::load(buffer_t& dataBuf)
 {
