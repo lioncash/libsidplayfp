@@ -34,9 +34,30 @@
 
 namespace libsidplayfp
 {
-
+namespace
+{
 #define X00_ID_LEN   8
 #define X00_NAME_LEN 17
+
+enum X00Format
+{
+    X00_DEL,
+    X00_SEQ,
+    X00_PRG,
+    X00_USR,
+    X00_REL
+};
+
+// Format strings
+const char TXT_FORMAT_DEL[] = "Unsupported tape image file (DEL)";
+const char TXT_FORMAT_SEQ[] = "Unsupported tape image file (SEQ)";
+const char TXT_FORMAT_PRG[] = "Tape image file (PRG)";
+const char TXT_FORMAT_USR[] = "Unsupported USR file (USR)";
+const char TXT_FORMAT_REL[] = "Unsupported tape image file (REL)";
+
+// Magic field
+const char P00_ID[] = "C64File";
+} // Anonymous namespace
 
 // File format from PC64. PC64 automatically generates
 // the filename from the cbm name (16 to 8 conversion)
@@ -59,26 +80,6 @@ struct X00Header
     uint8_t length;             // Rel files only (Bytes/Record),
                                 // should be 0 for all other types
 };
-
-enum X00Format
-{
-    X00_DEL,
-    X00_SEQ,
-    X00_PRG,
-    X00_USR,
-    X00_REL
-};
-
-// Format strings
-const char TXT_FORMAT_DEL[] = "Unsupported tape image file (DEL)";
-const char TXT_FORMAT_SEQ[] = "Unsupported tape image file (SEQ)";
-const char TXT_FORMAT_PRG[] = "Tape image file (PRG)";
-const char TXT_FORMAT_USR[] = "Unsupported USR file (USR)";
-const char TXT_FORMAT_REL[] = "Unsupported tape image file (REL)";
-
-// Magic field
-const char P00_ID[] = "C64File";
-
 
 SidTuneBase* p00::load(const char *fileName, buffer_t& dataBuf)
 {
