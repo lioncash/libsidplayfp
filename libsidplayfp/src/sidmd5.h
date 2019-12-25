@@ -65,7 +65,7 @@ public:
     /**
      * Return pointer to 32-byte hex fingerprint.
      */
-    std::string getDigest()
+    std::string getDigest() const
     {
         const unsigned char* digest = m_md5->getDigest();
         if (digest == nullptr)
