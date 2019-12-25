@@ -218,7 +218,7 @@ int reloc65::reldiff(unsigned char s) const
     }
 }
 
-unsigned char* reloc65::reloc_seg(unsigned char *buf, int len, unsigned char *rtab)
+unsigned char* reloc65::reloc_seg(unsigned char *buf, int len, unsigned char *rtab) const
 {
     int adr = -1;
     while (*rtab)
@@ -270,7 +270,7 @@ unsigned char* reloc65::reloc_seg(unsigned char *buf, int len, unsigned char *rt
     return ++rtab;
 }
 
-unsigned char *reloc65::reloc_globals(unsigned char *buf)
+unsigned char *reloc65::reloc_globals(unsigned char *buf) const
 {
     int n = getWord(buf, 0);
     buf += 2;

@@ -83,7 +83,7 @@ private:
      * @param rtab relocation table
      * @return a pointer to the next section
      */
-    unsigned char* reloc_seg(unsigned char* buf, int len, unsigned char* rtab);
+    unsigned char* reloc_seg(unsigned char* buf, int len, unsigned char* rtab) const;
 
     /**
      * Relocate exported globals list.
@@ -91,7 +91,7 @@ private:
      * @param buf exported globals list
      * @return a pointer to the next section
      */
-    unsigned char* reloc_globals(unsigned char* buf);
+    unsigned char* reloc_globals(unsigned char* buf) const;
 
     int m_tbase = 0;
     int m_dbase = 0;
