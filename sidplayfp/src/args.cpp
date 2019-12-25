@@ -261,7 +261,7 @@ int ConsolePlayer::args(int argc, const char *argv[])
 
             else if (argv[i][1] == 's')
             {   // Stereo Playback
-                m_engCfg.playback = SidConfig::STEREO;
+                m_engCfg.playback = SidConfig::PlaybackMode::Stereo;
             }
 
             else if (argv[i][1] == 't')
@@ -274,41 +274,41 @@ int ConsolePlayer::args(int argc, const char *argv[])
             // Resampling Options ----------
             else if (strcmp (&argv[i][1], "rif") == 0)
             {
-                m_engCfg.samplingMethod = SidConfig::INTERPOLATE;
+                m_engCfg.samplingMethod = SidConfig::SamplingMethod::Interpolate;
                 m_engCfg.fastSampling = true;
             }
             else if (strcmp (&argv[i][1], "rrf") == 0)
             {
-                m_engCfg.samplingMethod = SidConfig::RESAMPLE_INTERPOLATE;
+                m_engCfg.samplingMethod = SidConfig::SamplingMethod::ResampleInterpolate;
                 m_engCfg.fastSampling = true;
             }
             else if (strcmp (&argv[i][1], "ri") == 0)
             {
-                m_engCfg.samplingMethod = SidConfig::INTERPOLATE;
+                m_engCfg.samplingMethod = SidConfig::SamplingMethod::Interpolate;
             }
             else if (strcmp (&argv[i][1], "rr") == 0)
             {
-                m_engCfg.samplingMethod = SidConfig::RESAMPLE_INTERPOLATE;
+                m_engCfg.samplingMethod = SidConfig::SamplingMethod::ResampleInterpolate;
             }
 
             // SID model options
             else if (strcmp (&argv[i][1], "mof") == 0)
             {
-                m_engCfg.defaultSidModel = SidConfig::MOS6581;
+                m_engCfg.defaultSidModel = SidConfig::SIDModel::MOS6581;
                 m_engCfg.forceSidModel = true;
             }
             else if (strcmp (&argv[i][1], "mnf") == 0)
             {
-                m_engCfg.defaultSidModel = SidConfig::MOS8580;
+                m_engCfg.defaultSidModel = SidConfig::SIDModel::MOS8580;
                 m_engCfg.forceSidModel = true;
             }
             else if (strcmp (&argv[i][1], "mo") == 0)
             {
-                m_engCfg.defaultSidModel = SidConfig::MOS6581;
+                m_engCfg.defaultSidModel = SidConfig::SIDModel::MOS6581;
             }
             else if (strcmp (&argv[i][1], "mn") == 0)
             {
-                m_engCfg.defaultSidModel = SidConfig::MOS8580;
+                m_engCfg.defaultSidModel = SidConfig::SIDModel::MOS8580;
             }
             else if (strcmp (&argv[i][1], "-digiboost") == 0)
             {
@@ -319,12 +319,12 @@ int ConsolePlayer::args(int argc, const char *argv[])
             else if (strcmp (&argv[i][1], "vnf") == 0)
             {
                 m_engCfg.forceC64Model = true;
-                m_engCfg.defaultC64Model  = SidConfig::NTSC;
+                m_engCfg.defaultC64Model  = SidConfig::C64Model::NTSC;
             }
             else if (strcmp (&argv[i][1], "vpf") == 0)
             {
                 m_engCfg.forceC64Model = true;
-                m_engCfg.defaultC64Model  = SidConfig::PAL;
+                m_engCfg.defaultC64Model  = SidConfig::C64Model::PAL;
             }
             else if (strcmp (&argv[i][1], "vf") == 0)
             {
@@ -332,11 +332,11 @@ int ConsolePlayer::args(int argc, const char *argv[])
             }
             else if (strcmp (&argv[i][1], "vn") == 0)
             {
-                m_engCfg.defaultC64Model  = SidConfig::NTSC;
+                m_engCfg.defaultC64Model  = SidConfig::C64Model::NTSC;
             }
             else if (strcmp (&argv[i][1], "vp") == 0)
             {
-                m_engCfg.defaultC64Model  = SidConfig::PAL;
+                m_engCfg.defaultC64Model  = SidConfig::C64Model::PAL;
             }
             else if (argv[i][1] == 'v')
             {

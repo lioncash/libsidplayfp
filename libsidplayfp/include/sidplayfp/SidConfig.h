@@ -38,41 +38,41 @@ class SID_EXTERN SidConfig
 {
 public:
     /// Playback mode
-    enum playback_t
+    enum class PlaybackMode
     {
-        MONO = 1,
-        STEREO
+        Mono = 1,
+        Stereo
     };
 
     /// SID chip model
-    enum sid_model_t
+    enum class SIDModel
     {
         MOS6581,
         MOS8580
     };
 
     /// CIA chip model
-    enum cia_model_t
+    enum class CIAModel
     {
         MOS6526,
         MOS8521
     };
 
     /// C64 model
-    enum c64_model_t
+    enum class C64Model
     {
         PAL,
         NTSC,
-        OLD_NTSC,
+        OldNTSC,
         DREAN,
         PAL_M
     };
 
     /// Sampling method
-    enum sampling_method_t
+    enum class SamplingMethod
     {
-        INTERPOLATE,
-        RESAMPLE_INTERPOLATE
+        Interpolate,
+        ResampleInterpolate
     };
 
     SidConfig();
@@ -98,11 +98,11 @@ public:
      * Intended c64 model when unknown or forced.
      * - PAL
      * - NTSC
-     * - OLD_NTSC
+     * - OldNTSC
      * - DREAN
      * - PAL_M
      */
-    c64_model_t defaultC64Model = c64_model_t::PAL;
+    C64Model defaultC64Model = C64Model::PAL;
 
     /**
      * Force the model to #defaultC64Model ignoring tune's clock setting.
@@ -114,7 +114,7 @@ public:
      * - MOS6581
      * - MOS8580
      */
-    sid_model_t defaultSidModel = sid_model_t::MOS6581;
+    SIDModel defaultSidModel = SIDModel::MOS6581;
 
     /**
      * Force the sid model to #defaultSidModel.
@@ -131,14 +131,14 @@ public:
      * - MOS6526
      * - MOS8521
      */
-    cia_model_t ciaModel = cia_model_t::MOS6526;
+    CIAModel ciaModel = CIAModel::MOS6526;
 
     /**
      * Playbak mode.
      * - MONO
      * - STEREO
      */
-    playback_t playback = playback_t::MONO;
+    PlaybackMode playback = PlaybackMode::Mono;
 
     /**
      * Sampling frequency.
@@ -176,10 +176,10 @@ public:
 
     /**
      * Sampling method.
-     * - INTERPOLATE
-     * - RESAMPLE_INTERPOLATE
+     * - Interpolate
+     * - ResampleInterpolate
      */
-    sampling_method_t samplingMethod = sampling_method_t::RESAMPLE_INTERPOLATE;
+    SamplingMethod samplingMethod = SamplingMethod::ResampleInterpolate;
 
     /**
      * Faster low-quality emulation,

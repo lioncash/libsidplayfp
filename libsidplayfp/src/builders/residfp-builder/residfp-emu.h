@@ -59,11 +59,11 @@ public:
     void clock() override;
 
     void sampling(float systemclock, float freq,
-        SidConfig::sampling_method_t method, bool) override;
+                  SidConfig::SamplingMethod method, bool fast) override;
 
     void voice(unsigned int num, bool mute) override { m_sid.mute(num, mute); }
 
-    void model(SidConfig::sid_model_t model, bool digiboost) override;
+    void model(SidConfig::SIDModel model, bool digiboost) override;
 
     // Specific to resid
     void filter(bool enable);

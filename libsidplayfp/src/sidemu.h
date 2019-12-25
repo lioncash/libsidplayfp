@@ -80,7 +80,7 @@ public:
     /**
      * Set SID model.
      */
-    virtual void model(SidConfig::sid_model_t model, bool digiboost) = 0;
+    virtual void model(SidConfig::SIDModel model, bool digiboost) = 0;
 
     /**
      * Set the sampling method.
@@ -91,7 +91,7 @@ public:
      * @param fast
      */
     virtual void sampling([[maybe_unused]] float systemfreq, [[maybe_unused]] float outputfreq,
-                          [[maybe_unused]] SidConfig::sampling_method_t method,
+                          [[maybe_unused]] SidConfig::SamplingMethod method,
                           [[maybe_unused]] bool fast) {}
 
     /**

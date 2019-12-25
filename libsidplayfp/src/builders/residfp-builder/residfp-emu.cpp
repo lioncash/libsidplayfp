@@ -111,16 +111,15 @@ void ReSIDfp::filter(bool enable)
       m_sid.enableFilter(enable);
 }
 
-void ReSIDfp::sampling(float systemclock, float freq,
-        SidConfig::sampling_method_t method, bool)
+void ReSIDfp::sampling(float systemclock, float freq, SidConfig::SamplingMethod method, [[maybe_unused]] bool fast)
 {
     reSIDfp::SamplingMethod sampleMethod;
     switch (method)
     {
-    case SidConfig::INTERPOLATE:
+    case SidConfig::SamplingMethod::Interpolate:
         sampleMethod = reSIDfp::DECIMATE;
         break;
-    case SidConfig::RESAMPLE_INTERPOLATE:
+    case SidConfig::SamplingMethod::ResampleInterpolate:
         sampleMethod = reSIDfp::RESAMPLE;
         break;
     default:
@@ -146,15 +145,15 @@ void ReSIDfp::sampling(float systemclock, float freq,
 }
 
 // Set the emulated SID model
-void ReSIDfp::model(SidConfig::sid_model_t model, bool digiboost)
+void ReSIDfp::model(SidConfig::SIDModel model, bool digiboost)
 {
     reSIDfp::ChipModel chipModel;
     switch (model)
     {
-        case SidConfig::MOS6581:
+        case SidConfig::SIDModel::MOS6581:
             chipModel = reSIDfp::MOS6581;
             break;
-        case SidConfig::MOS8580:
+        case SidConfig::SIDModel::MOS8580:
             chipModel = reSIDfp::MOS8580;
             if (digiboost)
                 m_sid.input(-32768);

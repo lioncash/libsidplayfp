@@ -72,12 +72,12 @@ public:
     /**
      * Find a free SID of the required specs
      *
-     * @param env the event context
-     * @param model the required sid model
+     * @param scheduler the event scheduler
+     * @param model the required SID model
      * @param digiboost whether to enable digiboost for 8580
-     * @return pointer to the locked sid emu
+     * @return pointer to the locked SID emu
      */
-    libsidplayfp::sidemu* lock(libsidplayfp::EventScheduler* scheduler, SidConfig::sid_model_t model, bool digiboost);
+    libsidplayfp::sidemu* lock(libsidplayfp::EventScheduler* scheduler, SidConfig::SIDModel model, bool digiboost);
 
     /**
      * Release this SID.

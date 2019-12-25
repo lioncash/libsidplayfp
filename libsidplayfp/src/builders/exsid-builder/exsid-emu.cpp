@@ -150,13 +150,13 @@ void exSID::voice(unsigned int num, bool mute)
     muted[num] = mute;
 }
 
-void exSID::model(SidConfig::sid_model_t model, bool digiboost)
+void exSID::model(SidConfig::SIDModel model, bool digiboost)
 {
     runmodel = model;
     // currently no support for stereo mode: output the selected SID to both L and R channels
-    exSID_audio_op(model == SidConfig::MOS8580 ? XS_AU_8580_8580 : XS_AU_6581_6581);	// mutes output
+    exSID_audio_op(model == SidConfig::SIDModel::MOS8580 ? XS_AU_8580_8580 : XS_AU_6581_6581);	// mutes output
     //exSID_audio_op(XS_AU_UNMUTE);	// sampling is set after model, no need to unmute here and cause pops
-    exSID_chipselect(model == SidConfig::MOS8580 ? XS_CS_CHIP1 : XS_CS_CHIP0);
+    exSID_chipselect(model == SidConfig::SIDModel::MOS8580 ? XS_CS_CHIP1 : XS_CS_CHIP0);
 }
 
 void exSID::flush() {}
@@ -172,7 +172,7 @@ void exSID::unlock()
 }
 
 void exSID::sampling(float systemclock, float freq,
-        SidConfig::sampling_method_t method, bool)
+                     [[maybe_unused]] SidConfig::SamplingMethod method, [[maybe_unused]] bool fast)
 {
     exSID_audio_op(XS_AU_MUTE);
     if (systemclock < 1000000.0F)

@@ -60,18 +60,18 @@ public:
     struct audio_section
     {   // INI Section - [Audio]
         int frequency;
-        SidConfig::playback_t playback;
+        SidConfig::PlaybackMode playback;
         int  precision;
     };
 
     struct emulation_section
     {   // INI Section - [Emulation]
         SID_STRING    engine;
-        SidConfig::c64_model_t  modelDefault;
+        SidConfig::C64Model modelDefault;
         bool          modelForced;
-        SidConfig::sid_model_t  sidModel;
+        SidConfig::SIDModel sidModel;
         bool          forceModel;
-        SidConfig::cia_model_t  ciaModel;
+        SidConfig::CIAModel ciaModel;
         bool          digiboost;
         bool          filter;
         double        bias;

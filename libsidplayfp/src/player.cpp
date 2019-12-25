@@ -314,7 +314,7 @@ bool Player::config(const SidConfig &cfg, bool force)
             const c64::model_t model = c64model(cfg.defaultC64Model, cfg.forceC64Model);
 
             m_c64.setModel(model);
-            m_c64.setCiaModel(cfg.ciaModel);
+            m_c64.setCiaModel(cfg.ciaModel == SidConfig::CIAModel::MOS8521);
 
             sidParams(m_c64.getMainCpuSpeed(), cfg.frequency, cfg.samplingMethod, cfg.fastSampling);
 
@@ -333,7 +333,7 @@ bool Player::config(const SidConfig &cfg, bool force)
         }
     }
 
-    const bool isStereo = cfg.playback == SidConfig::STEREO;
+    const bool isStereo = cfg.playback == SidConfig::PlaybackMode::Stereo;
     m_info.m_channels = isStereo ? 2 : 1;
 
     m_mixer.setStereo(isStereo);
@@ -346,7 +346,7 @@ bool Player::config(const SidConfig &cfg, bool force)
 }
 
 // Clock speed changes due to loading a new song
-c64::model_t Player::c64model(SidConfig::c64_model_t defaultModel, bool forced)
+c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
 {
     const SidTuneInfo* tuneInfo = m_tune->getInfo();
 
@@ -359,27 +359,27 @@ c64::model_t Player::c64model(SidConfig::c64_model_t defaultModel, bool forced)
     {
         switch (defaultModel)
         {
-        case SidConfig::PAL:
+        case SidConfig::C64Model::PAL:
             clockSpeed = SidTuneInfo::CLOCK_PAL;
             model = c64::PAL_B;
             videoSwitch = 1;
             break;
-        case SidConfig::DREAN:
+        case SidConfig::C64Model::DREAN:
             clockSpeed = SidTuneInfo::CLOCK_PAL;
             model = c64::PAL_N;
             videoSwitch = 1; // TODO verify
             break;
-        case SidConfig::NTSC:
+        case SidConfig::C64Model::NTSC:
             clockSpeed = SidTuneInfo::CLOCK_NTSC;
             model = c64::NTSC_M;
             videoSwitch = 0;
             break;
-        case SidConfig::OLD_NTSC:
+        case SidConfig::C64Model::OldNTSC:
             clockSpeed = SidTuneInfo::CLOCK_NTSC;
             model = c64::OLD_NTSC_M;
             videoSwitch = 0;
             break;
-        case SidConfig::PAL_M:
+        case SidConfig::C64Model::PAL_M:
             clockSpeed = SidTuneInfo::CLOCK_NTSC;
             model = c64::PAL_M;
             videoSwitch = 0; // TODO verify
@@ -434,7 +434,7 @@ c64::model_t Player::c64model(SidConfig::c64_model_t defaultModel, bool forced)
  * @param defaultModel the default model
  * @param forced true if the default model shold be forced in spite of tune model
  */
-SidConfig::sid_model_t getSidModel(SidTuneInfo::model_t sidModel, SidConfig::sid_model_t defaultModel, bool forced)
+SidConfig::SIDModel getSidModel(SidTuneInfo::model_t sidModel, SidConfig::SIDModel defaultModel, bool forced)
 {
     SidTuneInfo::model_t tuneModel = sidModel;
 
@@ -443,10 +443,10 @@ SidConfig::sid_model_t getSidModel(SidTuneInfo::model_t sidModel, SidConfig::sid
     {
         switch (defaultModel)
         {
-        case SidConfig::MOS6581:
+        case SidConfig::SIDModel::MOS6581:
             tuneModel = SidTuneInfo::SIDMODEL_6581;
             break;
-        case SidConfig::MOS8580:
+        case SidConfig::SIDModel::MOS8580:
             tuneModel = SidTuneInfo::SIDMODEL_8580;
             break;
         default:
@@ -454,16 +454,16 @@ SidConfig::sid_model_t getSidModel(SidTuneInfo::model_t sidModel, SidConfig::sid
         }
     }
 
-    SidConfig::sid_model_t newModel;
+    SidConfig::SIDModel newModel;
 
     switch (tuneModel)
     {
     default:
     case SidTuneInfo::SIDMODEL_6581:
-        newModel = SidConfig::MOS6581;
+        newModel = SidConfig::SIDModel::MOS6581;
         break;
     case SidTuneInfo::SIDMODEL_8580:
-        newModel = SidConfig::MOS8580;
+        newModel = SidConfig::SIDModel::MOS8580;
         break;
     }
 
@@ -489,7 +489,7 @@ void Player::sidRelease()
     m_mixer.clearSids();
 }
 
-void Player::sidCreate(sidbuilder *builder, SidConfig::sid_model_t defaultModel, bool digiboost,
+void Player::sidCreate(sidbuilder *builder, SidConfig::SIDModel defaultModel, bool digiboost,
                         bool forced, const std::vector<unsigned int> &extraSidAddresses)
 {
     if (builder != nullptr)
@@ -497,7 +497,7 @@ void Player::sidCreate(sidbuilder *builder, SidConfig::sid_model_t defaultModel,
         const SidTuneInfo* tuneInfo = m_tune->getInfo();
 
         // Setup base SID
-        const SidConfig::sid_model_t userModel = getSidModel(tuneInfo->sidModel(0), defaultModel, forced);
+        const SidConfig::SIDModel userModel = getSidModel(tuneInfo->sidModel(0), defaultModel, forced);
         sidemu *s = builder->lock(m_c64.getEventScheduler(), userModel, digiboost);
         if (!builder->getStatus())
         {
@@ -518,7 +518,7 @@ void Player::sidCreate(sidbuilder *builder, SidConfig::sid_model_t defaultModel,
 
             for (std::size_t i = 0; i < extraSidChips; i++)
             {
-                const SidConfig::sid_model_t extraUserModel = getSidModel(tuneInfo->sidModel(i+1), defaultModel, forced);
+                const SidConfig::SIDModel extraUserModel = getSidModel(tuneInfo->sidModel(i+1), defaultModel, forced);
 
                 sidemu *emu = builder->lock(m_c64.getEventScheduler(), extraUserModel, digiboost);
                 if (!builder->getStatus())
@@ -536,7 +536,7 @@ void Player::sidCreate(sidbuilder *builder, SidConfig::sid_model_t defaultModel,
 }
 
 void Player::sidParams(double cpuFreq, int frequency,
-                        SidConfig::sampling_method_t sampling, bool fastSampling)
+                        SidConfig::SamplingMethod sampling, bool fastSampling)
 {
     for (std::size_t i = 0; ; i++)
     {

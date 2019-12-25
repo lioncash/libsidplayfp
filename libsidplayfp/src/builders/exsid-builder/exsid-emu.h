@@ -75,14 +75,14 @@ public:
     // Standard SID functions
     void clock() override;
 
-    void model(SidConfig::sid_model_t model, bool digiboost) override;
+    void model(SidConfig::SIDModel model, bool digiboost) override;
 
     void voice(unsigned int num, bool mute) override;
 
     void filter(bool) {}
 
     void sampling(float systemclock, float freq,
-        SidConfig::sampling_method_t method, bool) override;
+                  SidConfig::SamplingMethod method, bool fast) override;
 
     // exSID specific
     void flush();

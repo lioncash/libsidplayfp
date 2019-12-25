@@ -96,14 +96,14 @@ void IniConfig::clear()
     console_s.junctionRight = '+';
 
     audio_s.frequency = SidConfig::DEFAULT_SAMPLING_FREQ;
-    audio_s.playback  = SidConfig::MONO;
+    audio_s.playback  = SidConfig::PlaybackMode::Mono;
     audio_s.precision = 16;
 
-    emulation_s.modelDefault  = SidConfig::PAL;
+    emulation_s.modelDefault  = SidConfig::C64Model::PAL;
     emulation_s.modelForced   = false;
-    emulation_s.sidModel      = SidConfig::MOS6581;
+    emulation_s.sidModel      = SidConfig::SIDModel::MOS6581;
     emulation_s.forceModel    = false;
-    emulation_s.ciaModel      = SidConfig::MOS6526;
+    emulation_s.ciaModel      = SidConfig::CIAModel::MOS6526;
     emulation_s.filter        = true;
     emulation_s.engine.clear();
 
@@ -341,7 +341,7 @@ void IniConfig::readAudio(iniHandler &ini)
         readInt(ini, TEXT("Channels"),  channels);
         if (channels)
         {
-            audio_s.playback = (channels == 1) ? SidConfig::MONO : SidConfig::STEREO;
+            audio_s.playback = (channels == 1) ? SidConfig::PlaybackMode::Mono : SidConfig::PlaybackMode::Stereo;
         }
     }
 
@@ -361,13 +361,13 @@ void IniConfig::readEmulation(iniHandler &ini)
         if (!str.empty())
         {
             if (str.compare(TEXT("PAL")) == 0)
-                emulation_s.modelDefault = SidConfig::PAL;
+                emulation_s.modelDefault = SidConfig::C64Model::PAL;
             else if (str.compare(TEXT("NTSC")) == 0)
-                emulation_s.modelDefault = SidConfig::NTSC;
+                emulation_s.modelDefault = SidConfig::C64Model::NTSC;
             else if (str.compare(TEXT("OLD_NTSC")) == 0)
-                emulation_s.modelDefault = SidConfig::OLD_NTSC;
+                emulation_s.modelDefault = SidConfig::C64Model::OldNTSC;
             else if (str.compare(TEXT("DREAN")) == 0)
-                emulation_s.modelDefault = SidConfig::DREAN;
+                emulation_s.modelDefault = SidConfig::C64Model::DREAN;
         }
     }
 
@@ -379,9 +379,9 @@ void IniConfig::readEmulation(iniHandler &ini)
         if (!str.empty())
         {
             if (str.compare(TEXT("MOS6526")) == 0)
-                emulation_s.ciaModel = SidConfig::MOS6526;
+                emulation_s.ciaModel = SidConfig::CIAModel::MOS6526;
             else if (str.compare(TEXT("MOS8521")) == 0)
-                emulation_s.ciaModel = SidConfig::MOS8521;
+                emulation_s.ciaModel = SidConfig::CIAModel::MOS8521;
         }
     }
 
@@ -390,9 +390,9 @@ void IniConfig::readEmulation(iniHandler &ini)
         if (!str.empty())
         {
             if (str.compare(TEXT("MOS6581")) == 0)
-                emulation_s.sidModel = SidConfig::MOS6581;
+                emulation_s.sidModel = SidConfig::SIDModel::MOS6581;
             else if (str.compare(TEXT("MOS8580")) == 0)
-                emulation_s.sidModel = SidConfig::MOS8580;
+                emulation_s.sidModel = SidConfig::SIDModel::MOS8580;
         }
     }
 

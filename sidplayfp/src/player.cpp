@@ -339,7 +339,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
     m_driver.cfg.precision = m_precision;
     m_driver.cfg.channels  = 1; // Mono
     m_driver.cfg.bufSize   = 0; // Recalculate
-    if (m_engCfg.playback == SidConfig::STEREO)
+    if (m_engCfg.playback == SidConfig::PlaybackMode::Stereo)
         m_driver.cfg.channels = 2;
 
     {   // Open the hardware
@@ -367,12 +367,12 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
     switch (m_driver.cfg.channels)
     {
     case 1:
-        if (m_engCfg.playback == SidConfig::STEREO)
-            m_engCfg.playback  = SidConfig::MONO;
+        if (m_engCfg.playback == SidConfig::PlaybackMode::Stereo)
+            m_engCfg.playback = SidConfig::PlaybackMode::Mono;
         break;
     case 2:
-        if (m_engCfg.playback != SidConfig::STEREO)
-            m_engCfg.playback  = SidConfig::STEREO;
+        if (m_engCfg.playback != SidConfig::PlaybackMode::Stereo)
+            m_engCfg.playback = SidConfig::PlaybackMode::Stereo;
         break;
     default:
         cerr << m_name << ": " << "ERROR: " << m_driver.cfg.channels

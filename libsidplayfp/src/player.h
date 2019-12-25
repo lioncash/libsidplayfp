@@ -98,9 +98,9 @@ private:
      * Get the C64 model for the current loaded tune.
      *
      * @param defaultModel the default model
-     * @param forced true if the default model shold be forced in spite of tune model
+     * @param forced true if the default model should be forced in spite of tune model.
      */
-    c64::model_t c64model(SidConfig::c64_model_t defaultModel, bool forced);
+    c64::model_t c64model(SidConfig::C64Model defaultModel, bool forced);
 
     /**
      * Initialize the emulation.
@@ -119,7 +119,7 @@ private:
      *
      * @throw configError
      */
-    void sidCreate(sidbuilder* builder, SidConfig::sid_model_t defaultModel, bool digiboost,
+    void sidCreate(sidbuilder* builder, SidConfig::SIDModel defaultModel, bool digiboost,
         bool forced, const std::vector<unsigned int>& extraSidAddresses);
 
     /**
@@ -131,7 +131,7 @@ private:
      * @param fastSampling true to enable fast low quality resampling (only for reSID)
      */
     void sidParams(double cpuFreq, int frequency,
-        SidConfig::sampling_method_t sampling, bool fastSampling);
+        SidConfig::SamplingMethod sampling, bool fastSampling);
 
     inline void run(unsigned int events);
 

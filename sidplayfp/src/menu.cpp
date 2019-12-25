@@ -59,14 +59,14 @@ const char* getModel(SidTuneInfo::model_t model)
     }
 }
 
-const char* getModel(SidConfig::sid_model_t model)
+const char* getModel(SidConfig::SIDModel model)
 {
     switch (model)
     {
     default:
-    case SidConfig::MOS6581:
+    case SidConfig::SIDModel::MOS6581:
         return SID6581;
-    case SidConfig::MOS8580:
+    case SidConfig::SIDModel::MOS8580:
         return SID8580;
     }
 }

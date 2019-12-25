@@ -26,7 +26,7 @@
 
 #include "sidemu.h"
 
-libsidplayfp::sidemu *sidbuilder::lock(libsidplayfp::EventScheduler *env, SidConfig::sid_model_t model, bool digiboost)
+libsidplayfp::sidemu *sidbuilder::lock(libsidplayfp::EventScheduler *env, SidConfig::SIDModel model, bool digiboost)
 {
     m_status = true;
 

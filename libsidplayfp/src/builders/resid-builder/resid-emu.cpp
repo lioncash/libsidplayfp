@@ -100,16 +100,15 @@ void ReSID::filter(bool enable)
     m_sid.enable_filter(enable);
 }
 
-void ReSID::sampling(float systemclock, float freq,
-        SidConfig::sampling_method_t method, bool fast)
+void ReSID::sampling(float systemclock, float freq, SidConfig::SamplingMethod method, bool fast)
 {
     reSID::sampling_method sampleMethod;
     switch (method)
     {
-    case SidConfig::INTERPOLATE:
+    case SidConfig::SamplingMethod::Interpolate:
         sampleMethod = fast ? reSID::SAMPLE_FAST : reSID::SAMPLE_INTERPOLATE;
         break;
-    case SidConfig::RESAMPLE_INTERPOLATE:
+    case SidConfig::SamplingMethod::ResampleInterpolate:
         sampleMethod = fast ? reSID::SAMPLE_RESAMPLE_FASTMEM : reSID::SAMPLE_RESAMPLE;
         break;
     default:
@@ -139,17 +138,17 @@ void ReSID::voice(unsigned int num, bool mute)
 }
 
 // Set the emulated SID model
-void ReSID::model(SidConfig::sid_model_t model, bool digiboost)
+void ReSID::model(SidConfig::SIDModel model, bool digiboost)
 {
     reSID::chip_model chipModel;
     short sample = 0;
     m_voiceMask &= 0x07;
     switch (model)
     {
-        case SidConfig::MOS6581:
+        case SidConfig::SIDModel::MOS6581:
             chipModel = reSID::MOS6581;
             break;
-        case SidConfig::MOS8580:
+        case SidConfig::SIDModel::MOS8580:
             chipModel = reSID::MOS8580;
             if (digiboost)
             {
