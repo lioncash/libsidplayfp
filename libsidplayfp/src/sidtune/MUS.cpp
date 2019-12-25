@@ -167,16 +167,16 @@ void MUS::installPlayer(sidmemory& mem)
     }
 }
 
-SidTuneBase* MUS::load(buffer_t& musBuf, bool init)
+std::unique_ptr<SidTuneBase> MUS::load(buffer_t& musBuf, bool init)
 {
     buffer_t empty;
     return load(musBuf, empty, 0, init);
 }
 
-SidTuneBase* MUS::load(buffer_t& musBuf,
-                            buffer_t& strBuf,
-                            uint_least32_t fileOffset,
-                            bool init)
+std::unique_ptr<SidTuneBase> MUS::load(buffer_t& musBuf,
+                                       buffer_t& strBuf,
+                                       uint_least32_t fileOffset,
+                                       bool init)
 {
     uint_least32_t voice3Index;
     if (!detect(&musBuf[fileOffset], musBuf.size()-fileOffset, voice3Index))
@@ -186,7 +186,7 @@ SidTuneBase* MUS::load(buffer_t& musBuf,
     tune->tryLoad(musBuf, strBuf, fileOffset, voice3Index, init);
     tune->mergeParts(musBuf, strBuf);
 
-    return tune.release();
+    return tune;
 }
 
 void MUS::tryLoad(buffer_t& musBuf,

@@ -36,8 +36,8 @@ public:
     MUS(const MUS&) = delete;
     MUS& operator=(const MUS&) = delete;
 
-    static SidTuneBase* load(buffer_t& dataBuf, bool init = false);
-    static SidTuneBase* load(buffer_t& musBuf,
+    static std::unique_ptr<SidTuneBase> load(buffer_t& dataBuf, bool init = false);
+    static std::unique_ptr<SidTuneBase> load(buffer_t& musBuf,
         buffer_t& strBuf,
         uint_least32_t fileOffset,
         bool init = false);

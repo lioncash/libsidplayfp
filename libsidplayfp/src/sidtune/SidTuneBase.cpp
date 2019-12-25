@@ -258,7 +258,7 @@ SidTuneBase* SidTuneBase::getFromBuffer(const uint_least8_t* const buffer, std::
     std::unique_ptr<SidTuneBase> s(PSID::load(buf1));
     if (s == nullptr)
     {
-        s.reset(MUS::load(buf1, true));
+        s = MUS::load(buf1, true);
     }
     if (s == nullptr)
     {
@@ -366,7 +366,7 @@ SidTuneBase* SidTuneBase::getFromFiles(const char* fileName, const char **fileNa
     if (s == nullptr)
     {
         // Try some native C64 file formats
-        s.reset(MUS::load(fileBuf1, true));
+        s = MUS::load(fileBuf1, true);
         if (s != nullptr)
         {
             // Try to find second file.
