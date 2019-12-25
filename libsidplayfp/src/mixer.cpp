@@ -49,11 +49,8 @@ public:
     explicit BufferMove(int position, int numSamples) : pos(position), samples(numSamples) {}
     void operator()(short *dest) const
     {
-        const short* src = dest + pos;
-        for (int j = 0; j < samples; j++)
-        {
-            dest[j] = src[j];
-        }
+        const short* const src = dest + pos;
+        std::copy(src, src + samples, dest);
     }
 
 private:
