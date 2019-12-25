@@ -32,23 +32,24 @@
 
 namespace libsidplayfp
 {
-
+namespace
+{
 // Speed strings
-const char TXT_PAL_VBI[]        = "50 Hz VBI (PAL)";
-const char TXT_PAL_VBI_FIXED[]  = "60 Hz VBI (PAL FIXED)";
-const char TXT_PAL_CIA[]        = "CIA (PAL)";
-const char TXT_PAL_UNKNOWN[]    = "UNKNOWN (PAL)";
-const char TXT_NTSC_VBI[]       = "60 Hz VBI (NTSC)";
-const char TXT_NTSC_VBI_FIXED[] = "50 Hz VBI (NTSC FIXED)";
-const char TXT_NTSC_CIA[]       = "CIA (NTSC)";
-const char TXT_NTSC_UNKNOWN[]   = "UNKNOWN (NTSC)";
+constexpr char TXT_PAL_VBI[]        = "50 Hz VBI (PAL)";
+constexpr char TXT_PAL_VBI_FIXED[]  = "60 Hz VBI (PAL FIXED)";
+constexpr char TXT_PAL_CIA[]        = "CIA (PAL)";
+[[maybe_unused]] constexpr char TXT_PAL_UNKNOWN[]    = "UNKNOWN (PAL)";
+constexpr char TXT_NTSC_VBI[]       = "60 Hz VBI (NTSC)";
+constexpr char TXT_NTSC_VBI_FIXED[] = "50 Hz VBI (NTSC FIXED)";
+constexpr char TXT_NTSC_CIA[]       = "CIA (NTSC)";
+[[maybe_unused]] constexpr char TXT_NTSC_UNKNOWN[]   = "UNKNOWN (NTSC)";
 
 // Error Strings
-const char ERR_NA[]                   = "NA";
-const char ERR_UNSUPPORTED_FREQ[]     = "SIDPLAYER ERROR: Unsupported sampling frequency.";
-const char ERR_UNSUPPORTED_SID_ADDR[] = "SIDPLAYER ERROR: Unsupported SID address.";
-const char ERR_UNSUPPORTED_SIZE[]     = "SIDPLAYER ERROR: Size of music data exceeds C64 memory.";
-const char ERR_INVALID_PERCENTAGE[]   = "SIDPLAYER ERROR: Percentage value out of range.";
+constexpr char ERR_NA[]                   = "NA";
+constexpr char ERR_UNSUPPORTED_FREQ[]     = "SIDPLAYER ERROR: Unsupported sampling frequency.";
+constexpr char ERR_UNSUPPORTED_SID_ADDR[] = "SIDPLAYER ERROR: Unsupported SID address.";
+constexpr char ERR_UNSUPPORTED_SIZE[]     = "SIDPLAYER ERROR: Size of music data exceeds C64 memory.";
+constexpr char ERR_INVALID_PERCENTAGE[]   = "SIDPLAYER ERROR: Percentage value out of range.";
 
 /**
  * Configuration error exception.
@@ -62,6 +63,64 @@ public:
 private:
     const char* m_msg;
 };
+
+template <class T>
+void checkRom(const uint8_t* rom, std::string& desc)
+{
+    if (rom != nullptr)
+    {
+        T romCheck(rom);
+        desc.assign(romCheck.info());
+    }
+    else
+    {
+        desc.clear();
+    }
+}
+
+/**
+ * Get the SID model.
+ *
+ * @param sidModel the tune requested model
+ * @param defaultModel the default model
+ * @param forced true if the default model shold be forced in spite of tune model
+ */
+SidConfig::SIDModel getSidModel(SidTuneInfo::Model sidModel, SidConfig::SIDModel defaultModel, bool forced)
+{
+    SidTuneInfo::Model tuneModel = sidModel;
+
+    // Use preferred speed if forced or if song speed is unknown
+    if (forced || tuneModel == SidTuneInfo::Model::Unknown || tuneModel == SidTuneInfo::Model::Any)
+    {
+        switch (defaultModel)
+        {
+        case SidConfig::SIDModel::MOS6581:
+            tuneModel = SidTuneInfo::Model::SID6581;
+            break;
+        case SidConfig::SIDModel::MOS8580:
+            tuneModel = SidTuneInfo::Model::SID8580;
+            break;
+        default:
+            break;
+        }
+    }
+
+    SidConfig::SIDModel newModel;
+
+    switch (tuneModel)
+    {
+    default:
+    case SidTuneInfo::Model::SID6581:
+        newModel = SidConfig::SIDModel::MOS6581;
+        break;
+    case SidTuneInfo::Model::SID8580:
+        newModel = SidConfig::SIDModel::MOS8580;
+        break;
+    }
+
+    return newModel;
+}
+} // Anonymous namespace
 
 Player::Player() :
     // Set default settings for system
@@ -78,18 +137,6 @@ Player::Player() :
 }
 
 Player::~Player() = default;
-
-template<class T>
-inline void checkRom(const uint8_t* rom, std::string &desc)
-{
-    if (rom != nullptr)
-    {
-        T romCheck(rom);
-        desc.assign(romCheck.info());
-    }
-    else
-        desc.clear();
-}
 
 void Player::setRoms(const uint8_t* kernal, const uint8_t* basic, const uint8_t* character)
 {
@@ -423,49 +470,6 @@ c64::model_t Player::c64model(SidConfig::C64Model defaultModel, bool forced)
     }
 
     return model;
-}
-
-/**
- * Get the SID model.
- *
- * @param sidModel the tune requested model
- * @param defaultModel the default model
- * @param forced true if the default model shold be forced in spite of tune model
- */
-SidConfig::SIDModel getSidModel(SidTuneInfo::Model sidModel, SidConfig::SIDModel defaultModel, bool forced)
-{
-    SidTuneInfo::Model tuneModel = sidModel;
-
-    // Use preferred speed if forced or if song speed is unknown
-    if (forced || tuneModel == SidTuneInfo::Model::Unknown || tuneModel == SidTuneInfo::Model::Any)
-    {
-        switch (defaultModel)
-        {
-        case SidConfig::SIDModel::MOS6581:
-            tuneModel = SidTuneInfo::Model::SID6581;
-            break;
-        case SidConfig::SIDModel::MOS8580:
-            tuneModel = SidTuneInfo::Model::SID8580;
-            break;
-        default:
-            break;
-        }
-    }
-
-    SidConfig::SIDModel newModel;
-
-    switch (tuneModel)
-    {
-    default:
-    case SidTuneInfo::Model::SID6581:
-        newModel = SidConfig::SIDModel::MOS6581;
-        break;
-    case SidTuneInfo::Model::SID8580:
-        newModel = SidConfig::SIDModel::MOS8580;
-        break;
-    }
-
-    return newModel;
 }
 
 void Player::sidRelease()
