@@ -84,7 +84,7 @@ public:
      *
      * @param percent
      */
-    bool fastForward(unsigned int percent);
+    bool fastForward(int percent);
 
     /**
      * Load a tune.

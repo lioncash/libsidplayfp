@@ -147,7 +147,7 @@ void Player::setRoms(const uint8_t* kernal, const uint8_t* basic, const uint8_t*
     m_c64.setRoms(kernal, basic, character);
 }
 
-bool Player::fastForward(unsigned int percent)
+bool Player::fastForward(int percent)
 {
     if (!m_mixer.setFastForward(percent / 100))
     {

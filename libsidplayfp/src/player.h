@@ -59,7 +59,7 @@ public:
 
     bool config(const SidConfig& cfg, bool force = false);
 
-    bool fastForward(unsigned int percent);
+    bool fastForward(int percent);
 
     bool load(SidTune* tune);
 

@@ -86,7 +86,7 @@ const char *sidplayfp::error() const
     return sidplayer.error();
 }
 
-bool  sidplayfp::fastForward(unsigned int percent)
+bool sidplayfp::fastForward(int percent)
 {
     return sidplayer.fastForward(percent);
 }

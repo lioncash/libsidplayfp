@@ -547,7 +547,7 @@ bool ConsolePlayer::open (void)
     // forwarding to the start position
     m_driver.selected = &m_driver.null;
     m_speed.current   = m_speed.max;
-    m_engine.fastForward (100 * m_speed.current);
+    m_engine.fastForward(100 * m_speed.current);
 
     m_engine.mute(0, 0, vMute[0]);
     m_engine.mute(0, 1, vMute[1]);
@@ -739,7 +739,7 @@ void ConsolePlayer::updateDisplay()
         m_speed.current = 1;
         m_engine.fastForward(100);
         if (m_cpudebug)
-            m_engine.debug (true, nullptr);
+            m_engine.debug(true, nullptr);
     }
     else if ((m_timer.stop != 0) && (milliseconds >= m_timer.stop))
     {
@@ -802,17 +802,17 @@ void ConsolePlayer::decodeKeys ()
             }
         break;
 
-        case A_UP_ARROW:     
+        case A_UP_ARROW:
             m_speed.current *= 2;
             if (m_speed.current > m_speed.max)
                 m_speed.current = m_speed.max;
-std::cout << "---" <<  (int)m_speed.current << std::endl;   
-            m_engine.fastForward (100 * m_speed.current);
+            std::cout << "---" << static_cast<int>(m_speed.current) << std::endl;
+            m_engine.fastForward(100 * m_speed.current);
         break;
 
         case A_DOWN_ARROW:
             m_speed.current = 1;
-            m_engine.fastForward (100);
+            m_engine.fastForward(100);
         break;
 
         case A_HOME:
