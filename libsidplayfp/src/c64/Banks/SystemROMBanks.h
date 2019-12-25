@@ -22,6 +22,9 @@
 #ifndef SYSTEMROMBANKS_H
 #define SYSTEMROMBANKS_H
 
+#include <algorithm>
+#include <array>
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 
@@ -35,14 +38,20 @@ namespace libsidplayfp
  * ROM bank base class.
  * N must be a power of two.
  */
-template <int N>
+template <std::size_t N>
 class romBank : public Bank
 {
 public:
     /**
      * Copy content from source buffer.
      */
-    void set(const uint8_t* source) { if (source != nullptr) memcpy(rom, source, N); }
+    void set(const uint8_t* source)
+    {
+        if (source != nullptr)
+        {
+            std::copy(source, source + N, rom.begin());
+        }
+    }
 
     /**
      * Writing to ROM is a no-op.
@@ -68,10 +77,15 @@ protected:
     /**
      * Return pointer to memory address.
      */
-    void* getPtr(uint_least16_t address) const { return (void*)&rom[address & (N-1)]; }
+    void* getPtr(uint_least16_t address) { return &rom[address & (N - 1)]; }
+
+    /**
+     * Return pointer to memory address.
+     */
+    const void* getPtr(uint_least16_t address) const { return &rom[address & (N - 1)]; }
 
     /// The ROM array
-    uint8_t rom[N];
+    std::array<uint8_t, N> rom;
 };
 
 /**
@@ -151,17 +165,17 @@ public:
         romBank<0x2000>::set(basic);
 
         // Backup BASIC Warm Start
-        memcpy(trap, getPtr(0xa7ae), sizeof(trap));
+        std::memcpy(trap.data(), getPtr(0xa7ae), sizeof(trap));
 
-        memcpy(subTune, getPtr(0xbf53), sizeof(subTune));
+        std::memcpy(subTune.data(), getPtr(0xbf53), sizeof(subTune));
     }
 
     void reset()
     {
         // Restore original BASIC Warm Start
-        memcpy(getPtr(0xa7ae), trap, sizeof(trap));
+        std::memcpy(getPtr(0xa7ae), trap.data(), sizeof(trap));
 
-        memcpy(getPtr(0xbf53), subTune, sizeof(subTune));
+        std::memcpy(getPtr(0xbf53), subTune.data(), sizeof(subTune));
     }
 
     /**
@@ -192,8 +206,8 @@ public:
     }
 
 private:
-    uint8_t trap[3];
-    uint8_t subTune[11];
+    std::array<uint8_t, 3> trap{};
+    std::array<uint8_t, 11> subTune{};
 };
 
 /**
