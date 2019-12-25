@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <numeric>
 
 #include "sidemu.h"
 
@@ -96,12 +97,8 @@ void Mixer::doMix()
         // reduce aliasing during fast forward.
         for (size_t k = 0; k < m_buffers.size(); k++)
         {
-            int_least32_t sample = 0;
-            const short *buffer = m_buffers[k] + i;
-            for (int j = 0; j < m_fastForwardFactor; j++)
-            {
-                sample += buffer[j];
-            }
+            const short* const buffer = m_buffers[k] + i;
+            const std::int32_t sample = std::accumulate(buffer, buffer + m_fastForwardFactor, 0);
 
             m_iSamples[k] = sample / m_fastForwardFactor;
         }
