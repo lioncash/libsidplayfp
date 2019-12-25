@@ -123,7 +123,7 @@ protected:
 
     EventScheduler *eventScheduler = nullptr;
 
-    event_clock_t m_accessClk;
+    event_clock_t m_accessClk{};
 
     /// The sample buffer
     short *m_buffer = nullptr;
