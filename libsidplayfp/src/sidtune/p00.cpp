@@ -36,8 +36,8 @@ namespace libsidplayfp
 {
 namespace
 {
-#define X00_ID_LEN   8
-#define X00_NAME_LEN 17
+constexpr std::uint32_t X00_ID_LEN = 8;
+constexpr std::uint32_t X00_NAME_LEN = 17;
 
 enum X00Format
 {
@@ -49,14 +49,14 @@ enum X00Format
 };
 
 // Format strings
-const char TXT_FORMAT_DEL[] = "Unsupported tape image file (DEL)";
-const char TXT_FORMAT_SEQ[] = "Unsupported tape image file (SEQ)";
-const char TXT_FORMAT_PRG[] = "Tape image file (PRG)";
-const char TXT_FORMAT_USR[] = "Unsupported USR file (USR)";
-const char TXT_FORMAT_REL[] = "Unsupported tape image file (REL)";
+constexpr char TXT_FORMAT_DEL[] = "Unsupported tape image file (DEL)";
+constexpr char TXT_FORMAT_SEQ[] = "Unsupported tape image file (SEQ)";
+constexpr char TXT_FORMAT_PRG[] = "Tape image file (PRG)";
+constexpr char TXT_FORMAT_USR[] = "Unsupported USR file (USR)";
+constexpr char TXT_FORMAT_REL[] = "Unsupported tape image file (REL)";
 
 // Magic field
-const char P00_ID[] = "C64File";
+constexpr char P00_ID[] = "C64File";
 } // Anonymous namespace
 
 // File format from PC64. PC64 automatically generates
@@ -122,7 +122,7 @@ SidTuneBase* p00::load(const char *fileName, buffer_t& dataBuf)
     }
 
     // Verify the file is what we think it is
-    const buffer_t::size_type bufLen = dataBuf.size();
+    const auto bufLen = dataBuf.size();
     if (bufLen < X00_ID_LEN)
         return nullptr;
 
