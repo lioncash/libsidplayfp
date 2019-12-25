@@ -34,15 +34,14 @@ public:
     void close();
 
     bool setSection(std::string_view section);
-    const char* getValue(std::string_view key);
+    const char* getValue(std::string_view key) const;
 
 private:
     using keys_t = std::map<std::string, std::string, std::less<>>;
     using sections_t = std::map<std::string, keys_t, std::less<>>;
 
-    std::string parseSection(const std::string& buffer);
-
-    keys_t::value_type parseKey(const std::string& buffer);
+    static std::string parseSection(std::string_view buffer);
+    static keys_t::value_type parseKey(std::string_view buffer);
 
     sections_t sections;
     sections_t::const_iterator curSection;

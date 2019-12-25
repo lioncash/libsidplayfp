@@ -25,7 +25,7 @@ namespace libsidplayfp
 
 class parseError {};
 
-std::string iniParser::parseSection(const std::string &buffer)
+std::string iniParser::parseSection(std::string_view buffer)
 {
     const std::size_t pos = buffer.find(']');
 
@@ -34,10 +34,10 @@ std::string iniParser::parseSection(const std::string &buffer)
         throw parseError();
     }
 
-    return buffer.substr(1, pos-1);
+    return std::string{buffer.substr(1, pos-1)};
 }
 
-iniParser::keys_t::value_type iniParser::parseKey(const std::string &buffer)
+iniParser::keys_t::value_type iniParser::parseKey(std::string_view buffer)
 {
     const std::size_t pos = buffer.find('=');
 
@@ -46,8 +46,8 @@ iniParser::keys_t::value_type iniParser::parseKey(const std::string &buffer)
         throw parseError();
     }
 
-    std::string key = buffer.substr(0, buffer.find_last_not_of(' ', pos-1) + 1);
-    std::string value = buffer.substr(pos + 1);
+    std::string key{buffer.substr(0, buffer.find_last_not_of(' ', pos-1) + 1)};
+    std::string value{buffer.substr(pos + 1)};
     return std::make_pair(std::move(key), std::move(value));
 }
 
@@ -114,7 +114,7 @@ bool iniParser::setSection(std::string_view section)
     return curSection != sections.end();
 }
 
-const char *iniParser::getValue(std::string_view key)
+const char *iniParser::getValue(std::string_view key) const
 {
     const auto keyIt = (*curSection).second.find(key);
     return (keyIt != (*curSection).second.end()) ? keyIt->second.c_str() : nullptr;
