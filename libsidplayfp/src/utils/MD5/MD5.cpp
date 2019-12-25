@@ -355,8 +355,7 @@ MD5::finish()
         digest[i] = (md5_byte_t)(abcd[i>>2] >> ((i&3)<<3));
 }
 
-const md5_byte_t*
-MD5::getDigest()
+const md5_byte_t* MD5::getDigest() const
 {
     return digest;
 }

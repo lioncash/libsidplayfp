@@ -53,7 +53,7 @@ class MD5
     void finish();
 
     // Return pointer to 16-byte fingerprint.
-    const md5_byte_t* getDigest();
+    const md5_byte_t* getDigest() const;
 
     // Initialize the algorithm. Reset starting values.
     void reset();
