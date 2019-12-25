@@ -314,8 +314,6 @@ private:
      * Handle the serial port.
      */
     void handleSerialPort();
-
-    static const char* credit;
 };
 
 }
