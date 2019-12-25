@@ -56,11 +56,11 @@ private:
     /// Event context.
     EventScheduler &eventScheduler;
 
-    int count;
+    int count = 0;
 
-    bool buffered;
+    bool buffered = false;
 
-    uint8_t out;
+    uint8_t out = 0;
 };
 
 }
