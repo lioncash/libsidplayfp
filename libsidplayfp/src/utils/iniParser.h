@@ -21,6 +21,7 @@
 
 #include <map>
 #include <string>
+#include <string_view>
 #include <utility>
 
 namespace libsidplayfp
@@ -32,12 +33,12 @@ public:
     bool open(const char* fName);
     void close();
 
-    bool setSection(const char* section);
-    const char* getValue(const char* key);
+    bool setSection(std::string_view section);
+    const char* getValue(std::string_view key);
 
 private:
-    using keys_t = std::map<std::string, std::string>;
-    using sections_t = std::map<std::string, keys_t>;
+    using keys_t = std::map<std::string, std::string, std::less<>>;
+    using sections_t = std::map<std::string, keys_t, std::less<>>;
 
     std::string parseSection(const std::string& buffer);
 

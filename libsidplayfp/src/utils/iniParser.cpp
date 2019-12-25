@@ -27,7 +27,7 @@ class parseError {};
 
 std::string iniParser::parseSection(const std::string &buffer)
 {
-    const size_t pos = buffer.find(']');
+    const std::size_t pos = buffer.find(']');
 
     if (pos == std::string::npos)
     {
@@ -39,16 +39,16 @@ std::string iniParser::parseSection(const std::string &buffer)
 
 iniParser::keys_t::value_type iniParser::parseKey(const std::string &buffer)
 {
-    const size_t pos = buffer.find('=');
+    const std::size_t pos = buffer.find('=');
 
     if (pos == std::string::npos)
     {
         throw parseError();
     }
 
-    const std::string key = buffer.substr(0, buffer.find_last_not_of(' ', pos-1) + 1);
-    const std::string value = buffer.substr(pos + 1);
-    return make_pair(key, value);
+    std::string key = buffer.substr(0, buffer.find_last_not_of(' ', pos-1) + 1);
+    std::string value = buffer.substr(pos + 1);
+    return std::make_pair(std::move(key), std::move(value));
 }
 
 bool iniParser::open(const char *fName)
@@ -65,12 +65,12 @@ bool iniParser::open(const char *fName)
     while (iniFile.good())
     {
         std::string buffer;
-        getline(iniFile, buffer);
+        std::getline(iniFile, buffer);
 
         if (buffer.empty())
             continue;
 
-        switch (buffer.at(0))
+        switch (buffer.front())
         {
         case ';':
         case '#':
@@ -79,19 +79,23 @@ bool iniParser::open(const char *fName)
         case '[':
             try
             {
-                const std::string section = parseSection(buffer);
-                const keys_t keys;
-                std::pair<sections_t::iterator, bool> it = sections.insert(make_pair(section, keys));
+                std::string section = parseSection(buffer);
+                keys_t keys;
+                const auto it = sections.emplace(std::move(section), std::move(keys));
                 mIt = it.first;
             }
-            catch (parseError const &) {};
+            catch (const parseError&)
+            {
+            }
             break;
         default:
             try
             {
                 (*mIt).second.insert(parseKey(buffer));
             }
-            catch (parseError const &) {};
+            catch (const parseError&)
+            {
+            }
             break;
         }
     }
@@ -104,15 +108,15 @@ void iniParser::close()
     sections.clear();
 }
 
-bool iniParser::setSection(const char *section)
+bool iniParser::setSection(std::string_view section)
 {
-    curSection = sections.find(std::string(section));
-    return (curSection != sections.end());
+    curSection = sections.find(section);
+    return curSection != sections.end();
 }
 
-const char *iniParser::getValue(const char *key)
+const char *iniParser::getValue(std::string_view key)
 {
-    keys_t::const_iterator keyIt = (*curSection).second.find(std::string(key));
+    const auto keyIt = (*curSection).second.find(key);
     return (keyIt != (*curSection).second.end()) ? keyIt->second.c_str() : nullptr;
 }
 

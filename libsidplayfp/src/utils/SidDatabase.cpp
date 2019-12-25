@@ -138,12 +138,12 @@ std::int32_t SidDatabase::lengthMs(SidTune &tune)
     return lengthMs(md5, song);
 }
 
-std::int32_t SidDatabase::length(const char *md5, std::size_t song)
+std::int32_t SidDatabase::length(std::string_view md5, std::size_t song)
 {
     return lengthMs(md5, song) / 1000;
 }
 
-std::int32_t SidDatabase::lengthMs(const char *md5, std::size_t song)
+std::int32_t SidDatabase::lengthMs(std::string_view md5, std::size_t song)
 {
     if (m_parser == nullptr)
     {

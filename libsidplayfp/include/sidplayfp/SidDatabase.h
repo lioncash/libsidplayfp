@@ -26,6 +26,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <string_view>
 
 #include <sidplayfp/siddefs.h>
 
@@ -75,7 +76,7 @@ public:
      * @param song the subtune.
      * @return tune length in seconds, -1 in case of errors.
      */
-    std::int32_t length(const char *md5, std::size_t song);
+    std::int32_t length(std::string_view md5, std::size_t song);
 
     /**
      * Get the length of the current subtune.
@@ -93,7 +94,7 @@ public:
      * @param song the subtune.
      * @return tune length in milliseconds, -1 in case of errors.
      */
-    std::int32_t lengthMs(const char *md5, std::size_t song);
+    std::int32_t lengthMs(std::string_view md5, std::size_t song);
 
     /**
      * Get descriptive error message.
