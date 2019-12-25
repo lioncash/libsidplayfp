@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "sidmd5.h"
@@ -42,10 +43,14 @@ public:
      *
      * @return the ROM description or "Unknown Rom".
      */
-    const char* info() const
+    std::string_view info() const
     {
-        const auto res = m_checksums.find(checksum());
-        return (res != m_checksums.end()) ? res->second : "Unknown Rom";
+        const auto iter = m_checksums.find(checksum());
+        if (iter == m_checksums.cend())
+        {
+            return "Unknown Rom";
+        }
+        return iter->second;
     }
 
 protected:
@@ -59,13 +64,13 @@ protected:
         m_rom(rom),
         m_size(size) {}
 
-    void add(const char* md5, const char* desc)
+    void add(std::string_view md5, std::string_view desc)
     {
         m_checksums.emplace(md5, desc);
     }
 
 private:
-    using md5map = std::map<std::string, const char*>;
+    using md5map = std::map<std::string_view, std::string_view>;
 
     romCheck();
 
@@ -82,7 +87,7 @@ private:
 
             return md5.getDigest();
         }
-        catch (md5Error const&)
+        catch (const md5Error&)
         {
             return std::string();
         }
