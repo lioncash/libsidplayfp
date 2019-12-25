@@ -93,7 +93,7 @@ public:
      *
      * @param event the event to cancel
      */
-    void cancel(Event &event);
+    void cancel(const Event &event);
 
     /**
      * Cancel all pending events and reset time.
@@ -117,7 +117,7 @@ public:
      * @param event the event
      * @return true when pending
      */
-    bool isPending(Event &event) const;
+    bool isPending(const Event &event) const;
 
     /**
      * Get time with respect to a specific clock phase.
