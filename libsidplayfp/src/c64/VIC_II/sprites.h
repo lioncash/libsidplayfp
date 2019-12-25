@@ -24,10 +24,9 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
+#include <array>
+#include <cstddef>
 #include <cstdint>
-#include <cstring>
-
-#define SPRITES 8
 
 namespace libsidplayfp
 {
@@ -38,7 +37,7 @@ namespace libsidplayfp
 class Sprites
 {
 public:
-    explicit Sprites(uint8_t regs[0x40]) :
+    explicit Sprites(const std::array<uint8_t, 0x40>& regs) :
         enable(regs[0x15]),
         y_expansion(regs[0x17]) {}
 
@@ -47,8 +46,8 @@ public:
         exp_flop = 0xff;
         dma = 0;
 
-        memset(mc_base, 0, sizeof(mc_base));
-        memset(mc, 0, sizeof(mc));
+        mc_base.fill(0);
+        mc.fill(0);
     }
 
     /**
@@ -58,7 +57,7 @@ public:
     void updateMc()
     {
         uint8_t mask = 1;
-        for (unsigned int i = 0; i < SPRITES; i++, mask <<= 1)
+        for (std::size_t i = 0; i < mc.size(); i++, mask <<= 1)
         {
             if (dma & mask)
                 mc[i] = (mc[i] + 3) & 0x3f;
@@ -71,7 +70,7 @@ public:
     void updateMcBase()
     {
         uint8_t mask = 1;
-        for (unsigned int i = 0; i < SPRITES; i++, mask <<= 1)
+        for (std::size_t i = 0; i < mc.size(); i++, mask <<= 1)
         {
             if (exp_flop & mask)
             {
@@ -95,10 +94,7 @@ public:
      */
     void checkDisplay()
     {
-        for (unsigned int i = 0; i < SPRITES; i++)
-        {
-            mc[i] = mc_base[i];
-        }
+        mc = mc_base;
     }
 
     /**
@@ -107,11 +103,11 @@ public:
      * @rasterY y raster position
      * @regs the VIC registers
      */
-    void checkDma(unsigned int rasterY, const uint8_t regs[0x40])
+    void checkDma(unsigned int rasterY, const std::array<uint8_t, 0x40>& regs)
     {
         const uint8_t y = rasterY & 0xff;
         uint8_t mask = 1;
-        for (unsigned int i = 0; i < SPRITES; i++, mask <<= 1)
+        for (std::size_t i = 0; i < mc_base.size(); i++, mask <<= 1)
         {
             if ((enable & mask) && (y == regs[(i << 1) + 1]) && !(dma & mask))
             {
@@ -131,7 +127,7 @@ public:
     void lineCrunch(uint8_t data, unsigned int lineCycle)
     {
         uint8_t mask = 1;
-        for (unsigned int i = 0; i < SPRITES; i++, mask <<= 1)
+        for (std::size_t i = 0; i < mc.size(); i++, mask <<= 1)
         {
             if (!(data & mask) && !(exp_flop & mask))
             {
@@ -162,12 +158,13 @@ public:
     }
 
 private:
+    static constexpr std::size_t num_sprites = 8;
     const uint8_t &enable, &y_expansion;
 
     uint8_t exp_flop;
     uint8_t dma;
-    uint8_t mc_base[SPRITES];
-    uint8_t mc[SPRITES];
+    std::array<uint8_t, num_sprites> mc_base{};
+    std::array<uint8_t, num_sprites> mc{};
 };
 
 }

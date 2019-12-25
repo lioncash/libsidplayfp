@@ -31,26 +31,21 @@
 
 #include "c64/VIC_II/mos656x.h"
 
-#include <cstring>
-
-#include "sidendian.h"
-
 namespace libsidplayfp
 {
 
 /// Cycle # at which the VIC takes the bus in a bad line (BA goes low).
-const unsigned int VICII_FETCH_CYCLE = 11;
+constexpr unsigned int VICII_FETCH_CYCLE = 11;
 
-const unsigned int VICII_SCREEN_TEXTCOLS = 40;
+constexpr unsigned int VICII_SCREEN_TEXTCOLS = 40;
 
-const MOS656X::model_data_t MOS656X::modelData[] =
-{
+const std::array<MOS656X::model_data_t, 5> MOS656X::modelData{{
     {262, 64, &MOS656X::clockOldNTSC},  // Old NTSC (MOS6567R56A)
     {263, 65, &MOS656X::clockNTSC},     // NTSC-M   (MOS6567R8)
     {312, 63, &MOS656X::clockPAL},      // PAL-B    (MOS6569R1, MOS6569R3)
     {312, 65, &MOS656X::clockNTSC},     // PAL-N    (MOS6572)
     {263, 65, &MOS656X::clockNTSC},     // PAL-M    (MOS6573)
-};
+}};
 
 const char *MOS656X::credits()
 {
@@ -87,7 +82,7 @@ void MOS656X::reset()
     vblanking           = false;
     lpAsserted          = false;
 
-    memset(regs, 0, sizeof(regs));
+    regs.fill(0);
 
     lp.reset();
     sprites.reset();

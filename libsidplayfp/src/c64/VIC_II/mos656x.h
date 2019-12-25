@@ -24,6 +24,7 @@
 #ifndef MOS656X_H
 #define MOS656X_H
 
+#include <array>
 #include <cstdint>
 
 #include "Event.h"
@@ -269,19 +270,19 @@ private:
             setBA(false);
     }
 
-    static const model_data_t modelData[];
+    static const std::array<model_data_t, 5> modelData;
 
     /// raster IRQ flag
-    static const int IRQ_RASTER = 1 << 0;
+    static constexpr int IRQ_RASTER = 1 << 0;
 
     /// Light-Pen IRQ flag
-    static const int IRQ_LIGHTPEN = 1 << 3;
+    static constexpr int IRQ_LIGHTPEN = 1 << 3;
 
     /// First line when we check for bad lines
-    static const unsigned int FIRST_DMA_LINE = 0x30;
+    static constexpr unsigned int FIRST_DMA_LINE = 0x30;
 
     /// Last line when we check for bad lines
-    static const unsigned int LAST_DMA_LINE = 0xf7;
+    static constexpr unsigned int LAST_DMA_LINE = 0xf7;
 
     /// Current model clock function.
     ClockFunc clock;
@@ -335,7 +336,7 @@ private:
     Sprites sprites;
 
     /// memory for chip registers
-    uint8_t regs[0x40];
+    std::array<uint8_t, 0x40> regs;
 
     EventCallback<MOS656X> badLineStateChangeEvent;
 
