@@ -20,6 +20,7 @@
 
 #include <sidplayfp/SidTune.h>
 
+#include <array>
 #include "sidtune/SidTuneBase.h"
 
 using namespace libsidplayfp;
@@ -30,8 +31,7 @@ constexpr char MSG_NO_ERRORS[] = "No errors";
 
 // Default sidtune file name extensions. This selection can be overriden
 // by specifying a custom list in the constructor.
-const char* defaultFileNameExt[] =
-{
+constexpr std::array defaultFileNameExt{
     // Preferred default file extension for single-file sidtunes
     // or sidtune description files in SIDPLAY INFOFILE format.
     ".sid", ".SID",
@@ -44,13 +44,13 @@ const char* defaultFileNameExt[] =
     // credit lines of a MUS/STR pair).
     ".str", ".STR", ".mus", ".MUS",
     // End.
-    nullptr
+    static_cast<const char*>(nullptr),
 };
 } // Anonymous namespace
 
-const char** SidTune::fileNameExtensions = defaultFileNameExt;
+const char* const* SidTune::fileNameExtensions = defaultFileNameExt.data();
 
-SidTune::SidTune(const char* fileName, const char **fileNameExt, bool separatorIsSlash)
+SidTune::SidTune(const char* fileName, const char* const* fileNameExt, bool separatorIsSlash)
     : m_statusString{MSG_NO_ERRORS}
 {
     setFileNameExtensions(fileNameExt);
@@ -65,9 +65,9 @@ SidTune::SidTune(const uint_least8_t* oneFileFormatSidtune, uint_least32_t sidtu
 
 SidTune::~SidTune() = default;
 
-void SidTune::setFileNameExtensions(const char **fileNameExt)
+void SidTune::setFileNameExtensions(const char* const* fileNameExt)
 {
-    fileNameExtensions = ((fileNameExt != nullptr) ? fileNameExt : defaultFileNameExt);
+    fileNameExtensions = (fileNameExt != nullptr) ? fileNameExt : defaultFileNameExt.data();
 }
 
 void SidTune::load(const char* fileName, bool separatorIsSlash)

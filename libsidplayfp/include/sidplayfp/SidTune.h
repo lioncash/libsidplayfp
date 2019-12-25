@@ -60,7 +60,7 @@ public:
      * @param fileNameExt
      * @param separatorIsSlash
      */
-    explicit SidTune(const char* fileName, const char** fileNameExt = nullptr,
+    explicit SidTune(const char* fileName, const char* const* fileNameExt = nullptr,
                      bool separatorIsSlash = false);
 
     /**
@@ -86,7 +86,7 @@ public:
      *
      * @param fileNameExt
      */
-    void setFileNameExtensions(const char** fileNameExt);
+    void setFileNameExtensions(const char* const* fileNameExt);
 
     /**
      * Load a sidtune into an existing object from a file.
@@ -168,7 +168,7 @@ public:
 
 private:
     /// Filename extensions to append for various file types.
-    static const char** fileNameExtensions;
+    static const char* const* fileNameExtensions;
 
     std::unique_ptr<libsidplayfp::SidTuneBase> tune;
 

@@ -83,7 +83,7 @@ public:
      * @return the sid tune
      * @throw loadError
      */
-    static std::unique_ptr<SidTuneBase> load(const char* fileName, const char** fileNameExt, bool separatorIsSlash);
+    static std::unique_ptr<SidTuneBase> load(const char* fileName, const char* const* fileNameExt, bool separatorIsSlash);
 
     /**
      * Load a single-file sidtune from a memory buffer.
@@ -234,7 +234,7 @@ private:
 #if !defined(SIDTUNE_NO_STDIN_LOADER)
     static std::unique_ptr<SidTuneBase> getFromStdIn();
 #endif
-    static std::unique_ptr<SidTuneBase> getFromFiles(const char* name, const char **fileNameExtensions, bool separatorIsSlash);
+    static std::unique_ptr<SidTuneBase> getFromFiles(const char* name, const char* const* fileNameExtensions, bool separatorIsSlash);
 
     /**
      * Try to retrieve single-file sidtune from specified buffer.

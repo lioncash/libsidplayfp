@@ -91,7 +91,7 @@ constexpr uint_least32_t MAX_FILELEN = MAX_MEMORY + 2 + 0x7C;
 /// Minimum load address for real c64 only tunes
 constexpr uint_least16_t SIDTUNE_R64_MIN_LOAD_ADDR = 0x07e8;
 
-std::unique_ptr<SidTuneBase> SidTuneBase::load(const char* fileName, const char **fileNameExt,
+std::unique_ptr<SidTuneBase> SidTuneBase::load(const char* fileName, const char* const* fileNameExt,
                                                bool separatorIsSlash)
 {
     if (fileName == nullptr)
@@ -352,7 +352,7 @@ std::string SidTuneBase::createNewFileName(std::string_view sourceName, std::str
 
 // Initializing the object based upon what we find in the specified file.
 
-std::unique_ptr<SidTuneBase> SidTuneBase::getFromFiles(const char* fileName, const char **fileNameExtensions, bool separatorIsSlash)
+std::unique_ptr<SidTuneBase> SidTuneBase::getFromFiles(const char* fileName, const char* const* fileNameExtensions, bool separatorIsSlash)
 {
     buffer_t fileBuf1 = loadFile(fileName);
 
