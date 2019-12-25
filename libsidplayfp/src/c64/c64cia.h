@@ -86,7 +86,7 @@ protected:
 	
 private:
     c64env &m_env;
-    uint_least16_t last_ta;
+    uint_least16_t last_ta = 0;
 };
 
 /**
