@@ -158,28 +158,33 @@ void Mixer::clearSids()
 
 void Mixer::addSid(sidemu *chip)
 {
-    if (chip != nullptr)
+    if (chip == nullptr)
     {
-        m_chips.push_back(chip);
-        m_buffers.push_back(chip->buffer());
-
-        m_iSamples.resize(m_buffers.size());
-
-        if (m_mix.size() > 0)
-            updateParams();
+        return;
     }
+
+    m_chips.push_back(chip);
+    m_buffers.push_back(chip->buffer());
+    m_iSamples.resize(m_buffers.size());
+
+    if (m_mix.empty())
+    {
+        return;
+    }
+
+    updateParams();
 }
 
 void Mixer::setStereo(bool stereo)
 {
-    if (m_stereo != stereo)
+    if (m_stereo == stereo)
     {
-        m_stereo = stereo;
-
-        m_mix.resize(m_stereo ? 2 : 1);
-
-        updateParams();
+        return;
     }
+
+    m_stereo = stereo;
+    m_mix.resize(m_stereo ? 2 : 1);
+    updateParams();
 }
 
 bool Mixer::setFastForward(int ff)
