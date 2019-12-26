@@ -25,6 +25,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 #include <new>
 #include <vector>
 
@@ -209,6 +210,16 @@ bool auFile::open(AudioConfig &cfg)
 
     _settings = cfg;
     return true;
+}
+
+bool auFile::fail() const
+{
+    return file->fail() != 0;
+}
+
+bool auFile::bad() const
+{
+    return file->bad() != 0;
 }
 
 bool auFile::write()

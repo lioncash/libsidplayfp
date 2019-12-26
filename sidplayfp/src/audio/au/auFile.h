@@ -24,7 +24,7 @@
 #ifndef AU_FILE_H
 #define AU_FILE_H
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #include "../AudioBase.h"
@@ -66,8 +66,8 @@ public:
     void reset() override {}
 
     // Stream state.
-    bool fail() const { return (file->fail() != 0); }
-    bool bad()  const { return (file->bad()  != 0); }
+    bool fail() const;
+    bool bad() const;
 
 private:
     std::string name;
