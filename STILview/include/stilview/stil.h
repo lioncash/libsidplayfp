@@ -84,7 +84,7 @@ public:
      * @param stilPath relative path to STIL file
      * @param bugsPath relative path to BUG file
      */
-    STIL(const char *stilPath = DEFAULT_PATH_TO_STIL, const char *bugsPath = DEFAULT_PATH_TO_BUGLIST);
+    explicit STIL(const char *stilPath = DEFAULT_PATH_TO_STIL, const char *bugsPath = DEFAULT_PATH_TO_BUGLIST);
 
     /**
      * Returns a formatted string telling what the version
