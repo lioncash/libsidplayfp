@@ -30,53 +30,56 @@
 #include <new>
 #include <vector>
 
-// Get the lo byte (8 bit) in a dword (32 bit)
-inline uint8_t endian_32lo8 (uint_least32_t dword)
+namespace
 {
-    return (uint8_t) dword;
+// Get the lo byte (8 bit) in a dword (32 bit)
+uint8_t endian_32lo8(uint_least32_t dword)
+{
+    return static_cast<uint8_t>(dword);
 }
 
 // Get the hi byte (8 bit) in a dword (32 bit)
-inline uint8_t endian_32hi8 (uint_least32_t dword)
+uint8_t endian_32hi8(uint_least32_t dword)
 {
-    return (uint8_t) (dword >> 8);
+    return static_cast<uint8_t>(dword >> 8);
 }
 
 // Get the hi word (16bit) in a dword (32 bit)
-inline uint_least16_t endian_32hi16 (uint_least32_t dword)
+uint_least16_t endian_32hi16(uint_least32_t dword)
 {
-    return (uint_least16_t) (dword >> 16);
+    return static_cast<uint_least16_t>(dword >> 16);
 }
 
 // Get the lo byte (8 bit) in a word (16 bit)
-inline uint8_t endian_16lo8 (uint_least16_t word)
+uint8_t endian_16lo8(uint_least16_t word)
 {
-    return (uint8_t) word;
+    return static_cast<uint8_t>(word);
 }
 
 // Set the hi byte (8 bit) in a word (16 bit)
-inline uint8_t endian_16hi8 (uint_least16_t word)
+uint8_t endian_16hi8(uint_least16_t word)
 {
-    return (uint8_t) (word >> 8);
+    return static_cast<uint8_t>(word >> 8);
 }
 
 // Write a little-endian 16-bit word to two bytes in memory.
-inline void endian_little16 (uint8_t ptr[2], uint_least16_t word)
+void endian_little16(uint8_t ptr[2], uint_least16_t word)
 {
-    ptr[0] = endian_16lo8 (word);
-    ptr[1] = endian_16hi8 (word);
+    ptr[0] = endian_16lo8(word);
+    ptr[1] = endian_16hi8(word);
 }
 
 // Write a little-endian 32-bit word to four bytes in memory.
-inline void endian_little32 (uint8_t ptr[4], uint_least32_t dword)
+void endian_little32(uint8_t ptr[4], uint_least32_t dword)
 {
     uint_least16_t word = 0;
-    ptr[0] = endian_32lo8  (dword);
-    ptr[1] = endian_32hi8  (dword);
-    word   = endian_32hi16 (dword);
-    ptr[2] = endian_16lo8  (word);
-    ptr[3] = endian_16hi8  (word);
+    ptr[0] = endian_32lo8(dword);
+    ptr[1] = endian_32hi8(dword);
+    word = endian_32hi16(dword);
+    ptr[2] = endian_16lo8(word);
+    ptr[3] = endian_16hi8(word);
 }
+} // Anonymous namespace
 
 const riffHeader WavFile::defaultRiffHdr =
 {
