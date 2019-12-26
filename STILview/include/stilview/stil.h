@@ -366,7 +366,6 @@ private:
      * already be positioned to the entry to be read.
      *
      * @param inFile   - filehandle of file to read from
-     * @param entryStr - the entry needed to be read
      * @param buffer   - where to put the result to
      */
     void readEntry(std::ifstream &inFile, std::string &buffer);
