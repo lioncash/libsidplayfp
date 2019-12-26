@@ -43,15 +43,6 @@
 #   endif
 #endif
 
-/* Deprecated attributes */
-#if defined(_MSCVER)
-#  define STIL_DEPRECATED __declspec(deprecated)
-#elif defined(__GNUC__)
-#  define STIL_DEPRECATED __attribute__ ((deprecated))
-#else
-#  define STIL_DEPRECATED
-#endif
-
 #if defined(__linux__) || defined(__FreeBSD__) || defined(solaris2) || defined(sun) || defined(sparc) || defined(sgi)
 #  define UNIX
 #endif
