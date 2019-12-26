@@ -151,13 +151,10 @@ const auHeader auFile::defaultAuHdr =
     {0,0,0,0},             // Channels
 };
 
-auFile::auFile(const std::string &name) :
+auFile::auFile(std::string name) :
     AudioBase("AUFILE"),
-    name(name),
-    auHdr(defaultAuHdr),
-    file(nullptr),
-    headerWritten(false),
-    precision(32)
+    name(std::move(name)),
+    auHdr(defaultAuHdr)
 {}
 
 bool auFile::open(AudioConfig &cfg)

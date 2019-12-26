@@ -47,21 +47,9 @@ struct auHeader                         // little endian format
  */
 class auFile: public AudioBase
 {
-private:
-    std::string name;
-
-    unsigned long int byteCount;
-
-    static const auHeader defaultAuHdr;
-    auHeader auHdr;
-
-    std::ostream *file;
-    bool headerWritten;
-    int precision;
-
 public:
-    auFile(const std::string &name);
-    ~auFile() { close(); }
+    explicit auFile(std::string name);
+    ~auFile() override { auFile::close(); }
 
     static const char *extension () { return ".au"; }
 
@@ -80,6 +68,18 @@ public:
     // Stream state.
     bool fail() const { return (file->fail() != 0); }
     bool bad()  const { return (file->bad()  != 0); }
+
+private:
+    std::string name;
+
+    unsigned long int byteCount = 0;
+
+    static const auHeader defaultAuHdr;
+    auHeader auHdr;
+
+    std::ostream* file = nullptr;
+    bool headerWritten = false;
+    int precision = 32;
 };
 
 #endif /* AU_FILE_H */
