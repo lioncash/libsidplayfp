@@ -316,25 +316,25 @@ int ConsolePlayer::args(int argc, const char *argv[])
             }
 
             // Video/Verbose Options
-            else if (strcmp (&argv[i][1], "vnf") == 0)
+            else if (strcmp(&argv[i][1], "vnf") == 0)
             {
                 m_engCfg.forceC64Model = true;
                 m_engCfg.defaultC64Model  = SidConfig::C64Model::NTSC;
             }
-            else if (strcmp (&argv[i][1], "vpf") == 0)
+            else if (strcmp(&argv[i][1], "vpf") == 0)
             {
                 m_engCfg.forceC64Model = true;
                 m_engCfg.defaultC64Model  = SidConfig::C64Model::PAL;
             }
-            else if (strcmp (&argv[i][1], "vf") == 0)
+            else if (strcmp(&argv[i][1], "vf") == 0)
             {
                 m_engCfg.forceC64Model = true;
             }
-            else if (strcmp (&argv[i][1], "vn") == 0)
+            else if (strcmp(&argv[i][1], "vn") == 0)
             {
                 m_engCfg.defaultC64Model  = SidConfig::C64Model::NTSC;
             }
-            else if (strcmp (&argv[i][1], "vp") == 0)
+            else if (strcmp(&argv[i][1], "vp") == 0)
             {
                 m_engCfg.defaultC64Model  = SidConfig::C64Model::PAL;
             }
@@ -345,7 +345,7 @@ int ConsolePlayer::args(int argc, const char *argv[])
                 else
                     m_verboseLevel = atoi(&argv[i][2]);
             }
-            else if (strncmp (&argv[i][1], "-delay=", 7) == 0)
+            else if (strncmp(&argv[i][1], "-delay=", 7) == 0)
             {
                 m_engCfg.powerOnDelay = (uint_least16_t) atoi(&argv[i][8]);
             }
@@ -357,70 +357,70 @@ int ConsolePlayer::args(int argc, const char *argv[])
                 if (argv[i][2] != '\0')
                     m_outfile = &argv[i][2];
             }
-            else if (strncmp (&argv[i][1], "-wav", 4) == 0)
+            else if (strncmp(&argv[i][1], "-wav", 4) == 0)
             {
                 m_driver.output = OutputType::WAV;
                 m_driver.file   = true;
                 if (argv[i][5] != '\0')
                     m_outfile = &argv[i][5];
             }
-            else if (strncmp (&argv[i][1], "-au", 3) == 0)
+            else if (strncmp(&argv[i][1], "-au", 3) == 0)
             {
                 m_driver.output = OutputType::AU;
                 m_driver.file   = true;
                 if (argv[i][4] != '\0')
                     m_outfile = &argv[i][4];
             }
-            else if (strncmp (&argv[i][1], "-info", 5) == 0)
+            else if (strncmp(&argv[i][1], "-info", 5) == 0)
             {
-                m_driver.info   = true;
+                m_driver.info = true;
             }
 #ifdef HAVE_SIDPLAYFP_BUILDERS_RESIDFP_H
-            else if (strcmp (&argv[i][1], "-residfp") == 0)
+            else if (strcmp(&argv[i][1], "-residfp") == 0)
             {
-                m_driver.sid    = EMU_RESIDFP;
+                m_driver.sid = SIDEmu::ReSIDFP;
             }
 #endif // HAVE_SIDPLAYFP_BUILDERS_RESIDFP_H
 
 #ifdef HAVE_SIDPLAYFP_BUILDERS_RESID_H
-            else if (strcmp (&argv[i][1], "-resid") == 0)
+            else if(strcmp (&argv[i][1], "-resid") == 0)
             {
-                m_driver.sid    = EMU_RESID;
+                m_driver.sid = SIDEmu::ReSID;
             }
 #endif // HAVE_SIDPLAYFP_BUILDERS_RESID_H
 
             // Hardware selection
 #ifdef HAVE_SIDPLAYFP_BUILDERS_HARDSID_H
-            else if (strcmp (&argv[i][1], "-hardsid") == 0)
+            else if(strcmp(&argv[i][1], "-hardsid") == 0)
             {
-                m_driver.sid    = EMU_HARDSID;
-                m_driver.output = OUT_NULL;
+                m_driver.sid    = SIDEmu::HardSID;
+                m_driver.output = OutputType::Null;
             }
 #endif // HAVE_SIDPLAYFP_BUILDERS_HARDSID_H
 
 #ifdef HAVE_SIDPLAYFP_BUILDERS_EXSID_H
-            else if (strcmp (&argv[i][1], "-exsid") == 0)
+            else if(strcmp(&argv[i][1], "-exsid") == 0)
             {
-                m_driver.sid    = EMU_EXSID;
-                m_driver.output = OUT_NULL;
+                m_driver.sid    = SIDEmu::exSID;
+                m_driver.output = OutputType::Null;
             }
 #endif // HAVE_SIDPLAYFP_BUILDERS_EXSID_H
 
             // These are for debug
-            else if (strcmp (&argv[i][1], "-none") == 0)
+            else if (strcmp(&argv[i][1], "-none") == 0)
             {
-                m_driver.sid    = EMU_NONE;
+                m_driver.sid = SIDEmu::None;
                 m_driver.output = OutputType::Null;
             }
-            else if (strcmp (&argv[i][1], "-nosid") == 0)
+            else if (strcmp(&argv[i][1], "-nosid") == 0)
             {
-                m_driver.sid = EMU_NONE;
+                m_driver.sid = SIDEmu::None;
             }
-            else if (strcmp (&argv[i][1], "-noaudio") == 0)
+            else if (strcmp(&argv[i][1], "-noaudio") == 0)
             {
                 m_driver.output = OutputType::Null;
             }
-            else if (strcmp (&argv[i][1], "-cpu-debug") == 0)
+            else if (strcmp(&argv[i][1], "-cpu-debug") == 0)
             {
                 m_cpudebug = true;
             }
@@ -475,15 +475,15 @@ int ConsolePlayer::args(int argc, const char *argv[])
 
     // Check to see if we are trying to generate an audio file
     // whilst using a hardware emulation
-    if (m_driver.file && (m_driver.sid >= EMU_HARDSID))
+    if (m_driver.file && m_driver.sid >= SIDEmu::HardSID)
     {
-        displayError ("ERROR: Cannot generate audio files using hardware emulations");
+        displayError("ERROR: Cannot generate audio files using hardware emulations");
         return -1;
     }
 
     if (m_driver.info && m_driver.file)
     {
-        displayError ("WARNING: metadata can bve added only to wav files");
+        displayError("WARNING: metadata can bve added only to wav files");
     }
 
     // Select the desired track

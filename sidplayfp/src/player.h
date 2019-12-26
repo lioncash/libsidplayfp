@@ -76,16 +76,23 @@ enum player_state_t
     playerFastExit = playerExit | playerFast
 };
 
-enum SIDEMUS
+enum class SIDEmu
 {
-    /* Same as EMU_DEFAULT except no soundcard.
-    Still allows wav generation */
-    EMU_NONE = 0,
-    /* The following require a soundcard */
-    EMU_DEFAULT, EMU_RESIDFP, EMU_RESID,
-    /* The following should disable the soundcard */
-    EMU_HARDSID, EMU_EXSID, EMU_SIDSTATION, EMU_COMMODORE,
-    EMU_SIDSYN, EMU_END
+    // Same as Default except no sound card.
+    // Still allows WAV generation
+    None,
+
+    // The following require a sound card.
+    Default,
+    ReSIDFP,
+    ReSID,
+
+    // The following should disable the sound card.
+    HardSID,
+    exSID,
+    SIDStation,
+    Commodore,
+    SIDSyn,
 };
 
 enum class OutputType
@@ -170,7 +177,7 @@ private:
     struct m_driver_t
     {
         OutputType     output;   // Selected output type
-        SIDEMUS        sid;      // Sid emulation
+        SIDEmu         sid;      // SID emulation
         bool           file;     // File based driver
         bool           info;     // File metadata
         AudioConfig    cfg;
@@ -214,7 +221,7 @@ private:
     void displayArgs    (const char *arg = nullptr);
 
     bool createOutput   (OutputType driver, const SidTuneInfo *tuneInfo);
-    bool createSidEmu   (SIDEMUS emu);
+    bool createSidEmu   (SIDEmu emu);
     void displayError   (const char *error);
     void displayError   (unsigned int num) { ::displayError (m_name, num); }
     void decodeKeys     (void);

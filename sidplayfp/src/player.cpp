@@ -156,7 +156,7 @@ ConsolePlayer::ConsolePlayer (const char * const name) :
 {   // Other defaults
     m_filter.enabled = true;
     m_driver.device  = nullptr;
-    m_driver.sid     = EMU_RESIDFP;
+    m_driver.sid     = SIDEmu::ReSIDFP;
     m_timer.start    = 0;
     m_timer.length   = 0; // FOREVER
     m_timer.valid    = false;
@@ -194,37 +194,37 @@ ConsolePlayer::ConsolePlayer (const char * const name) :
 
         if (!emulation.engine.empty())
         {
-            if (emulation.engine.compare(TEXT("RESIDFP")) == 0)
+            if (emulation.engine == TEXT("RESIDFP"))
             {
-                m_driver.sid    = EMU_RESIDFP;
+                m_driver.sid = SIDEmu::ReSIDFP;
             }
-            else if (emulation.engine.compare(TEXT("RESID")) == 0)
+            else if (emulation.engine == TEXT("RESID"))
             {
-                m_driver.sid    = EMU_RESID;
+                m_driver.sid = SIDEmu::ReSID;
             }
 #ifdef HAVE_SIDPLAYFP_BUILDERS_HARDSID_H
-            else if (emulation.engine.compare(TEXT("HARDSID")) == 0)
+            else if (emulation.engine == TEXT("HARDSID"))
             {
-                m_driver.sid    = EMU_HARDSID;
-                m_driver.output = OUT_NULL;
+                m_driver.sid = SIDEmu::HardSID;
+                m_driver.output = OutputType::Null;
             }
 #endif
 #ifdef HAVE_SIDPLAYFP_BUILDERS_EXSID_H
-            else if (emulation.engine.compare(TEXT("EXSID")) == 0)
+            else if (emulation.engine == TEXT("EXSID"))
             {
-                m_driver.sid    = EMU_EXSID;
-                m_driver.output = OUT_NULL;
+                m_driver.sid = SIDEmu::exSID;
+                m_driver.output = OutputType::Null;
             }
 #endif
-            else if (emulation.engine.compare(TEXT("NONE")) == 0)
+            else if (emulation.engine == TEXT("NONE"))
             {
-                m_driver.sid    = EMU_NONE;
+                m_driver.sid = SIDEmu::None;
             }
         }
     }
 
     createOutput(OutputType::Null, nullptr);
-    createSidEmu(EMU_NONE);
+    createSidEmu(SIDEmu::None);
 
     uint8_t *kernalRom = loadRom((m_iniCfg.sidplay2()).kernalRom, 8192, TEXT("kernal"));
     uint8_t *basicRom = loadRom((m_iniCfg.sidplay2()).basicRom, 8192, TEXT("basic"));
@@ -384,7 +384,7 @@ bool ConsolePlayer::createOutput(OutputType driver, const SidTuneInfo *tuneInfo)
 
 
 // Create the sid emulation
-bool ConsolePlayer::createSidEmu (SIDEMUS emu)
+bool ConsolePlayer::createSidEmu(SIDEmu emu)
 {
     // Remove old driver and emulation
     if (m_engCfg.sidEmulation)
@@ -399,7 +399,7 @@ bool ConsolePlayer::createSidEmu (SIDEMUS emu)
     switch (emu)
     {
 #ifdef HAVE_SIDPLAYFP_BUILDERS_RESIDFP_H
-    case EMU_RESIDFP:
+    case SIDEmu::ReSIDFP:
     {
         try
         {
@@ -423,7 +423,7 @@ bool ConsolePlayer::createSidEmu (SIDEMUS emu)
 #endif // HAVE_SIDPLAYFP_BUILDERS_RESIDFP_H
 
 #ifdef HAVE_SIDPLAYFP_BUILDERS_RESID_H
-    case EMU_RESID:
+    case SIDEmu::ReSID:
     {
         try
         {
@@ -444,7 +444,7 @@ bool ConsolePlayer::createSidEmu (SIDEMUS emu)
 #endif // HAVE_SIDPLAYFP_BUILDERS_RESID_H
 
 #ifdef HAVE_SIDPLAYFP_BUILDERS_HARDSID_H
-    case EMU_HARDSID:
+    case SIDEmu::HardSID:
     {
         try
         {
@@ -461,7 +461,7 @@ bool ConsolePlayer::createSidEmu (SIDEMUS emu)
 #endif // HAVE_SIDPLAYFP_BUILDERS_HARDSID_H
 
 #ifdef HAVE_SIDPLAYFP_BUILDERS_EXSID_H
-    case EMU_EXSID:
+    case SIDEmu::exSID:
     {
         try
         {
@@ -486,15 +486,17 @@ bool ConsolePlayer::createSidEmu (SIDEMUS emu)
 
     if (!m_engCfg.sidEmulation)
     {
-        if (emu > EMU_DEFAULT)
-        {   // No sid emulation?
+        if (emu > SIDEmu::Default)
+        {
+            // No sid emulation?
             displayError (ERR_NOT_ENOUGH_MEMORY);
             return false;
         }
     }
 
-    if (m_engCfg.sidEmulation) {
-        /* set up SID filter. HardSID just ignores call with def. */
+    if (m_engCfg.sidEmulation)
+    {
+        // Set up SID filter. HardSID just ignores call with def.
         m_engCfg.sidEmulation->filter(m_filter.enabled);
     }
 
@@ -611,7 +613,7 @@ void ConsolePlayer::close()
 
     // Shutdown drivers, etc
     createOutput(OutputType::Null, nullptr);
-    createSidEmu(EMU_NONE);
+    createSidEmu(SIDEmu::None);
     m_engine.load(nullptr);
     m_engine.config(m_engCfg);
 
