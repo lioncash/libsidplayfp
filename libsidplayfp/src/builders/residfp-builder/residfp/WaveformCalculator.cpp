@@ -38,7 +38,7 @@ namespace
  *
  * [1] http://svn.code.sf.net/p/sidplay-residfp/code/trunk/combined-waveforms/
  */
-const CombinedWaveformConfig config[2][4] =
+const CombinedWaveformConfig configs[2][4] =
 {
     { /* kevtris chip G (6581 R2) */
         {0.90251f, 0.f,        0.f,       1.9147f,    1.6747f,  0.62376f }, // error  1689 (280)
@@ -174,7 +174,7 @@ WaveformCalculator* WaveformCalculator::getInstance()
 
 matrix_t* WaveformCalculator::buildTable(ChipModel model)
 {
-    const CombinedWaveformConfig* cfgArray = config[model == MOS6581 ? 0 : 1];
+    const CombinedWaveformConfig* cfgArray = configs[model == MOS6581 ? 0 : 1];
 
     cw_cache_t::iterator lb = CACHE.lower_bound(cfgArray);
 
