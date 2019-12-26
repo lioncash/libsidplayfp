@@ -131,7 +131,7 @@ void Tod::event()
     cycles += period;
 
     // Fixed precision 25.7
-    eventScheduler.schedule(*this, cycles >> 7);
+    eventScheduler.schedule(*this, static_cast<std::uint32_t>(cycles >> 7));
     cycles &= 0x7F; // Just keep the decimal part
 
     if (!isStopped)
