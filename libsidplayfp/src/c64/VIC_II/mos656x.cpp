@@ -262,7 +262,7 @@ void MOS656X::event()
     {
         // Update x raster
         rasterClk += cycles;
-        lineCycle += cycles;
+        lineCycle += static_cast<std::uint32_t>(cycles);
         lineCycle %= cyclesPerLine;
 
         delay = (this->*clock)();
@@ -272,7 +272,8 @@ void MOS656X::event()
         delay = 1;
     }
 
-    eventScheduler.schedule(*this, delay - event_clock_t(eventScheduler.phase()), EventPhase::ClockPHI1);
+    eventScheduler.schedule(*this, static_cast<std::uint32_t>(delay - event_clock_t(eventScheduler.phase())),
+                            EventPhase::ClockPHI1);
 }
 
 event_clock_t MOS656X::clockPAL()
