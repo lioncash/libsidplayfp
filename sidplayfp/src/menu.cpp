@@ -30,16 +30,6 @@
 #include <sidplayfp/SidInfo.h>
 #include <sidplayfp/SidTuneInfo.h>
 
-using std::cout;
-using std::cerr;
-using std::dec;
-using std::endl;
-using std::flush;
-using std::hex;
-using std::setfill;
-using std::setw;
-using std::string;
-
 const char SID6581[] = "MOS6581";
 const char SID8580[] = "CSG8580";
 
@@ -100,9 +90,9 @@ void ConsolePlayer::menu()
     // cerr << (char) 12 << '\f'; // New Page
     if ((m_iniCfg.console ()).ansi)
     {
-        cerr << '\x1b' << "[40m";  // Background black
-        cerr << '\x1b' << "[2J";   // Clear screen
-        cerr << '\x1b' << "[0;0H"; // Move cursor to 0,0
+        std::cerr << '\x1b' << "[40m";  // Background black
+        std::cerr << '\x1b' << "[2J";   // Clear screen
+        std::cerr << '\x1b' << "[0;0H"; // Move cursor to 0,0
     }
 
     consoleTable(tableStart);
@@ -112,11 +102,11 @@ void ConsolePlayer::menu()
     consoleColour(PlayerColor::Blue, true);
     std::cerr << "PLAYFP";
     consoleColour(PlayerColor::White, true);
-    std::cerr << " - Music Player and C64 SID Chip Emulator" << endl;
+    std::cerr << " - Music Player and C64 SID Chip Emulator" << std::endl;
     consoleTable(tableMiddle);
     consoleColour(PlayerColor::White, false);
     {
-        string version;
+        std::string version;
         version.reserve(54);
         version.append("Sidplayfp V" VERSION ", ").append(1, std::toupper(*info.name())).append(info.name() + 1).append(" V").append(info.version());
         std::cerr << std::setw(54/2 + version.length()/2) << version << std::endl;
@@ -138,12 +128,12 @@ void ConsolePlayer::menu()
             consoleColour(PlayerColor::Cyan, true);
             std::cerr << " Author       : ";
             consoleColour(PlayerColor::Magenta, true);
-            std::cerr << tuneInfo->infoString(1) << endl;
+            std::cerr << tuneInfo->infoString(1) << std::endl;
             consoleTable(tableMiddle);
             consoleColour(PlayerColor::Cyan, true);
             std::cerr << " Released     : ";
             consoleColour(PlayerColor::Magenta, true);
-            std::cerr << tuneInfo->infoString(2) << endl;
+            std::cerr << tuneInfo->infoString(2) << std::endl;
         }
     }
 
@@ -242,11 +232,11 @@ void ConsolePlayer::menu()
     }
     else if (m_timer.valid)
     {
-        cerr << "FOREVER";
+        std::cerr << "FOREVER";
     }
     else
     {
-        cerr << "UNKNOWN";
+        std::cerr << "UNKNOWN";
     }
     if (m_timer.start)
     {   // Show offset
@@ -254,7 +244,7 @@ void ConsolePlayer::menu()
         std::cerr << " (+" << std::setw(2) << std::setfill('0') << ((seconds / 60) % 100)
                   << ':' << std::setw(2) << std::setfill('0') << (seconds % 60) << ")";
     }
-    cerr << endl;
+    std::cerr << std::endl;
 
     if (m_verboseLevel)
     {
@@ -436,7 +426,7 @@ void ConsolePlayer::menu()
     }
     std::cerr << std::endl;
 
-    consoleTable (tableEnd);
+    consoleTable(tableEnd);
 
     if (m_driver.file)
         std::cerr << "Creating audio file, please wait...";
@@ -445,7 +435,7 @@ void ConsolePlayer::menu()
 
     // Get all the text to the screen so music playback
     // is not disturbed.
-    if ( !m_quietLevel )
+    if (!m_quietLevel)
         std::cerr << "00:00";
     std::cerr << std::flush;
 }
@@ -453,7 +443,7 @@ void ConsolePlayer::menu()
 // Set colour of text on console
 void ConsolePlayer::consoleColour(PlayerColor colour, bool bold)
 {
-    if ((m_iniCfg.console ()).ansi)
+    if (m_iniCfg.console().ansi)
     {
         const char *mode = "";
 
@@ -485,38 +475,38 @@ void ConsolePlayer::consoleTable (player_table_t table)
     switch (table)
     {
     case tableStart:
-        cerr << (m_iniCfg.console ()).topLeft << setw(tableWidth)
-             << setfill ((m_iniCfg.console ()).horizontal) << ""
-             << (m_iniCfg.console ()).topRight;
+        std::cerr << m_iniCfg.console().topLeft << std::setw(tableWidth)
+                  << std::setfill(m_iniCfg.console().horizontal) << ""
+                  << m_iniCfg.console().topRight;
         break;
 
     case tableMiddle:
-        cerr << setw(tableWidth + 1) << setfill(' ') << ""
-             << (m_iniCfg.console ()).vertical << '\r'
-             << (m_iniCfg.console ()).vertical;
+        std::cerr << std::setw(tableWidth + 1) << std::setfill(' ') << ""
+                  << m_iniCfg.console().vertical << '\r'
+                  << m_iniCfg.console ().vertical;
         return;
 
     case tableSeparator:
-        cerr << (m_iniCfg.console ()).junctionRight << setw(tableWidth)
-             << setfill ((m_iniCfg.console ()).horizontal) << ""
-             << (m_iniCfg.console ()).junctionLeft;
+        std::cerr << m_iniCfg.console().junctionRight << std::setw(tableWidth)
+                  << std::setfill(m_iniCfg.console().horizontal) << ""
+                  << m_iniCfg.console().junctionLeft;
         break;
 
     case tableEnd:
-        cerr << (m_iniCfg.console ()).bottomLeft << setw(tableWidth)
-             << setfill ((m_iniCfg.console ()).horizontal) << ""
-             << (m_iniCfg.console ()).bottomRight;
+        std::cerr << m_iniCfg.console().bottomLeft << std::setw(tableWidth)
+                  << std::setfill(m_iniCfg.console().horizontal) << ""
+                  << m_iniCfg.console().bottomRight;
         break;
     }
 
-    // Move back to begining of row and skip first char
-    cerr << "\n";
+    // Move back to beginning of row and skip first char
+    std::cerr << '\n';
 }
 
 
 // Restore Ansi Console to defaults
 void ConsolePlayer::consoleRestore ()
 {
-    if ((m_iniCfg.console ()).ansi)
-        cerr << '\x1b' << "[0m";
+    if (m_iniCfg.console().ansi)
+        std::cerr << '\x1b' << "[0m";
 }
