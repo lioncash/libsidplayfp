@@ -122,7 +122,7 @@ void ExternalFilter::reset()
 // ----------------------------------------------------------------------------
 // Audio output (16 bits).
 // ----------------------------------------------------------------------------
-short ExternalFilter::output()
+short ExternalFilter::output() const
 {
     // Saturated arithmetics to guard against 16 bit sample overflow.
     const int half = 1 << 15;
@@ -133,7 +133,7 @@ short ExternalFilter::output()
     else if (Vo < -half) {
         Vo = -half;
     }
-    return Vo;
+    return static_cast<short>(Vo);
 }
 
 } // namespace reSID

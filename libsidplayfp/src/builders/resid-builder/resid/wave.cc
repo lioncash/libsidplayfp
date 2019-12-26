@@ -88,7 +88,7 @@ WaveformGenerator::WaveformGenerator()
       // The triangle calculation is made branch-free, just for the hell of it.
       model_wave[0][0][i] = model_wave[1][0][i] = 0xfff;
       model_wave[0][1][i] = model_wave[1][1][i] = ((accumulator ^ -!!msb) >> 11) & 0xffe;
-      model_wave[0][2][i] = model_wave[1][2][i] = accumulator >> 12;
+      model_wave[0][2][i] = model_wave[1][2][i] = static_cast<unsigned short>(accumulator >> 12);
       model_wave[0][4][i] = model_wave[1][4][i] = 0xfff;
 
       accumulator += 0x1000;
@@ -687,7 +687,7 @@ void WaveformGenerator::reset_shift_register()
 
 void WaveformGenerator::set_noise_output()
 {
-    noise_output =
+    noise_output = static_cast<unsigned short>(
         ((shift_register & 0x100000) >> 9) |
         ((shift_register & 0x040000) >> 8) |
         ((shift_register & 0x004000) >> 5) |
@@ -695,7 +695,7 @@ void WaveformGenerator::set_noise_output()
         ((shift_register & 0x000200) >> 2) |
         ((shift_register & 0x000020) << 1) |
         ((shift_register & 0x000004) << 3) |
-        ((shift_register & 0x000001) << 4);
+        ((shift_register & 0x000001) << 4));
 
     no_noise_or_noise_output = no_noise | noise_output;
 }

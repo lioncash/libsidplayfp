@@ -119,10 +119,10 @@ void SID::reset()
 // Note that to mix in an external audio signal, the signal should be
 // resampled to 1MHz first to avoid sampling noise.
 // ----------------------------------------------------------------------------
-void SID::input(short sample)
+void SID::input(short in_sample)
 {
   // The input can be used to simulate the MOS8580 "digi boost" hardware hack.
-  filter.input(sample);
+  filter.input(in_sample);
 }
 
 // ----------------------------------------------------------------------------
@@ -336,28 +336,28 @@ SID::State SID::read_state()
   for (i = 0, j = 0; i < 3; i++, j += 7) {
     WaveformGenerator& wave = voice[i].wave;
     EnvelopeGenerator& envelope = voice[i].envelope;
-    state.sid_register[j + 0] = wave.freq & 0xff;
-    state.sid_register[j + 1] = wave.freq >> 8;
-    state.sid_register[j + 2] = wave.pw & 0xff;
-    state.sid_register[j + 3] = wave.pw >> 8;
-    state.sid_register[j + 4] =
+    state.sid_register[j + 0] = char(wave.freq & 0xff);
+    state.sid_register[j + 1] = char(wave.freq >> 8);
+    state.sid_register[j + 2] = char(wave.pw & 0xff);
+    state.sid_register[j + 3] = char(wave.pw >> 8);
+    state.sid_register[j + 4] = char(
       (wave.waveform << 4)
       | (wave.test ? 0x08 : 0)
       | (wave.ring_mod ? 0x04 : 0)
       | (wave.sync ? 0x02 : 0)
-      | (envelope.gate ? 0x01 : 0);
-    state.sid_register[j + 5] = (envelope.attack << 4) | envelope.decay;
-    state.sid_register[j + 6] = (envelope.sustain << 4) | envelope.release;
+      | (envelope.gate ? 0x01 : 0));
+    state.sid_register[j + 5] = char((envelope.attack << 4) | envelope.decay);
+    state.sid_register[j + 6] = char((envelope.sustain << 4) | envelope.release);
   }
 
-  state.sid_register[j++] = filter.fc & 0x007;
-  state.sid_register[j++] = filter.fc >> 3;
-  state.sid_register[j++] = (filter.res << 4) | filter.filt;
-  state.sid_register[j++] = filter.mode | filter.vol;
+  state.sid_register[j++] = char(filter.fc & 0x007);
+  state.sid_register[j++] = char(filter.fc >> 3);
+  state.sid_register[j++] = char((filter.res << 4) | filter.filt);
+  state.sid_register[j++] = char(filter.mode | filter.vol);
 
   // These registers are superfluous, but are included for completeness.
   for (; j < 0x1d; j++) {
-    state.sid_register[j] = read(j);
+    state.sid_register[j] = static_cast<char>(read(j));
   }
   for (; j < 0x20; j++) {
     state.sid_register[j] = 0;
@@ -413,7 +413,7 @@ void SID::write_state(const State& state)
     voice[i].wave.shift_register = state.shift_register[i];
     voice[i].wave.shift_register_reset = state.shift_register_reset[i];
     voice[i].wave.shift_pipeline = state.shift_pipeline[i];
-    voice[i].wave.pulse_output = state.pulse_output[i];
+    voice[i].wave.pulse_output = static_cast<short>(state.pulse_output[i]);
     voice[i].wave.floating_output_ttl = state.floating_output_ttl[i];
 
     voice[i].envelope.rate_counter = state.rate_counter[i];
@@ -1003,7 +1003,7 @@ int SID::clock_resample(cycle_count& delta_t, short* buf, int n, int interleave)
     v >>= FIR_SHIFT;
 
     // Saturated arithmetics to guard against 16 bit sample overflow.
-    const int half = 1 << 15;
+    constexpr int half = 1 << 15;
     if (v >= half) {
       v = half - 1;
     }
@@ -1011,7 +1011,7 @@ int SID::clock_resample(cycle_count& delta_t, short* buf, int n, int interleave)
       v = -half;
     }
 
-    buf[s*interleave] = v;
+    buf[s * interleave] = static_cast<short>(v);
   }
 
   return s;
@@ -1059,7 +1059,7 @@ int SID::clock_resample_fastmem(cycle_count& delta_t, short* buf, int n, int int
     v >>= FIR_SHIFT;
 
     // Saturated arithmetics to guard against 16 bit sample overflow.
-    const int half = 1 << 15;
+    constexpr int half = 1 << 15;
     if (v >= half) {
       v = half - 1;
     }
@@ -1067,7 +1067,7 @@ int SID::clock_resample_fastmem(cycle_count& delta_t, short* buf, int n, int int
       v = -half;
     }
 
-    buf[s*interleave] = v;
+    buf[s * interleave] = static_cast<short>(v);
   }
 
   return s;

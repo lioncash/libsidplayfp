@@ -95,7 +95,7 @@ public:
   void write_state(const State& state);
 
   // 16-bit input (EXT IN).
-  void input(short sample);
+  void input(short in_sample);
 
   // 16-bit output (AUDIO OUT).
   short output();

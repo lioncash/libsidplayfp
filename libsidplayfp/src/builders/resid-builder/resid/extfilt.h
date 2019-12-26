@@ -50,7 +50,7 @@ public:
   void reset();
 
   // Audio output (16 bits).
-  short output();
+  short output() const;
 
 protected:
   // Filter enabled.

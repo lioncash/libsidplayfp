@@ -339,12 +339,12 @@ Filter::Filter()
         unsigned int fp = f;
         f = voltages[j];  // Scaled by m*2^31
         // m*2^31*dy/1 = (m*2^31*dy)/(m*2^16*dx) = 2^15*dy/dx
-        int df = f - fp;  // Scaled by 2^15
+        const int df = static_cast<int>(f - fp);  // Scaled by 2^15
 
         // 16 bits unsigned: m*2^16*(fn - xmin)
-        opamp[j].vx = f > (0xffff << 15) ? 0xffff : f >> 15;
+        opamp[j].vx = f > (0xffff << 15) ? 0xffff : static_cast<unsigned short>(f >> 15);
         // 16 bits (15 bits + sign bit): 2^11*dfn
-        opamp[j].dvx = df >> (15 - 11);
+        opamp[j].dvx = static_cast<short>(df >> (15 - 11));
       }
       for (; j < (1 << 16); j++) {
         opamp[j].vx = 0;
@@ -366,7 +366,7 @@ Filter::Filter()
         int n = n8 << 4;  // Scaled by 2^7
         int x = mf.ak;
         for (int vi = 0; vi < (1 << 16); vi++) {
-          mf.gain[n8][vi] = solve_gain(opamp, n, vi, x, mf);
+          mf.gain[n8][vi] = static_cast<unsigned short>(solve_gain(opamp, n, vi, x, mf));
         }
       }
 
@@ -385,8 +385,7 @@ Filter::Filter()
         size = idiv << 16;
         int x = mf.ak;
         for (int vi = 0; vi < size; vi++) {
-          mf.summer[offset + vi] =
-            solve_gain(opamp, n_idiv, vi/idiv, x, mf);
+          mf.summer[offset + vi] = static_cast<unsigned short>(solve_gain(opamp, n_idiv, vi/idiv, x, mf));
         }
         offset += size;
       }
@@ -408,8 +407,7 @@ Filter::Filter()
         }
         int x = mf.ak;
         for (int vi = 0; vi < size; vi++) {
-          mf.mixer[offset + vi] =
-            solve_gain(opamp, n_idiv, vi/idiv, x, mf);
+          mf.mixer[offset + vi] = static_cast<unsigned short>(solve_gain(opamp, n_idiv, vi/idiv, x, mf));
         }
         offset += size;
         size = (l + 1) << 16;
@@ -417,8 +415,8 @@ Filter::Filter()
 
       // Create lookup table mapping capacitor voltage to op-amp input voltage:
       // vc -> vx
-      for (int m = 0; m < (1 << 16); m++) {
-        mf.opamp_rev[m] = opamp[m].vx;
+      for (int n = 0; n < (1 << 16); n++) {
+        mf.opamp_rev[n] = opamp[n].vx;
       }
 
       mf.vc_max = (int)(N30*(fi.opamp_voltage[0][1] - fi.opamp_voltage[0][0]));
@@ -435,18 +433,18 @@ Filter::Filter()
       for (int n8 = 0; n8 < 16; n8++) {
         int x = model_filter[1].ak;
         for (int vi = 0; vi < (1 << 16); vi++) {
-          resonance[n8][vi] = solve_gain(opamp, resGain[n8], vi, x, model_filter[1]);
+          resonance[n8][vi] = static_cast<unsigned short>(solve_gain(opamp, resGain[n8], vi, x, model_filter[1]));
         }
       }
 
       // scaled 5 bits
-      n_param = (int)(tmp_n_param[1] * 32 + 0.5);
+      n_param = static_cast<int>(tmp_n_param[1] * 32 + 0.5);
 
       model_filter_init_t& fi = model_filter_init[1];
       model_filter_t& f = model_filter[1];
 
       double Vgt = fi.k * ((4.75 * 1.6) - fi.Vth);
-      kVgt = (int)(f.vo_N16 * (Vgt - fi.opamp_voltage[0][0]) + 0.5);
+      kVgt = static_cast<int>(f.vo_N16 * (Vgt - fi.opamp_voltage[0][0]) + 0.5);
 
       // DAC table.
       // W/L ratio for frequency DAC, bits are proportional.
@@ -459,7 +457,7 @@ Filter::Filter()
         for (unsigned int i = 0; i < dac_bits; i++) {
           unsigned int bitmask = 1 << i;
           if (n & bitmask) {
-            wl += dacWL * (bitmask<<1);
+            wl += static_cast<unsigned short>(dacWL * (bitmask << 1));
           }
         }
         f.f0_dac[n] = wl;
