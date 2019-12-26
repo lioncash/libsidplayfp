@@ -111,13 +111,8 @@ private:
 
     unsigned long int dataSize;
 
-    static const riffHeader defaultRiffHdr;
     riffHeader riffHdr;
-
-    static const wavHeader defaultWavHdr;
     wavHeader wavHdr;
-
-    static const listInfo defaultListInfo;
     listInfo listHdr;
 
     std::ostream* file = nullptr;

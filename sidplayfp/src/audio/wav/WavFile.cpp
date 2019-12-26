@@ -79,9 +79,8 @@ void endian_little32(uint8_t ptr[4], uint_least32_t dword)
     ptr[2] = endian_16lo8(word);
     ptr[3] = endian_16hi8(word);
 }
-} // Anonymous namespace
 
-const riffHeader WavFile::defaultRiffHdr =
+constexpr riffHeader defaultRiffHdr =
 {
     // ASCII keywords are hexified.
     {0x52,0x49,0x46,0x46}, // 'RIFF'
@@ -89,7 +88,7 @@ const riffHeader WavFile::defaultRiffHdr =
     {0x57,0x41,0x56,0x45}, // 'WAVE'
 };
 
-const wavHeader WavFile::defaultWavHdr =
+constexpr wavHeader defaultWavHdr =
 {
     {0x66,0x6d,0x74,0x20}, // 'fmt '
     {16,0,0,0},            // length
@@ -103,7 +102,7 @@ const wavHeader WavFile::defaultWavHdr =
     {0,0,0,0}              // length
 };
 
-const listInfo WavFile::defaultListInfo =
+constexpr listInfo defaultListInfo =
 {
     // ASCII keywords are hexified.
     {0x4C,0x49,0x53,0x54}, // 'LIST'
@@ -119,6 +118,7 @@ const listInfo WavFile::defaultListInfo =
     {32,0,0,0},            // length
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 };
+} // Anonymous namespace
 
 WavFile::WavFile(std::string name) :
     AudioBase("WAVFILE"),
