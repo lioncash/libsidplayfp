@@ -267,7 +267,7 @@ public:
     const char *getErrorStr() const { return STIL_ERROR_STR[lastError]; }
 
 private:
-    typedef std::map<std::string, std::streampos> dirList;
+    using dirList = std::map<std::string, std::streampos>;
 
     /// Path to STIL.
     const char *PATH_TO_STIL;
