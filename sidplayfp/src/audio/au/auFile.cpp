@@ -28,146 +28,117 @@
 #include <new>
 #include <vector>
 
+namespace
+{
 /// Set the lo byte (8 bit) in a word (16 bit)
-inline void endian_16lo8 (uint_least16_t &word, uint8_t byte)
+void endian_16lo8(uint_least16_t &word, uint8_t byte)
 {
     word &= 0xff00;
     word |= byte;
 }
 
 /// Get the lo byte (8 bit) in a word (16 bit)
-inline uint8_t endian_16lo8 (uint_least16_t word)
+uint8_t endian_16lo8(uint_least16_t word)
 {
-    return (uint8_t) word;
+    return static_cast<uint8_t>(word);
 }
 
 /// Set the hi byte (8 bit) in a word (16 bit)
-inline void endian_16hi8 (uint_least16_t &word, uint8_t byte)
+void endian_16hi8(uint_least16_t &word, uint8_t byte)
 {
     word &= 0x00ff;
-    word |= (uint_least16_t) byte << 8;
+    word |= static_cast<uint_least16_t>(byte) << 8;
 }
 
 /// Set the hi byte (8 bit) in a word (16 bit)
-inline uint8_t endian_16hi8 (uint_least16_t word)
+uint8_t endian_16hi8(uint_least16_t word)
 {
-    return (uint8_t) (word >> 8);
-}
-
-/// Swap word endian.
-inline void endian_16swap8 (uint_least16_t &word)
-{
-    uint8_t lo = endian_16lo8 (word);
-    uint8_t hi = endian_16hi8 (word);
-    endian_16lo8 (word, hi);
-    endian_16hi8 (word, lo);
+    return static_cast<uint8_t>(word >> 8);
 }
 
 /// Convert high-byte and low-byte to 16-bit word.
-inline uint_least16_t endian_16 (uint8_t hi, uint8_t lo)
+uint_least16_t endian_16(uint8_t hi, uint8_t lo)
 {
     uint_least16_t word = 0;
-    endian_16lo8 (word, lo);
-    endian_16hi8 (word, hi);
+    endian_16lo8(word, lo);
+    endian_16hi8(word, hi);
     return word;
 }
 
-inline void endian_16 (uint8_t ptr[2], uint_least16_t word)
-{
-#if defined(WORDS_BIGENDIAN)
-    ptr[0] = endian_16hi8 (word);
-    ptr[1] = endian_16lo8 (word);
-#else
-    ptr[0] = endian_16lo8 (word);
-    ptr[1] = endian_16hi8 (word);
-#endif
-}
-
-inline void endian_16 (char ptr[2], uint_least16_t word)
-{
-    endian_16 ((uint8_t *) ptr, word);
-}
-
 /// Convert high-byte and low-byte to 16-bit big endian word.
-inline uint_least16_t endian_big16 (const uint8_t ptr[2])
+uint_least16_t endian_big16(const uint8_t ptr[2])
 {
-    return endian_16 (ptr[0], ptr[1]);
-}
-
-/// Write a little-big 16-bit word to two bytes in memory.
-inline void endian_big16 (uint8_t ptr[2], uint_least16_t word)
-{
-    ptr[0] = endian_16hi8 (word);
-    ptr[1] = endian_16lo8 (word);
+    return endian_16(ptr[0], ptr[1]);
 }
 
 /// Set the hi word (16bit) in a dword (32 bit)
-inline void endian_32hi16 (uint_least32_t &dword, uint_least16_t word)
+void endian_32hi16(uint_least32_t &dword, uint_least16_t word)
 {
-    dword &= (uint_least32_t) 0x0000ffff;
-    dword |= (uint_least32_t) word << 16;
+    dword &= static_cast<uint_least32_t>(0x0000ffff);
+    dword |= static_cast<uint_least32_t>(word) << 16;
 }
 
 /// Get the hi word (16bit) in a dword (32 bit)
-inline uint_least16_t endian_32hi16 (uint_least32_t dword)
+uint_least16_t endian_32hi16(uint_least32_t dword)
 {
-    return (uint_least16_t) (dword >> 16);
+    return static_cast<uint_least16_t>(dword >> 16);
 }
 
 /// Set the lo byte (8 bit) in a dword (32 bit)
-inline void endian_32lo8 (uint_least32_t &dword, uint8_t byte)
+void endian_32lo8(uint_least32_t &dword, uint8_t byte)
 {
-    dword &= (uint_least32_t) 0xffffff00;
-    dword |= (uint_least32_t) byte;
+    dword &= static_cast<uint_least32_t>(0xffffff00);
+    dword |= static_cast<uint_least32_t>(byte);
 }
 
 /// Get the lo byte (8 bit) in a dword (32 bit)
-inline uint8_t endian_32lo8 (uint_least32_t dword)
+uint8_t endian_32lo8(uint_least32_t dword)
 {
-    return (uint8_t) dword;
+    return static_cast<uint8_t>(dword);
 }
 
 /// Set the hi byte (8 bit) in a dword (32 bit)
-inline void endian_32hi8 (uint_least32_t &dword, uint8_t byte)
+void endian_32hi8(uint_least32_t &dword, uint8_t byte)
 {
-    dword &= (uint_least32_t) 0xffff00ff;
-    dword |= (uint_least32_t) byte << 8;
+    dword &= static_cast<uint_least32_t>(0xffff00ff);
+    dword |= static_cast<uint_least32_t>(byte) << 8;
 }
 
 /// Get the hi byte (8 bit) in a dword (32 bit)
-inline uint8_t endian_32hi8 (uint_least32_t dword)
+uint8_t endian_32hi8(uint_least32_t dword)
 {
-    return (uint8_t) (dword >> 8);
+    return static_cast<uint8_t>(dword >> 8);
 }
 
 /// Convert high-byte and low-byte to 32-bit word.
-inline uint_least32_t endian_32 (uint8_t hihi, uint8_t hilo, uint8_t hi, uint8_t lo)
+uint_least32_t endian_32(uint8_t hihi, uint8_t hilo, uint8_t hi, uint8_t lo)
 {
     uint_least32_t dword = 0;
     uint_least16_t word  = 0;
-    endian_32lo8  (dword, lo);
-    endian_32hi8  (dword, hi);
-    endian_16lo8  (word,  hilo);
-    endian_16hi8  (word,  hihi);
-    endian_32hi16 (dword, word);
+    endian_32lo8(dword, lo);
+    endian_32hi8(dword, hi);
+    endian_16lo8(word, hilo);
+    endian_16hi8(word, hihi);
+    endian_32hi16(dword, word);
     return dword;
 }
 
 /// Convert high-byte and low-byte to 32-bit big endian word.
-inline uint_least32_t endian_big32 (const uint8_t ptr[4])
+uint_least32_t endian_big32(const uint8_t ptr[4])
 {
-    return endian_32 (ptr[0], ptr[1], ptr[2], ptr[3]);
+    return endian_32(ptr[0], ptr[1], ptr[2], ptr[3]);
 }
 
 // Write a big-endian 32-bit word to four bytes in memory.
-inline void endian_big32 (uint8_t ptr[4], uint_least32_t dword)
+void endian_big32(uint8_t ptr[4], uint_least32_t dword)
 {
-    uint_least16_t word = endian_32hi16 (dword);
-    ptr[0] = endian_16hi8 (word);
-    ptr[1] = endian_16lo8 (word);
-    ptr[2] = endian_32hi8 (dword);
-    ptr[3] = endian_32lo8 (dword);
+    const uint_least16_t word = endian_32hi16(dword);
+    ptr[0] = endian_16hi8(word);
+    ptr[1] = endian_16lo8(word);
+    ptr[2] = endian_32hi8(dword);
+    ptr[3] = endian_32lo8(dword);
 }
+} // Anonymous namespace
 
 const auHeader auFile::defaultAuHdr =
 {
