@@ -368,8 +368,7 @@ STIL::getEntry(const char *relPathToEntry, int tuneNo, STILField field)
         }
         else
         {
-            entrybuf.clear();
-            readEntry(stilFile, entrybuf);
+            entrybuf = readEntry(stilFile);
             CERR_STIL_DEBUG << "getEntry() entry read" << std::endl;
         }
     }
@@ -468,8 +467,7 @@ STIL::getBug(const char *relPathToEntry, int tuneNo)
         }
         else
         {
-            bugbuf.clear();
-            readEntry(bugFile, bugbuf);
+            bugbuf = readEntry(bugFile);
             CERR_STIL_DEBUG << "getBug() entry read" << std::endl;
         }
     }
@@ -570,8 +568,7 @@ STIL::getGlobalComment(const char *relPathToEntry)
         }
         else
         {
-            globalbuf.clear();
-            readEntry(stilFile, globalbuf);
+            globalbuf = readEntry(stilFile);
             CERR_STIL_DEBUG << "getGC() entry read" << std::endl;
         }
     }
@@ -652,11 +649,12 @@ bool STIL::getDirs(std::ifstream &inFile, dirList &dirs, bool isSTILFile)
 
     while (inFile.good())
     {
-        std::string line;
+        std::string line = getStilLine(inFile);
 
-        getStilLine(inFile, line);
-
-        if (!isSTILFile) { CERR_STIL_DEBUG << line << '\n'; }
+        if (!isSTILFile)
+        {
+            CERR_STIL_DEBUG << line << '\n';
+        }
 
         // Try to extract STIL's version number if it's not done, yet.
 
@@ -773,7 +771,7 @@ bool STIL::positionToEntry(const char *entryStr, std::ifstream &inFile, dirList 
 
     do
     {
-        getStilLine(inFile, line);
+        line = getStilLine(inFile);
 
         if (inFile.eof())
         {
@@ -825,13 +823,13 @@ bool STIL::positionToEntry(const char *entryStr, std::ifstream &inFile, dirList 
     }
 }
 
-void STIL::readEntry(std::ifstream &inFile, std::string &buffer)
+std::string STIL::readEntry(std::ifstream &inFile) const
 {
-    std::string line;
+    std::string buffer;
 
     while (true)
     {
-        getStilLine(inFile, line);
+        std::string line = getStilLine(inFile);
 
         if (line.empty())
             break;
@@ -839,6 +837,8 @@ void STIL::readEntry(std::ifstream &inFile, std::string &buffer)
         buffer.append(line);
         buffer.append("\n");
     }
+
+    return buffer;
 }
 
 bool STIL::getField(std::string &result, const char *buffer, int tuneNo, STILField field)
@@ -1194,7 +1194,7 @@ bool STIL::getOneField(std::string &result, const char *start, const char *end, 
     return true;
 }
 
-void STIL::getStilLine(std::ifstream &infile, std::string &line)
+std::string STIL::getStilLine(std::ifstream &infile) const
 {
     if (STIL_EOL2 != '\0')
     {
@@ -1208,5 +1208,7 @@ void STIL::getStilLine(std::ifstream &infile, std::string &line)
         }
     }
 
+    std::string line;
     std::getline(infile, line, STIL_EOL);
+    return line;
 }

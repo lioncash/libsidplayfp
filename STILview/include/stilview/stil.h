@@ -362,13 +362,12 @@ private:
     bool positionToEntry(const char *entryStr, std::ifstream &inFile, dirList &dirs);
 
     /**
-     * Reads the entry from 'inFile' into 'buffer'. 'inFile' should
+     * Reads the entry from 'inFile'. 'inFile' should
      * already be positioned to the entry to be read.
      *
-     * @param inFile   - filehandle of file to read from
-     * @param buffer   - where to put the result to
+     * @param inFile File handle of file to read from.
      */
-    void readEntry(std::ifstream &inFile, std::string &buffer);
+    std::string readEntry(std::ifstream &inFile) const;
 
     /**
      * Given a STIL formatted entry in 'buffer', a tune number,
@@ -410,9 +409,8 @@ private:
      *
      * @param infile - filehandle (streampos should already be positioned
      *                 to the start of the desired line)
-     * @param line   - char array to put the line into
      */
-    void getStilLine(std::ifstream &infile, std::string &line);
+    std::string getStilLine(std::ifstream &infile) const;
 };
 
 #endif // STIL_H
