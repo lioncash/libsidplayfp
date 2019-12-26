@@ -31,7 +31,6 @@
 #include <string_view>
 #include <vector>
 
-#include <sidplayfp/siddefs.h>
 #include <sidplayfp/SidTuneInfo.h>
 
 #include "sidtune/SidTuneInfoImpl.h"
