@@ -74,7 +74,6 @@ private:
 
     unsigned long int byteCount = 0;
 
-    static const auHeader defaultAuHdr;
     auHeader auHdr;
 
     std::ostream* file = nullptr;

@@ -138,9 +138,8 @@ void endian_big32(uint8_t ptr[4], uint_least32_t dword)
     ptr[2] = endian_32hi8(dword);
     ptr[3] = endian_32lo8(dword);
 }
-} // Anonymous namespace
 
-const auHeader auFile::defaultAuHdr =
+constexpr auHeader defaultAuHdr =
 {
     // ASCII keywords are hexified.
     {0x2e,0x73,0x6e,0x64}, // '.snd'
@@ -150,6 +149,7 @@ const auHeader auFile::defaultAuHdr =
     {0,0,0,0},             // Samplerate
     {0,0,0,0},             // Channels
 };
+} // Anonymous namespace
 
 auFile::auFile(std::string name) :
     AudioBase("AUFILE"),
