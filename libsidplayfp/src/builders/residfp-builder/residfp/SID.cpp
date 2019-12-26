@@ -155,9 +155,9 @@ void SID::voiceSync(bool sync)
     }
 }
 
-void SID::setChipModel(ChipModel model)
+void SID::setChipModel(ChipModel new_model)
 {
-    switch (model)
+    switch (new_model)
     {
     case MOS6581:
         filter = filter6581.get();
@@ -173,7 +173,7 @@ void SID::setChipModel(ChipModel model)
         throw SIDError("Unknown chip type");
     }
 
-    this->model = model;
+    this->model = new_model;
 
     // calculate waveform-related tables, feed them to the generator
     matrix_t* tables = WaveformCalculator::getInstance()->buildTable(model);
