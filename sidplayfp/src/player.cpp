@@ -314,7 +314,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
         {
             std::string title = getFileName(tuneInfo);
             title.append(auFile::extension());
-            m_driver.device = new auFile(title);
+            m_driver.device = new auFile(std::move(title));
         }
         catch (const std::bad_alloc&)
         {
