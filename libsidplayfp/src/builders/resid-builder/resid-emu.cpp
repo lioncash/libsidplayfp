@@ -90,7 +90,7 @@ void ReSID::write(uint_least8_t addr, uint8_t data)
 
 void ReSID::clock()
 {
-    reSID::cycle_count cycles = eventScheduler->getTime(m_accessClk, EventPhase::ClockPHI1);
+    auto cycles = static_cast<reSID::cycle_count>(eventScheduler->getTime(m_accessClk, EventPhase::ClockPHI1));
     m_accessClk += cycles;
     m_bufferpos += m_sid.clock(cycles, m_buffer + m_bufferpos, OUTPUTBUFFERSIZE - m_bufferpos, 1);
 }
