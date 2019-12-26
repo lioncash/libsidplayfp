@@ -94,7 +94,7 @@ void ConsolePlayer::menu()
     if (m_quietLevel > 1)
         return;
 
-    const SidInfo &info         = m_engine.info ();
+    const SidInfo &info         = m_engine.info();
     const SidTuneInfo *tuneInfo = m_tune.getInfo();
 
     // cerr << (char) 12 << '\f'; // New Page
@@ -105,102 +105,102 @@ void ConsolePlayer::menu()
         cerr << '\x1b' << "[0;0H"; // Move cursor to 0,0
     }
 
-    consoleTable (tableStart);
-    consoleTable (tableMiddle);
-    consoleColour (red, true);
-    cerr << "  SID";
-    consoleColour (blue, true);
-    cerr << "PLAYFP";
-    consoleColour (white, true);
-    cerr << " - Music Player and C64 SID Chip Emulator" << endl;
-    consoleTable  (tableMiddle);
-    consoleColour (white, false);
+    consoleTable(tableStart);
+    consoleTable(tableMiddle);
+    consoleColour(PlayerColor::Red, true);
+    std::cerr << "  SID";
+    consoleColour(PlayerColor::Blue, true);
+    std::cerr << "PLAYFP";
+    consoleColour(PlayerColor::White, true);
+    std::cerr << " - Music Player and C64 SID Chip Emulator" << endl;
+    consoleTable(tableMiddle);
+    consoleColour(PlayerColor::White, false);
     {
         string version;
         version.reserve(54);
-        version.append("Sidplayfp V" VERSION ", ").append(1, toupper(*info.name())).append(info.name() + 1).append(" V").append(info.version());
-        cerr << setw(54/2 + version.length()/2) << version << endl;
+        version.append("Sidplayfp V" VERSION ", ").append(1, std::toupper(*info.name())).append(info.name() + 1).append(" V").append(info.version());
+        std::cerr << std::setw(54/2 + version.length()/2) << version << std::endl;
     }
 
     const std::size_t n = tuneInfo->numberOfInfoStrings();
     if (n != 0)
     {
-        consoleTable (tableSeparator);
+        consoleTable(tableSeparator);
 
-        consoleTable  (tableMiddle);
-        consoleColour (cyan, true);
-        cerr << " Title        : ";
-        consoleColour (magenta, true);
-        cerr << tuneInfo->infoString(0) << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Cyan, true);
+        std::cerr << " Title        : ";
+        consoleColour(PlayerColor::Magenta, true);
+        std::cerr << tuneInfo->infoString(0) << std::endl;
         if (n > 1)
         {
-            consoleTable  (tableMiddle);
-            consoleColour (cyan, true);
-            cerr << " Author       : ";
-            consoleColour (magenta, true);
-            cerr << tuneInfo->infoString(1) << endl;
-            consoleTable  (tableMiddle);
-            consoleColour (cyan, true);
-            cerr << " Released     : ";
-            consoleColour (magenta, true);
-            cerr << tuneInfo->infoString(2) << endl;
+            consoleTable(tableMiddle);
+            consoleColour(PlayerColor::Cyan, true);
+            std::cerr << " Author       : ";
+            consoleColour(PlayerColor::Magenta, true);
+            std::cerr << tuneInfo->infoString(1) << endl;
+            consoleTable(tableMiddle);
+            consoleColour(PlayerColor::Cyan, true);
+            std::cerr << " Released     : ";
+            consoleColour(PlayerColor::Magenta, true);
+            std::cerr << tuneInfo->infoString(2) << endl;
         }
     }
 
     for (std::size_t i = 0; i < tuneInfo->numberOfCommentStrings(); i++)
     {
-        consoleTable  (tableMiddle);
-        consoleColour (cyan, true);
-        cerr << " Comment      : ";
-        consoleColour (magenta, true);
-        cerr << tuneInfo->commentString(i) << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Cyan, true);
+        std::cerr << " Comment      : ";
+        consoleColour(PlayerColor::Magenta, true);
+        std::cerr << tuneInfo->commentString(i) << std::endl;
     }
 
-    consoleTable (tableSeparator);
+    consoleTable(tableSeparator);
 
     if (m_verboseLevel)
     {
-        consoleTable  (tableMiddle);
-        consoleColour (green, true);
-        cerr << " File format  : ";
-        consoleColour (white, true);
-        cerr << tuneInfo->formatString() << endl;
-        consoleTable  (tableMiddle);
-        consoleColour (green, true);
-        cerr << " Filename(s)  : ";
-        consoleColour (white, true);
-        cerr << tuneInfo->dataFileName() << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Green, true);
+        std::cerr << " File format  : ";
+        consoleColour(PlayerColor::White, true);
+        std::cerr << tuneInfo->formatString() << std::endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Green, true);
+        std::cerr << " Filename(s)  : ";
+        consoleColour(PlayerColor::White, true);
+        std::cerr << tuneInfo->dataFileName() << std::endl;
         // Second file is only sometimes present
         if (tuneInfo->infoFileName())
         {
-            consoleTable  (tableMiddle);
-            consoleColour (green, true);
-            cerr << "              : ";
-            consoleColour (white, true);
-            cerr << tuneInfo->infoFileName() << endl;
+            consoleTable(tableMiddle);
+            consoleColour(PlayerColor::Green, true);
+            std::cerr << "              : ";
+            consoleColour(PlayerColor::White, true);
+            std::cerr << tuneInfo->infoFileName() << std::endl;
         }
-        consoleTable  (tableMiddle);
-        consoleColour (green, true);
-        cerr << " Condition    : ";
-        consoleColour (white, true);
-        cerr << m_tune.statusString() << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Green, true);
+        std::cerr << " Condition    : ";
+        consoleColour(PlayerColor::White, true);
+        std::cerr << m_tune.statusString() << std::endl;
 
 #if HAVE_TSID == 1
         if (!m_tsid)
         {
-            consoleTable  (tableMiddle);
-            consoleColour (green, true);
-            cerr << " TSID Error   : ";
-            consoleColour (white, true);
-            cerr << m_tsid.getError () << endl;
+            consoleTable(tableMiddle);
+            consoleColour(PlayerColor::Green, true);
+            std::cerr << " TSID Error   : ";
+            consoleColour(PlayerColor::White, true);
+            std::cerr << m_tsid.getError () << std::endl;
         }
 #endif // HAVE_TSID
     }
 
-    consoleTable  (tableMiddle);
-    consoleColour (green, true);
-    cerr << " Playlist     : ";
-    consoleColour (white, true);
+    consoleTable(tableMiddle);
+    consoleColour(PlayerColor::Green, true);
+    std::cerr << " Playlist     : ";
+    consoleColour(PlayerColor::White, true);
 
     {   // This will be the format used for playlists
         int i = 1;
@@ -211,241 +211,247 @@ void ConsolePlayer::menu()
             if (i < 1)
                 i += m_track.songs;
         }
-        cerr << i << '/' << m_track.songs;
-        cerr << " (tune " << tuneInfo->currentSong() << '/'
-             << tuneInfo->songs() << '['
-             << tuneInfo->startSong() << "])";
+        std::cerr << i << '/' << m_track.songs;
+        std::cerr << " (tune " << tuneInfo->currentSong() << '/'
+                  << tuneInfo->songs() << '['
+                  << tuneInfo->startSong() << "])";
     }
 
     if (m_track.loop)
-        cerr << " [LOOPING]";
-    cerr << endl;
+        std::cerr << " [LOOPING]";
+    std::cerr << std::endl;
 
     if (m_verboseLevel)
     {
-        consoleTable  (tableMiddle);
-        consoleColour (green, true);
-        cerr << " Song Speed   : ";
-        consoleColour (white, true);
-        cerr << getClock(tuneInfo->clockSpeed()) << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Green, true);
+        std::cerr << " Song Speed   : ";
+        consoleColour(PlayerColor::White, true);
+        std::cerr << getClock(tuneInfo->clockSpeed()) << std::endl;
     }
 
-    consoleTable  (tableMiddle);
-    consoleColour (green, true);
-    cerr << " Song Length  : ";
-    consoleColour (white, true);
+    consoleTable(tableMiddle);
+    consoleColour(PlayerColor::Green, true);
+    std::cerr << " Song Length  : ";
+    consoleColour(PlayerColor::White, true);
     if (m_timer.stop)
     {
         const uint_least32_t seconds = m_timer.stop / 1000;
-        cerr << setw(2) << setfill('0') << ((seconds / 60) % 100)
-             << ':' << setw(2) << setfill('0') << (seconds % 60);
+        std::cerr << std::setw(2) << std::setfill('0') << ((seconds / 60) % 100)
+                  << ':' << std::setw(2) << std::setfill('0') << (seconds % 60);
     }
     else if (m_timer.valid)
+    {
         cerr << "FOREVER";
+    }
     else
+    {
         cerr << "UNKNOWN";
+    }
     if (m_timer.start)
     {   // Show offset
         const uint_least32_t seconds = m_timer.start / 1000;
-        cerr << " (+" << setw(2) << setfill('0') << ((seconds / 60) % 100)
-             << ':' << setw(2) << setfill('0') << (seconds % 60) << ")";
+        std::cerr << " (+" << std::setw(2) << std::setfill('0') << ((seconds / 60) % 100)
+                  << ':' << std::setw(2) << std::setfill('0') << (seconds % 60) << ")";
     }
     cerr << endl;
 
     if (m_verboseLevel)
     {
-        consoleTable  (tableSeparator);
+        consoleTable(tableSeparator);
 
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << " Addresses    : " << hex;
-        cerr.setf(std::ios::uppercase);
-        consoleColour (white, false);
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << " Addresses    : " << std::hex;
+        std::cerr.setf(std::ios::uppercase);
+        consoleColour(PlayerColor::White, false);
         // Display PSID Driver location
-        cerr << "DRIVER = ";
+        std::cerr << "DRIVER = ";
         if (info.driverAddr() == 0)
-            cerr << "NOT PRESENT";
+        {
+            std::cerr << "NOT PRESENT";
+        }
         else
         {
-            cerr << "$"  << setw(4) << setfill('0') << info.driverAddr();
-            cerr << "-$" << setw(4) << setfill('0') << info.driverAddr() +
+            std::cerr << "$"  << std::setw(4) << std::setfill('0') << info.driverAddr();
+            std::cerr << "-$" << std::setw(4) << std::setfill('0') << info.driverAddr() +
                 (info.driverLength() - 1);
         }
         if (tuneInfo->playAddr() == 0xffff)
-            cerr << ", SYS = $" << setw(4) << setfill('0') << tuneInfo->initAddr();
+            std::cerr << ", SYS = $" << std::setw(4) << std::setfill('0') << tuneInfo->initAddr();
         else
-            cerr << ", INIT = $" << setw(4) << setfill('0') << tuneInfo->initAddr();
-        cerr << endl;
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << "              : ";
-        consoleColour (white, false);
-        cerr << "LOAD   = $" << setw(4) << setfill('0') << tuneInfo->loadAddr();
-        cerr << "-$"         << setw(4) << setfill('0') << tuneInfo->loadAddr() +
+            std::cerr << ", INIT = $" << std::setw(4) << std::setfill('0') << tuneInfo->initAddr();
+        std::cerr << std::endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << "              : ";
+        consoleColour(PlayerColor::White, false);
+        std::cerr << "LOAD   = $" << std::setw(4) << std::setfill('0') << tuneInfo->loadAddr();
+        std::cerr << "-$"         << std::setw(4) << std::setfill('0') << tuneInfo->loadAddr() +
             (tuneInfo->c64dataLen() - 1);
         if (tuneInfo->playAddr() != 0xffff)
-            cerr << ", PLAY = $" << setw(4) << setfill('0') << tuneInfo->playAddr();
-        cerr << dec << endl;
-        cerr.unsetf(std::ios::uppercase);
+            std::cerr << ", PLAY = $" << std::setw(4) << std::setfill('0') << tuneInfo->playAddr();
+        std::cerr << std::dec << std::endl;
+        std::cerr.unsetf(std::ios::uppercase);
 
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << " SID Details  : ";
-        consoleColour (white, false);
-        cerr << "Model = ";
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << " SID Details  : ";
+        consoleColour(PlayerColor::White, false);
+        std::cerr << "Model = ";
 #if LIBSIDPLAYFP_VERSION_MAJ > 1 || LIBSIDPLAYFP_VERSION_MIN >= 8
-        cerr << getModel(tuneInfo->sidModel(0));
+        std::cerr << getModel(tuneInfo->sidModel(0));
 #else
-        cerr << getModel(tuneInfo->sidModel1());
+        std::cerr << getModel(tuneInfo->sidModel1());
 #endif
-        cerr << endl;
+        std::cerr << std::endl;
 #if LIBSIDPLAYFP_VERSION_MAJ > 1 || LIBSIDPLAYFP_VERSION_MIN >= 8
         if (tuneInfo->sidChips() > 1)
 #else
         if (tuneInfo->isStereo())
 #endif
         {
-            consoleTable  (tableMiddle);
-            consoleColour (yellow, true);
-            cerr << "              : ";
-            consoleColour (white, false);
+            consoleTable(tableMiddle);
+            consoleColour(PlayerColor::Yellow, true);
+            std::cerr << "              : ";
+            consoleColour(PlayerColor::White, false);
 #if LIBSIDPLAYFP_VERSION_MAJ > 1 || LIBSIDPLAYFP_VERSION_MIN >= 8
-            cerr << "2nd SID = $" << hex << tuneInfo->sidChipBase(1) << dec;
-            cerr << ", Model = " << getModel(tuneInfo->sidModel(1));
+            std::cerr << "2nd SID = $" << std::hex << tuneInfo->sidChipBase(1) << std::dec;
+            std::cerr << ", Model = " << getModel(tuneInfo->sidModel(1));
 #else
-            cerr << "2nd SID = $" << hex << tuneInfo->sidChipBase2() << dec;
-            cerr << ", Model = " << getModel(tuneInfo->sidModel2());
+            std::cerr << "2nd SID = $" << std::hex << tuneInfo->sidChipBase2() << std::dec;
+            std::cerr << ", Model = " << getModel(tuneInfo->sidModel2());
 #endif
-            cerr << endl;
+            std::cerr << std::endl;
 #if LIBSIDPLAYFP_VERSION_MAJ > 1 || LIBSIDPLAYFP_VERSION_MIN >= 8
             if (tuneInfo->sidChips() > 2)
             {
-                consoleTable  (tableMiddle);
-                consoleColour (yellow, true);
-                cerr << "              : ";
-                consoleColour (white, false);
-                cerr << "3rd SID = $" << hex << tuneInfo->sidChipBase(2) << dec;
-                cerr << ", Model = " << getModel(tuneInfo->sidModel(2));
-                cerr << endl;
+                consoleTable(tableMiddle);
+                consoleColour(PlayerColor::Yellow, true);
+                std::cerr << "              : ";
+                consoleColour(PlayerColor::White, false);
+                std::cerr << "3rd SID = $" << std::hex << tuneInfo->sidChipBase(2) << std::dec;
+                std::cerr << ", Model = " << getModel(tuneInfo->sidModel(2));
+                std::cerr << std::endl;
             }
 #endif
         }
 
-        consoleTable  (tableSeparator);
+        consoleTable(tableSeparator);
 
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << " Play speed   : ";
-        consoleColour (white, false);
-        cerr << info.speedString() << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << " Play speed   : ";
+        consoleColour(PlayerColor::White, false);
+        std::cerr << info.speedString() << std::endl;
 
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << " Play mode    : ";
-        consoleColour (white, false);
-        cerr << (info.channels() == 1 ? "Mono" : "Stereo") << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << " Play mode    : ";
+        consoleColour(PlayerColor::White, false);
+        std::cerr << (info.channels() == 1 ? "Mono" : "Stereo") << std::endl;
 
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << " SID Filter   : ";
-        consoleColour (white, false);
-        cerr << (m_filter.enabled ? "Yes" : "No") << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << " SID Filter   : ";
+        consoleColour(PlayerColor::White, false);
+        std::cerr << (m_filter.enabled ? "Yes" : "No") << std::endl;
 
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << " DigiBoost    : ";
-        consoleColour (white, false);
-        cerr << (m_engCfg.digiBoost ? "Yes" : "No") << endl;
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << " DigiBoost    : ";
+        consoleColour(PlayerColor::White, false);
+        std::cerr << (m_engCfg.digiBoost ? "Yes" : "No") << std::endl;
 
-        consoleTable  (tableMiddle);
-        consoleColour (yellow, true);
-        cerr << " SID Model    : ";
-        consoleColour (white, false);
+        consoleTable(tableMiddle);
+        consoleColour(PlayerColor::Yellow, true);
+        std::cerr << " SID Model    : ";
+        consoleColour(PlayerColor::White, false);
         if (m_engCfg.forceSidModel)
-            cerr << "Forced ";
+            std::cerr << "Forced ";
         else
-            cerr << "from tune, default = ";
-        cerr << getModel(m_engCfg.defaultSidModel) << endl;
+            std::cerr << "from tune, default = ";
+        std::cerr << getModel(m_engCfg.defaultSidModel) << std::endl;
 
         if (m_verboseLevel > 1)
         {
-            consoleTable  (tableMiddle);
-            consoleColour (yellow, true);
-            cerr << " Delay        : ";
-            consoleColour (white, false);
-            cerr << info.powerOnDelay() << " (cycles at poweron)" << endl;
+            consoleTable(tableMiddle);
+            consoleColour(PlayerColor::Yellow, true);
+            std::cerr << " Delay        : ";
+            consoleColour(PlayerColor::White, false);
+            std::cerr << info.powerOnDelay() << " (cycles at poweron)" << std::endl;
         }
     }
 
     const char* romDesc = info.kernalDesc();
 
-    consoleTable  (tableSeparator);
+    consoleTable(tableSeparator);
 
-    consoleTable  (tableMiddle);
-    consoleColour (magenta, true);
-    cerr << " Kernal ROM   : ";
-    if (strlen(romDesc) == 0)
+    consoleTable(tableMiddle);
+    consoleColour(PlayerColor::Magenta, true);
+    std::cerr << " Kernal ROM   : ";
+    if (std::strlen(romDesc) == 0)
     {
-        consoleColour (red, false);
-        cerr << "None - Some tunes may not play!";
+        consoleColour(PlayerColor::Red, false);
+        std::cerr << "None - Some tunes may not play!";
     }
     else
     {
-        consoleColour (white, false);
-        cerr << romDesc;
+        consoleColour(PlayerColor::White, false);
+        std::cerr << romDesc;
     }
-    cerr << endl;
+    std::cerr << std::endl;
 
     romDesc = info.basicDesc();
 
-    consoleTable  (tableMiddle);
-    consoleColour (magenta, true);
-    cerr << " BASIC ROM    : ";
-    if (strlen(romDesc) == 0)
+    consoleTable(tableMiddle);
+    consoleColour(PlayerColor::Magenta, true);
+    std::cerr << " BASIC ROM    : ";
+    if (std::strlen(romDesc) == 0)
     {
-        consoleColour (red, false);
-        cerr << "None - Basic tunes will not play!";
+        consoleColour(PlayerColor::Red, false);
+        std::cerr << "None - Basic tunes will not play!";
     }
     else
     {
-        consoleColour (white, false);
-        cerr << romDesc;
+        consoleColour(PlayerColor::White, false);
+        std::cerr << romDesc;
     }
-    cerr << endl;
+    std::cerr << std::endl;
 
     romDesc = info.chargenDesc();
 
-    consoleTable  (tableMiddle);
-    consoleColour (magenta, true);
-    cerr << " Chargen ROM  : ";
-    if (strlen(romDesc) == 0)
+    consoleTable(tableMiddle);
+    consoleColour(PlayerColor::Magenta, true);
+    std::cerr << " Chargen ROM  : ";
+    if (std::strlen(romDesc) == 0)
     {
-        consoleColour (red, false);
-        cerr << "None";
+        consoleColour(PlayerColor::Red, false);
+        std::cerr << "None";
     }
     else
     {
-        consoleColour (white, false);
-        cerr << romDesc;
+        consoleColour(PlayerColor::White, false);
+        std::cerr << romDesc;
     }
-    cerr << endl;
+    std::cerr << std::endl;
 
     consoleTable (tableEnd);
 
     if (m_driver.file)
-        cerr << "Creating audio file, please wait...";
+        std::cerr << "Creating audio file, please wait...";
     else
-        cerr << "Playing, press ESC to stop...";
+        std::cerr << "Playing, press ESC to stop...";
 
     // Get all the text to the screen so music playback
     // is not disturbed.
     if ( !m_quietLevel )
-        cerr << "00:00";
-    cerr << flush;
+        std::cerr << "00:00";
+    std::cerr << std::flush;
 }
 
 // Set colour of text on console
-void ConsolePlayer::consoleColour (player_colour_t colour, bool bold)
+void ConsolePlayer::consoleColour(PlayerColor colour, bool bold)
 {
     if ((m_iniCfg.console ()).ansi)
     {
@@ -453,20 +459,20 @@ void ConsolePlayer::consoleColour (player_colour_t colour, bool bold)
 
         switch (colour)
         {
-        case black:   mode = "30"; break;
-        case red:     mode = "31"; break;
-        case green:   mode = "32"; break;
-        case yellow:  mode = "33"; break;
-        case blue:    mode = "34"; break;
-        case magenta: mode = "35"; break;
-        case cyan:    mode = "36"; break;
-        case white:   mode = "37"; break;
+        case PlayerColor::Black:   mode = "30"; break;
+        case PlayerColor::Red:     mode = "31"; break;
+        case PlayerColor::Green:   mode = "32"; break;
+        case PlayerColor::Yellow:  mode = "33"; break;
+        case PlayerColor::Blue:    mode = "34"; break;
+        case PlayerColor::Magenta: mode = "35"; break;
+        case PlayerColor::Cyan:    mode = "36"; break;
+        case PlayerColor::White:   mode = "37"; break;
         }
 
         if (bold)
-            cerr << '\x1b' << "[1;40;" << mode << 'm';
+            std::cerr << '\x1b' << "[1;40;" << mode << 'm';
         else
-            cerr << '\x1b' << "[0;40;" << mode << 'm';
+            std::cerr << '\x1b' << "[0;40;" << mode << 'm';
     }
 }
 
@@ -475,7 +481,7 @@ void ConsolePlayer::consoleTable (player_table_t table)
 {
     const unsigned int tableWidth = 54;
 
-    consoleColour (white, true);
+    consoleColour(PlayerColor::White, true);
     switch (table)
     {
     case tableStart:

@@ -48,16 +48,16 @@
 #  endif
 #endif
 
-enum player_colour_t
+enum class PlayerColor
 {
-    black,
-    red,
-    green,
-    yellow,
-    blue,
-    magenta,
-    cyan,
-    white
+    Black,
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Magenta,
+    Cyan,
+    White
 };
 
 enum player_table_t
@@ -213,9 +213,9 @@ private:
 
 private:
     // Console
-    void consoleColour  (player_colour_t colour, bool bold);
-    void consoleTable   (player_table_t table);
-    void consoleRestore (void);
+    void consoleColour(PlayerColor colour, bool bold);
+    void consoleTable(player_table_t table);
+    void consoleRestore();
 
     // Command line args
     void displayArgs    (const char *arg = nullptr);
