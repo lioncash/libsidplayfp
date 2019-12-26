@@ -242,7 +242,7 @@ public:
      * @return
      *      STILerror - an enumerated error value
      */
-    inline STILerror getError() const {return (lastError);}
+    STILerror getError() const { return lastError; }
 
     /**
      * Returns true if the last error encountered was critical
@@ -251,9 +251,9 @@ public:
      * @return
      *      true if the last error encountered was critical
      */
-    inline bool hasCriticalError() const
+    bool hasCriticalError() const
     {
-        return ((lastError >= CRITICAL_STIL_ERROR) ? true : false);
+        return lastError >= CRITICAL_STIL_ERROR;
     }
 
     /**
@@ -264,7 +264,7 @@ public:
      * @return
      *      pointer to string with the error description
      */
-    inline const char *getErrorStr() const {return (STIL_ERROR_STR[lastError]);}
+    const char *getErrorStr() const { return STIL_ERROR_STR[lastError]; }
 
 private:
     typedef std::map<std::string, std::streampos> dirList;
