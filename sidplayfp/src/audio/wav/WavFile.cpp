@@ -26,6 +26,7 @@
 #include <cstring>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 #include <new>
 #include <vector>
 
@@ -116,17 +117,18 @@ const listInfo WavFile::defaultListInfo =
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 };
 
-WavFile::WavFile(const std::string &name) :
+WavFile::WavFile(std::string name) :
     AudioBase("WAVFILE"),
-    name(name),
+    name(std::move(name)),
     riffHdr(defaultRiffHdr),
     wavHdr(defaultWavHdr),
-    listHdr(defaultListInfo),
-    file(nullptr),
-    headerWritten(false),
-    hasListInfo(false),
-    precision(32)
+    listHdr(defaultListInfo)
 {}
+
+WavFile::~WavFile()
+{
+    WavFile::close();
+}
 
 bool WavFile::open(AudioConfig &cfg)
 {
@@ -240,6 +242,16 @@ void WavFile::close()
         file = nullptr;
         delete[] _sampleBuffer;
     }
+}
+
+bool WavFile::fail() const
+{
+    return file->fail() != 0;
+}
+
+bool WavFile::bad() const
+{ 
+    return file->bad() != 0;
 }
 
 void WavFile::setInfo(const char* title, const char* author, const char* released)

@@ -24,7 +24,7 @@
 #ifndef WAV_FILE_H
 #define WAV_FILE_H
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #include "../AudioBase.h"
@@ -79,28 +79,9 @@ struct listInfo                         // little endian format
  */
 class WavFile: public AudioBase
 {
-private:
-    std::string name;
-
-    unsigned long int dataSize;
-
-    static const riffHeader defaultRiffHdr;
-    riffHeader riffHdr;
-
-    static const wavHeader defaultWavHdr;
-    wavHeader wavHdr;
-
-    static const listInfo defaultListInfo;
-    listInfo listHdr;
-
-    std::ostream *file;
-    bool headerWritten;
-    bool hasListInfo;
-    int precision;
-
 public:
-    WavFile(const std::string &name);
-    ~WavFile() { close(); }
+    explicit WavFile(std::string name);
+    ~WavFile() override;
 
     static const char *extension () { return ".wav"; }
 
@@ -120,10 +101,29 @@ public:
     void reset() override {}
 
     // Stream state.
-    bool fail() const { return (file->fail() != 0); }
-    bool bad()  const { return (file->bad()  != 0); }
+    bool fail() const;
+    bool bad() const;
 
     void setInfo(const char* title, const char* author, const char* released);
+
+private:
+    std::string name;
+
+    unsigned long int dataSize;
+
+    static const riffHeader defaultRiffHdr;
+    riffHeader riffHdr;
+
+    static const wavHeader defaultWavHdr;
+    wavHeader wavHdr;
+
+    static const listInfo defaultListInfo;
+    listInfo listHdr;
+
+    std::ostream* file = nullptr;
+    bool headerWritten = false;
+    bool hasListInfo = false;
+    int precision = 32;
 };
 
 #endif /* WAV_FILE_H */
