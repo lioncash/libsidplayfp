@@ -157,6 +157,11 @@ auFile::auFile(std::string name) :
     auHdr(defaultAuHdr)
 {}
 
+auFile::~auFile()
+{
+    auFile::close();
+}
+
 bool auFile::open(AudioConfig &cfg)
 {
     precision = cfg.precision;

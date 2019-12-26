@@ -49,7 +49,7 @@ class auFile: public AudioBase
 {
 public:
     explicit auFile(std::string name);
-    ~auFile() override { auFile::close(); }
+    ~auFile() override;
 
     static const char *extension () { return ".au"; }
 
