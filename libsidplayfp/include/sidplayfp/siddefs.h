@@ -40,20 +40,4 @@
 #  endif
 #endif
 
-/* Deprecated attributes */
-#if defined(_MSCVER)
-#  define SID_DEPRECATED __declspec(deprecated)
-#elif defined(__GNUC__)
-#  define SID_DEPRECATED __attribute__ ((deprecated))
-#else
-#  define SID_DEPRECATED
-#endif
-
-/* Unused attributes */
-#if defined(__GNUC__)
-#  define SID_UNUSED __attribute__ ((unused))
-#else
-#  define SID_UNUSED
-#endif
-
 #endif /* SIDDEFS_H */
