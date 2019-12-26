@@ -25,13 +25,8 @@
 
 namespace reSIDfp
 {
-
-WaveformCalculator* WaveformCalculator::getInstance()
+namespace
 {
-    static WaveformCalculator instance;
-    return &instance;
-}
-
 /**
  * Parameters derived with the Monte Carlo method based on
  * samplings by kevtris. Code and data available in the project repository [1].
@@ -168,6 +163,13 @@ short calculateCombinedWaveform(CombinedWaveformConfig config, int waveform, int
     }
 
     return value;
+}
+} // Anonymous namespace
+
+WaveformCalculator* WaveformCalculator::getInstance()
+{
+    static WaveformCalculator instance;
+    return &instance;
 }
 
 matrix_t* WaveformCalculator::buildTable(ChipModel model)
