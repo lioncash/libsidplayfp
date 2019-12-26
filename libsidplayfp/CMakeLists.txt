@@ -84,6 +84,18 @@ target_include_directories(libresidfp PRIVATE
     src/builders/residfp-builder/residfp/
 )
 
+if (MSVC)
+    target_compile_options(libresidfp PRIVATE
+        /W4
+
+        /permissive-        # Enable standards-conformant behavior.
+        /volatile:iso       # Use standards-conformant behavior with regards to volatile.
+        /Zc:__cplusplus     # Make the __cplusplus processor macro report the correct standards version.
+        /Zc:externConstexpr # Enforce standard-conformant behavior with extern constexpr variables.
+        /Zc:throwingNew     # Assume that operator new throws upon failure.
+    )
+endif()
+
 add_library(libsidplayfp
     include/sidplayfp/sidbuilder.h
     include/sidplayfp/sidplayfp.h
