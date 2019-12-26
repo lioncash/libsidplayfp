@@ -88,14 +88,17 @@ enum SIDEMUS
     EMU_SIDSYN, EMU_END
 };
 
-enum OUTPUTS
+enum class OutputType
 {
-    /* Define possible output sources */
-    OUT_NULL = 0,
-    /* Hardware */
-    OUT_SOUNDCARD,
-    /* File creation support */
-    OUT_WAV, OUT_AU, OUT_END
+    // Define possible output sources
+    Null,
+
+    // Hardware
+    SoundCard,
+
+    // File creation support
+    WAV,
+    AU,
 };
 
 // Error and status message numbers.
@@ -166,7 +169,7 @@ private:
 
     struct m_driver_t
     {
-        OUTPUTS        output;   // Selected output type
+        OutputType     output;   // Selected output type
         SIDEMUS        sid;      // Sid emulation
         bool           file;     // File based driver
         bool           info;     // File metadata
@@ -210,7 +213,7 @@ private:
     // Command line args
     void displayArgs    (const char *arg = nullptr);
 
-    bool createOutput   (OUTPUTS driver, const SidTuneInfo *tuneInfo);
+    bool createOutput   (OutputType driver, const SidTuneInfo *tuneInfo);
     bool createSidEmu   (SIDEMUS emu);
     void displayError   (const char *error);
     void displayError   (unsigned int num) { ::displayError (m_name, num); }

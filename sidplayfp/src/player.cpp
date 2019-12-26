@@ -223,8 +223,8 @@ ConsolePlayer::ConsolePlayer (const char * const name) :
         }
     }
 
-    createOutput (OUT_NULL, nullptr);
-    createSidEmu (EMU_NONE);
+    createOutput(OutputType::Null, nullptr);
+    createSidEmu(EMU_NONE);
 
     uint8_t *kernalRom = loadRom((m_iniCfg.sidplay2()).kernalRom, 8192, TEXT("kernal"));
     uint8_t *basicRom = loadRom((m_iniCfg.sidplay2()).basicRom, 8192, TEXT("basic"));
@@ -263,7 +263,7 @@ std::string ConsolePlayer::getFileName(const SidTuneInfo *tuneInfo)
 }
 
 // Create the output object to process sound buffer
-bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
+bool ConsolePlayer::createOutput(OutputType driver, const SidTuneInfo *tuneInfo)
 {
     // Remove old audio driver
     m_driver.null.close ();
@@ -278,11 +278,11 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
     // Create audio driver
     switch (driver)
     {
-    case OUT_NULL:
+    case OutputType::Null:
         m_driver.device = &m_driver.null;
     break;
 
-    case OUT_SOUNDCARD:
+    case OutputType::SoundCard:
         try
         {
             m_driver.device = new audioDrv();
@@ -293,7 +293,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
         }
     break;
 
-    case OUT_WAV:
+    case OutputType::WAV:
         try
         {
             std::string title = getFileName(tuneInfo);
@@ -309,7 +309,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
         }
     break;
 
-    case OUT_AU:
+    case OutputType::AU:
         try
         {
             std::string title = getFileName(tuneInfo);
@@ -348,7 +348,7 @@ bool ConsolePlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
             err = true;
 
         // Can't open the same driver twice
-        if (driver != OUT_NULL)
+        if (driver != OutputType::Null)
         {
             if (!m_driver.null.open(m_driver.cfg))
                 err = true;
@@ -595,28 +595,30 @@ bool ConsolePlayer::open (void)
     return true;
 }
 
-void ConsolePlayer::close ()
+void ConsolePlayer::close()
 {
     m_engine.stop();
     if (m_state == playerExit)
     {   // Natural finish
-        emuflush ();
+        emuflush();
         if (m_driver.file)
-            cerr << (char) 7; // Bell
+            cerr << (char)7; // Bell
     }
     else // Destroy buffers
-        m_driver.selected->reset ();
+    {
+        m_driver.selected->reset();
+    }
 
     // Shutdown drivers, etc
-    createOutput    (OUT_NULL, nullptr);
-    createSidEmu    (EMU_NONE);
-    m_engine.load   (nullptr);
-    m_engine.config (m_engCfg);
+    createOutput(OutputType::Null, nullptr);
+    createSidEmu(EMU_NONE);
+    m_engine.load(nullptr);
+    m_engine.config(m_engCfg);
 
     if (m_quietLevel < 2)
     {   // Correctly leave ansi mode and get prompt to
         // end up in a suitable location
-        if ((m_iniCfg.console ()).ansi)
+        if ((m_iniCfg.console()).ansi)
             cerr << '\x1b' << "[0m";
 #ifndef _WIN32
         cerr << endl;

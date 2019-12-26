@@ -140,7 +140,7 @@ int ConsolePlayer::args(int argc, const char *argv[])
     }
 
     // default arg options
-    m_driver.output = OUT_SOUNDCARD;
+    m_driver.output = OutputType::SoundCard;
     m_driver.file   = false;
     m_driver.info   = false;
 
@@ -352,21 +352,21 @@ int ConsolePlayer::args(int argc, const char *argv[])
             // File format conversions
             else if (argv[i][1] == 'w')
             {
-                m_driver.output = OUT_WAV;
+                m_driver.output = OutputType::WAV;
                 m_driver.file   = true;
                 if (argv[i][2] != '\0')
                     m_outfile = &argv[i][2];
             }
             else if (strncmp (&argv[i][1], "-wav", 4) == 0)
             {
-                m_driver.output = OUT_WAV;
+                m_driver.output = OutputType::WAV;
                 m_driver.file   = true;
                 if (argv[i][5] != '\0')
                     m_outfile = &argv[i][5];
             }
             else if (strncmp (&argv[i][1], "-au", 3) == 0)
             {
-                m_driver.output = OUT_AU;
+                m_driver.output = OutputType::AU;
                 m_driver.file   = true;
                 if (argv[i][4] != '\0')
                     m_outfile = &argv[i][4];
@@ -410,7 +410,7 @@ int ConsolePlayer::args(int argc, const char *argv[])
             else if (strcmp (&argv[i][1], "-none") == 0)
             {
                 m_driver.sid    = EMU_NONE;
-                m_driver.output = OUT_NULL;
+                m_driver.output = OutputType::Null;
             }
             else if (strcmp (&argv[i][1], "-nosid") == 0)
             {
@@ -418,7 +418,7 @@ int ConsolePlayer::args(int argc, const char *argv[])
             }
             else if (strcmp (&argv[i][1], "-noaudio") == 0)
             {
-                m_driver.output = OUT_NULL;
+                m_driver.output = OutputType::Null;
             }
             else if (strcmp (&argv[i][1], "-cpu-debug") == 0)
             {
@@ -470,7 +470,7 @@ int ConsolePlayer::args(int argc, const char *argv[])
         m_track.single = true;
 
     // Can only loop if not creating audio files
-    if (m_driver.output > OUT_SOUNDCARD)
+    if (m_driver.output > OutputType::SoundCard)
         m_track.loop = false;
 
     // Check to see if we are trying to generate an audio file
