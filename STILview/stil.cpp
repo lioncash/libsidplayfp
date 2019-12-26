@@ -618,7 +618,7 @@ bool STIL::determineEOL(std::ifstream &stilFile)
             const int c = sb->sbumpc();
             if (c == '\n' || c == '\r')
             {
-                STIL_EOL = c;
+                STIL_EOL = static_cast<char>(c);
 
                 if (c == '\r')
                 {
@@ -1200,7 +1200,7 @@ void STIL::getStilLine(std::ifstream &infile, std::string &line)
     {
         // If there was a remaining EOL char from the previous read, eat it up.
 
-        char temp = infile.peek();
+        auto temp = static_cast<char>(infile.peek());
 
         if (temp == 0x0d || temp == 0x0a)
         {
